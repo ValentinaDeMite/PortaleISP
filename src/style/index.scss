@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+@import '_abstracts/_variables.scss';
+
+
+html,
+#root,
+.app,
+body, .layout {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  font-family: 'Poppins';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+  background-color: $color_primary;
+  display: grid;
+      place-items: center;
+}
+
+.app{
+  display: flex;
+  position: relative;
+}
+
+::-webkit-scrollbar{
+  width: 10px;
+}
+
+// Track
+
+::-webkit-scrollbar-track{
+  background: #e0e0e0;
+}
+
+// Handle
+
+::-webkit-scrollbar-thumb{
+  background: #888;
+}
+
+// Handle hover
+
+::-webkit-scrollbar-track:hover{
+  background: #555;
+}
+
+.layout{
+ margin: auto;
+  width: 98vw;
+  height: 95vh;
+  border: 1px solid  lightblue;
+  display: flex;   
+  font-size: 26px;
+  
+  & > * {
+    flex: 1; 
+  }
+  .AppMain {
+    width: 700px;
+    background-color: white; 
+    padding: 20px;    
+  }
+  .AppSidebar {
+    flex-grow: 1;         
+    flex-shrink: 0;    
+    background-color: lightgray;  
+  }
+  
+  
+}
+
+.css-rizt0-MuiTypography-root{
+    font-family: 'Poppins'!important;
+
+  }

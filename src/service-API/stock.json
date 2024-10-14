@@ -1,0 +1,479 @@
+{
+  "code": 200,
+  "values": [
+      {
+          "0": "4739401C9300-48S",
+          "1": "4739401",
+          "2": "7N0044",
+          "3": "C9300-48S",
+          "4": "Cisco Catalyst 9300-48S-A Switch",
+          "5": "SWITCH",
+          "6": 40,
+          "7": 0,
+          "8": 0,
+          "9": 40,
+          "10": ""
+      },
+      {
+          "0": "4739401CARICA BATTERIE NOTEBOOK HP",
+          "1": "4739401",
+          "2": "9N0752",
+          "3": "CARICA BATTERIE NOTEBOOK HP",
+          "4": "CARICA BATTERIE NOTEBOOK HP",
+          "5": "ACCESSORIO",
+          "6": 909,
+          "7": 0,
+          "8": 0,
+          "9": 909,
+          "10": ""
+      },
+      {
+          "0": "4739401APPLE 20W USB-C POWER ADAPTER",
+          "1": "4739401",
+          "2": "9N0671",
+          "3": "APPLE 20W USB-C POWER ADAPTER",
+          "4": "APPLE 20W USB-C POWER ADAPTER",
+          "5": "ACCESSORIO",
+          "6": 102,
+          "7": 0,
+          "8": 0,
+          "9": 102,
+          "10": ""
+      },
+      {
+          "0": "4739401CTS-MIC-TABL20",
+          "1": "4739401",
+          "2": "7N0034",
+          "3": "CTS-MIC-TABL20",
+          "4": "CISCO TELEPRESENCE TABLE MICROPHONE 20",
+          "5": "SWITCH",
+          "6": 1,
+          "7": 0,
+          "8": 0,
+          "9": 1,
+          "10": ""
+      },
+      {
+          "0": "4739401ADATTATORE DA HDMI A VGA",
+          "1": "4739401",
+          "2": "9N0496",
+          "3": "ADATTATORE DA HDMI A VGA",
+          "4": "ADATTATORE DA HDMI A VGA",
+          "5": "ACCESSORIO",
+          "6": 120,
+          "7": 0,
+          "8": 0,
+          "9": 120,
+          "10": ""
+      },
+      {
+          "0": "4739401MICROSOFT SURFACE PEN V8 SLIM",
+          "1": "4739401",
+          "2": "9N0775",
+          "3": "MICROSOFT SURFACE PEN V8 SLIM",
+          "4": "MICROSOFT SURFACE PEN V8 SLIM",
+          "5": "ACCESSORIO",
+          "6": 10,
+          "7": 0,
+          "8": 0,
+          "9": 10,
+          "10": ""
+      },
+      {
+          "0": "4739401XURS232",
+          "1": "4739401",
+          "2": "9N0399",
+          "3": "XURS232",
+          "4": "CAVO USB MANHATTAN 1 PORTA SERIAL",
+          "5": "ACCESSORIO",
+          "6": 1904,
+          "7": 0,
+          "8": 0,
+          "9": 1904,
+          "10": ""
+      },
+      {
+          "0": "4739401CP-8800-A-KEM",
+          "1": "4739401",
+          "2": "9N0673",
+          "3": "CP-8800-A-KEM",
+          "4": "CP-8800-A-KEM",
+          "5": "SWITCH",
+          "6": 50,
+          "7": 0,
+          "8": 0,
+          "9": 50,
+          "10": ""
+      },
+      {
+          "0": "4739401TS32GJF790K",
+          "1": "4739401",
+          "2": "9N0272",
+          "3": "TS32GJF790K",
+          "4": "32GB JETFLASH",
+          "5": "ACCESSORIO",
+          "6": 782,
+          "7": 0,
+          "8": 0,
+          "9": 782,
+          "10": ""
+      },
+      {
+          "0": "4739401ICOC DSP-A-050",
+          "1": "4739401",
+          "2": "9N0470",
+          "3": "ICOC DSP-A-050",
+          "4": "CAVO DISPLAYPORT 20P M-M 5MT",
+          "5": "ACCESSORIO",
+          "6": 82,
+          "7": 0,
+          "8": 0,
+          "9": 82,
+          "10": ""
+      },
+      {
+          "0": "4739401E-FK-083-9005RG",
+          "1": "4739401",
+          "2": "9N0344",
+          "3": "E-FK-083-9005RG",
+          "4": "CARRELLO ALTO STAMPANTE SAMSUNG 4580",
+          "5": "STAMPANTE MF A4",
+          "6": 184,
+          "7": 0,
+          "8": 0,
+          "9": 184,
+          "10": ""
+      },
+      {
+          "0": "4739401CS-KIT-EQ-K9",
+          "1": "4739401",
+          "2": "9N0757",
+          "3": "CS-KIT-EQ-K9",
+          "4": "CS-KIT-EQ-K9",
+          "5": "ACCESSORIO",
+          "6": 3,
+          "7": 0,
+          "8": 0,
+          "9": 3,
+          "10": ""
+      },
+      {
+          "0": "47394011203R75NL0",
+          "1": "4739401",
+          "2": "9N0561",
+          "3": "1203R75NL0",
+          "4": "KYOCERA 5053-DP 7100 DOCUMENT PROCESSOR",
+          "5": "STAMPANTE MF A3",
+          "6": 1,
+          "7": 0,
+          "8": 0,
+          "9": 1,
+          "10": ""
+      },
+      {
+          "0": "4739401LH49PMHPBGC/EN/R",
+          "1": "4739401",
+          "2": "2U0072",
+          "3": "LH49PMHPBGC/EN/R",
+          "4": "SAMSUNG LED PM49H",
+          "5": "MONITOR GRANDE",
+          "6": 1,
+          "7": 0,
+          "8": 0,
+          "9": 1,
+          "10": ""
+      },
+      {
+          "0": "4739401HW520N-A",
+          "1": "4739401",
+          "2": "9N0390",
+          "3": "HW520N-A",
+          "4": "CUFFIA ENCOREPRO BIA NC",
+          "5": "ACCESSORIO",
+          "6": 154,
+          "7": 0,
+          "8": 0,
+          "9": 154,
+          "10": ""
+      },
+      {
+          "0": "4739401USB32GB/R",
+          "1": "4739401",
+          "2": "9U0072",
+          "3": "USB32GB/R",
+          "4": "CHIAVE USB KINGSTON 32GB",
+          "5": "ACCESSORIO",
+          "6": 45,
+          "7": 0,
+          "8": 0,
+          "9": 45,
+          "10": ""
+      },
+      {
+          "0": "4739401BRETELLA OTTICA SC-LC DUPLEX",
+          "1": "4739401",
+          "2": "9N0111",
+          "3": "BRETELLA OTTICA SC-LC DUPLEX",
+          "4": "BRETELLA OTTICA SC-LC DUPLEX",
+          "5": "SWITCH",
+          "6": 89,
+          "7": 0,
+          "8": 0,
+          "9": 89,
+          "10": ""
+      },
+      {
+          "0": "4739401CISCO C9200L-24P-4G-E",
+          "1": "4739401",
+          "2": "7N0041",
+          "3": "CISCO C9200L-24P-4G-E",
+          "4": "CISCO C9200L-24P-4G-E",
+          "5": "SWITCH",
+          "6": 36,
+          "7": 0,
+          "8": 0,
+          "9": 36,
+          "10": ""
+      },
+      {
+          "0": "4739401MOTOROLA RIPARAZIONE MOTO G62",
+          "1": "4739401",
+          "2": "9U0099",
+          "3": "MOTOROLA RIPARAZIONE MOTO G62",
+          "4": "MOTOROLA RIPARAZIONE MOTO G62",
+          "5": "ACCESSORIO",
+          "6": 67,
+          "7": 0,
+          "8": 0,
+          "9": 67,
+          "10": ""
+      },
+      {
+          "0": "4739401JABRA EVOLVE 75",
+          "1": "4739401",
+          "2": "9N0405",
+          "3": "JABRA EVOLVE 75",
+          "4": "JABRA EVOLVE 75",
+          "5": "ACCESSORIO",
+          "6": 66,
+          "7": 0,
+          "8": 0,
+          "9": 66,
+          "10": ""
+      },
+      {
+          "0": "4739401XVCDVI180-PN",
+          "1": "4739401",
+          "2": "9N0549",
+          "3": "XVCDVI180-PN",
+          "4": "CAVO DVI DUAL LINK 24-1 M-M",
+          "5": "ACCESSORIO",
+          "6": 4134,
+          "7": 0,
+          "8": 0,
+          "9": 4134,
+          "10": ""
+      },
+      {
+          "0": "4739401CAVO DI RETE  PATCH-PN",
+          "1": "4739401",
+          "2": "9N0365",
+          "3": "CAVO DI RETE  PATCH-PN",
+          "4": "CAVO DI RETE PATCH 3MT",
+          "5": "ACCESSORIO",
+          "6": 541,
+          "7": 0,
+          "8": 0,
+          "9": 541,
+          "10": ""
+      },
+      {
+          "0": "4739401TREPPIEDE 175X175",
+          "1": "4739401",
+          "2": "9N0719",
+          "3": "TREPPIEDE 175X175",
+          "4": "TREPPIEDE 175X175",
+          "5": "ACCESSORIO",
+          "6": 6,
+          "7": 0,
+          "8": 0,
+          "9": 6,
+          "10": ""
+      },
+      {
+          "0": "4739401CAVO USB-A TO USB-B 3m",
+          "1": "4739401",
+          "2": "9N0799",
+          "3": "CAVO USB-A TO USB-B 3m",
+          "4": "CAVO USB-A TO USB-B 3m",
+          "5": "ACCESSORIO",
+          "6": 5100,
+          "7": 0,
+          "8": 0,
+          "9": 5100,
+          "10": ""
+      },
+      {
+          "0": "4739401MOUSE WIRELESS MOBILE 1850 MICROSOFT",
+          "1": "4739401",
+          "2": "9N0534",
+          "3": "MOUSE WIRELESS MOBILE 1850 MICROSOFT",
+          "4": "MOUSE WIRELESS MOBILE 1850 MICROSOFT",
+          "5": "ACCESSORIO",
+          "6": 47,
+          "7": 0,
+          "8": 0,
+          "9": 47,
+          "10": ""
+      },
+      {
+          "0": "4739401KCP426SS6/4",
+          "1": "4739401",
+          "2": "9N0663",
+          "3": "KCP426SS6/4",
+          "4": "MEMORIA 4GB DDR4 2666MHZ SODIMM",
+          "5": "ACCESSORIO",
+          "6": 5,
+          "7": 0,
+          "8": 0,
+          "9": 5,
+          "10": ""
+      },
+      {
+          "0": "473940110MCS03C00/R",
+          "1": "4739401",
+          "2": "1U0094",
+          "3": "10MCS03C00/R",
+          "4": "LENOVO THINKCENTRE M715S",
+          "5": "PC CLIENT",
+          "6": 861,
+          "7": 0,
+          "8": 0,
+          "9": 861,
+          "10": ""
+      }
+  ],
+  "text": "OK",
+  "fields": [
+      {
+          "0": {
+              "important": false,
+              "exportable": true,
+              "editable": false,
+              "name": "PDID",
+              "show": false,
+              "description": "ID univoco Part Catalog",
+              "type": "T",
+              "forcount": 0
+          }
+      },
+      {
+          "1": {
+              "important": false,
+              "exportable": true,
+              "editable": false,
+              "name": "CODICE CLIENTE",
+              "show": true,
+              "description": "Codice Cliente Lambda",
+              "type": "T",
+              "forcount": 1
+          }
+      },
+      {
+          "2": {
+              "important": false,
+              "exportable": true,
+              "editable": false,
+              "name": "PN PRIMARIO",
+              "show": false,
+              "description": "Part Number Lambda",
+              "type": "T",
+              "forcount": 2
+          }
+      },
+      {
+          "3": {
+              "important": true,
+              "exportable": true,
+              "editable": false,
+              "name": "PN CLIENTE",
+              "show": true,
+              "description": "Part Number Cliente",
+              "type": "T",
+              "forcount": 3
+          }
+      },
+      {
+          "4": {
+              "important": false,
+              "exportable": true,
+              "editable": false,
+              "name": "DESCRIZIONE",
+              "show": true,
+              "description": "Descrizione Articolo",
+              "type": "T",
+              "forcount": 4
+          }
+      },
+      {
+          "5": {
+              "important": false,
+              "exportable": true,
+              "editable": false,
+              "name": "CATEGORIA CLIENTE",
+              "show": true,
+              "description": "Categoria Cliente",
+              "type": "T",
+              "forcount": 5
+          }
+      },
+      {
+          "6": {
+              "important": false,
+              "exportable": true,
+              "editable": false,
+              "name": "STOCK UBI",
+              "show": true,
+              "description": "Stock materiale Ubicato Lambda",
+              "type": "N",
+              "forcount": 6
+          }
+      },
+      {
+          "7": {
+              "important": false,
+              "exportable": true,
+              "editable": false,
+              "name": "STOCK PO",
+              "show": true,
+              "description": "Stock materiale acquistato dal cliente in arrivo Lambda",
+              "type": "N",
+              "forcount": 7
+          }
+      },
+      {
+          "8": {
+              "important": false,
+              "exportable": true,
+              "editable": false,
+              "name": "STOCK VAT",
+              "show": true,
+              "description": "Stock materiale Verde a Terra in Refurbish",
+              "type": "N",
+              "forcount": 8
+          }
+      },
+      {
+          "9": {
+              "important": false,
+              "exportable": true,
+              "editable": false,
+              "name": "DISPONIBILE",
+              "show": true,
+              "description": "Totale articoli disponibili",
+              "type": "N",
+              "forcount": 9
+          }
+      }
+  ]
+}
