@@ -1,11 +1,11 @@
 import React, { Suspense } from 'react';
 import { Container, CircularProgress, Box } from '@mui/material';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import routes from '../routes'; // Importa le rotte configurate
+import routes from '../routes'; 
 
 const AppContent = () => {
   return (
-    <Box display="flex" justifyContent="space-between" alignItems="center" p="30px 40px">
+    <Box display="flex" justifyContent="space-between" alignItems="center" paddingX="40px">
       <Suspense fallback={<CircularProgress color="primary" />}>
         <Routes>
           {routes.map((route, idx) => (

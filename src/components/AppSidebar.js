@@ -94,7 +94,7 @@ import React, { useState } from 'react';
 import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { Box, IconButton, Typography, Collapse } from '@mui/material';
-import { useNavigate } from 'react-router-dom';  // Hook per navigazione dinamica
+import { useNavigate } from 'react-router-dom';  
 import HomeIcon from '@mui/icons-material/HomeOutlined';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import FeedbackOutlinedIcon from '@mui/icons-material/FeedbackOutlined';
@@ -109,7 +109,7 @@ import logo_s_isp from "../assets/img/logo_s_isp.png";
 
 const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const navigate = useNavigate();  // Inizializzazione del hook useNavigate
+  const navigate = useNavigate();  
 
   const handleIconClick = () => {
     if (isDropdownOpen) {
@@ -123,7 +123,7 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
     <Box
       sx={{
         height: '95vh',
-        width:'100%',
+        width: '100%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-evenly',
@@ -142,8 +142,7 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
           padding: '5px 10px', 
           borderRadius: '8px',
         },
-        '& .pro-menu': {
-        },
+        '& .pro-menu': {},
         '& .pro-item-content :hover': {
           fontWeight: 600,
           color: 'white',
@@ -177,75 +176,76 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
               transition: 'height .8s ease',
             }}
           >
-            {/* Logo per sidebar chiusa */}
+            {/* Sidebar chiusa */}
             <a href="https://www.intesasanpaolo.com/" target="_blank" rel="noopener noreferrer">
               <img
                 src={logo_s_isp}
                 alt="Logo ISP"
                 style={{
-                  width: '70px',
-                  height: '70px',
+                  width: '60px',  // Ristretto
+                  height: '60px', // Ristretto
                   display: isCollapsed ? 'block' : 'none', 
                 }}
               />
             </a>
 
-            {/* Logo per sidebar aperta */}
+            {/* Sidebar aperta */}
             <a href="https://www.intesasanpaolo.com/" target="_blank" rel="noopener noreferrer">
               <img
                 src={logo_intesa_san_paolo_2}
                 alt="Logo ISP"
                 style={{
-                  width: '200px',
-                  height: '100px',
+                  width: '180px',  // Ristretto
+                  height: '80px',  // Ristretto
                   display: isCollapsed ? 'none' : 'block', 
                 }}
               />
             </a>
           </Box>
 
-
           <Menu iconShape="square">
-            <Box sx={{
-               height: '%',
-               transition: 'width 0.3s ease', 
-            }}>
-              {/* Home */}
+            <Box sx={{ height: '100%', transition: 'width 0.3s ease' }}>
               <MenuItem
                 style={{ color: 'white', margin: '10px 0' }}
                 icon={
-                  <IconButton onClick={handleIconClick} sx={{ backgroundColor: '#ff9800', 
-                    color: 'white',
-                    transition: 'height .8s ease',
-                    '&:hover': {
+                  <IconButton
+                    onClick={handleIconClick}
+                    sx={{ 
                       backgroundColor: '#ff9800', 
-                    }, }}
+                      color: 'white',
+                      '& .MuiSvgIcon-root': {
+                        fontSize: { xs: '18px', sm: '20px', md: '26px' },  // Bilanciamento
+                      }
+                    }}
                   >
                     <HomeIcon />
                   </IconButton>
                 }
                 onClick={() => navigate("/homepage")} 
               >
-                {!isCollapsed && <Typography>Home</Typography>}
+                {!isCollapsed && (
+                  <Typography
+                    sx={{
+                      fontFamily: '"Poppins" !important',
+                      fontSize: { xs: '10px', sm: '12px', md: '14px' }, // Bilanciamento dei font
+                    }}
+                  >
+                    Home
+                  </Typography>
+                )}
               </MenuItem>
 
-              {/* Dashboard */}
               <MenuItem
-                style={{
-                  color: 'white',
-                  margin: '10px 0',
-                  backgroundColor: isDropdownOpen ? 'rgba(217, 217, 217, 0.7)' : 'transparent',
-                  borderRadius: '8px',
-                }}
+                style={{ color: 'white', margin: '10px 0' }}
                 icon={
                   <IconButton
                     onClick={handleIconClick}
-                    sx={{
-                      backgroundColor: '#ff9800',
+                    sx={{ 
+                      backgroundColor: '#ff9800', 
                       color: 'white',
-                      '&:hover': {
-                        backgroundColor: '#ff9800',
-                      },
+                      '& .MuiSvgIcon-root': {
+                        fontSize: { xs: '18px', sm: '20px', md: '26px' },  // Bilanciamento
+                      }
                     }}
                   >
                     <DashboardIcon />
@@ -258,27 +258,32 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                     display="flex"
                     justifyContent="space-between"
                     alignItems="center"
-                    sx={{
-                      width: '100%',
-                    }}
+                    sx={{ width: '100%' }}
                   >
                     <Typography
                       sx={{
-                        color: 'white',
                         fontFamily: '"Poppins" !important',
-                        fontSize: 15,
+                        fontSize: { xs: '10px', sm: '12px', md: '14px' }, // Bilanciamento dei font
                       }}
                     >
                       Dashboard
                     </Typography>
                     {isDropdownOpen ? (
                       <KeyboardArrowUpIcon
-                        sx={{ color: 'white', cursor: 'pointer', margin: 0 }}
+                        sx={{ 
+                          color: 'white', 
+                          cursor: 'pointer',
+                          fontSize: { xs: '18px', sm: '20px', md: '26px' },  // Bilanciamento
+                        }}
                         onClick={() => setDropdownOpen(!isDropdownOpen)}
                       />
                     ) : (
                       <KeyboardArrowDownIcon
-                        sx={{ color: 'white', cursor: 'pointer' }}
+                        sx={{ 
+                          color: 'white', 
+                          cursor: 'pointer',
+                          fontSize: { xs: '18px', sm: '20px', md: '26px' },  // Bilanciamento
+                        }}
                         onClick={() => setDropdownOpen(!isDropdownOpen)}
                       />
                     )}
@@ -289,53 +294,66 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
               <Collapse in={isDropdownOpen}>
                 <Box sx={{ backgroundColor: 'transparent' }}>
                   <MenuItem
-                    onClick={() => navigate('/nuovo-progetto')} 
+                    onClick={() => navigate('/nuovo-progetto')}
                     style={{ color: 'white', display: 'flex', alignItems: 'center' }}
                   >
-                    <div>
-                      <CircleIcon
-                        sx={{ color: 'white', marginRight: '10px', fontSize: '10px' }}
-                      />
+                    <CircleIcon sx={{ 
+                      color: 'white', 
+                      marginRight: '10px', 
+                      fontSize: { xs: '8px', sm: '10px', md: '12px' },  // Bilanciamento
+                    }} />
+                    <Typography
+                      sx={{
+                        fontSize: { xs: '10px', sm: '12px', md: '14px' }, // Bilanciamento del testo
+                      }}
+                    >
                       Nuovo Progetto
-                    </div>
+                    </Typography>
                   </MenuItem>
                 </Box>
               </Collapse>
 
-              {/* Richieste */}
               <MenuItem
                 style={{ color: 'white', margin: '10px 0' }}
                 icon={
                   <IconButton
                     onClick={handleIconClick}
-                    sx={{
-                      backgroundColor: '#ff9800',
+                    sx={{ 
+                      backgroundColor: '#ff9800', 
                       color: 'white',
-                      '&:hover': {
-                        backgroundColor: '#ff9800',
-                      },
+                      '& .MuiSvgIcon-root': {
+                        fontSize: { xs: '18px', sm: '20px', md: '26px' },  // Bilanciamento
+                      }
                     }}
                   >
                     <FeedbackOutlinedIcon />
                   </IconButton>
                 }
-                onClick={() => navigate("/richieste")}  
+                onClick={() => navigate("/richieste")}
               >
-                {!isCollapsed && <Typography>Richieste</Typography>}
+                {!isCollapsed && (
+                  <Typography
+                    sx={{
+                      fontFamily: '"Poppins" !important',
+                      fontSize: { xs: '10px', sm: '12px', md: '14px' }, // Bilanciamento dei font
+                    }}
+                  >
+                    Richieste
+                  </Typography>
+                )}
               </MenuItem>
 
-              {/* Stock */}
               <MenuItem
                 style={{ color: 'white', margin: '10px 0' }}
                 icon={
                   <IconButton
                     onClick={handleIconClick}
-                    sx={{
-                      backgroundColor: '#ff9800',
+                    sx={{ 
+                      backgroundColor: '#ff9800', 
                       color: 'white',
-                      '&:hover': {
-                        backgroundColor: '#ff9800',
-                      },
+                      '& .MuiSvgIcon-root': {
+                        fontSize: { xs: '18px', sm: '20px', md: '26px' },  // Bilanciamento
+                      }
                     }}
                   >
                     <InsertChartOutlinedIcon />
@@ -343,14 +361,21 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 }
                 onClick={() => navigate("/stock")}
               >
-                {!isCollapsed && <Typography>Stock</Typography>}
+                {!isCollapsed && (
+                  <Typography
+                    sx={{
+                      fontFamily: '"Poppins" !important',
+                      fontSize: { xs: '10px', sm: '12px', md: '14px' }, // Bilanciamento dei font
+                    }}
+                  >
+                    Stock
+                  </Typography>
+                )}
               </MenuItem>
             </Box>
-            
           </Menu>
         </Box>
 
-        {/* Account */}
         <Box
           style={{
             width: isCollapsed ? '80px' : '220px',
@@ -360,60 +385,54 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
         >
           <Menu>
             <MenuItem
-              style={{ color: 'white'}}
-                icon={
-                  <IconButton
-                    onClick={handleIconClick}
-                    sx={{
-                      backgroundColor: 'white',
-                      color: 'white',
-                      '&:hover': {
-                        backgroundColor: 'white',
-                      },
-                    }}
-                  >
-                    <img
-                      src={mvs_nobg}
-                      alt="contatti MVS"
-                      style={{ width: '24px', height: '24px' }}
-                    />
-                  </IconButton>
-              }
-              onClick={() => navigate("/contatti")} 
-            >
-              {!isCollapsed && <Typography>Contatti</Typography>}
-            </MenuItem>
-            <MenuItem
-                style={{
-                  color: 'white',
-                  pointerEvents: 'none', 
-                  backgroundColor: 'transparent', 
-                }}
-                sx={{
-                  '&:hover': {
-                    backgroundColor: 'transparent',
-                  },
-                }}
-              >
-                <Typography
-                  
-                  sx={{
-                    opacity: isCollapsed ? 0 : 1, 
-                    visibility: isCollapsed ? 'hidden' : 'visible',  
-                    height: '15px', 
-                    transition: 'opacity 0.5s ease, visibility 0.5s ease',
-                    fontWeight:'200',
-                    fontSize:'13px',
+              style={{ color: 'white' }}
+              icon={
+                <IconButton
+                  onClick={handleIconClick}
+                  sx={{ 
+                    backgroundColor: 'white', 
+                    color: 'white',
+                    '& img': {
+                      width: { xs: '16px', sm: '18px', md: '20px' },  // Bilanciamento delle immagini
+                      height: { xs: '16px', sm: '18px', md: '20px' },  // Bilanciamento delle immagini
+                    }
                   }}
                 >
-                    MVS Italy © 2024
-                  
+                  <img src={mvs_nobg} alt="contatti MVS" />
+                </IconButton>
+              }
+              onClick={() => navigate("/contatti")}
+            >
+              {!isCollapsed && (
+                <Typography
+                  sx={{
+                    fontFamily: '"Poppins" !important',
+                    fontSize: { xs: '10px', sm: '12px', md: '14px' }, // Bilanciamento dei font
+                  }}
+                >
+                  Contatti
                 </Typography>
+              )}
             </MenuItem>
 
-           
+            <MenuItem
+              style={{ color: 'white', pointerEvents: 'none', backgroundColor: 'transparent' }}
+              sx={{ '&:hover': { backgroundColor: 'transparent' } }}
+            >
+              <Typography
+                sx={{
+                  opacity: isCollapsed ? 0 : 1,
+                  visibility: isCollapsed ? 'hidden' : 'visible',
+                  height: '15px',
+                  transition: 'opacity 0.5s ease, visibility 0.5s ease',
+                  fontSize: { xs: '10px', sm: '12px', md: '14px' }, // Bilanciamento dei font
+                  fontWeight: 200,
+                }}
+              >
+                MVS Italy © 2024
+              </Typography>
+            </MenuItem>
           </Menu>
-          
         </Box>
       </ProSidebar>
     </Box>
