@@ -1,9 +1,9 @@
-/*import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ApiRest from '../../service-API/ApiRest';
 import AppTable from "../../components/AppTable";
-import { Box, Container, Typography } from '@mui/material'; // Import da Material-UI
-import projects from '../../service-API/projects.json'
+import { Box, Container, Typography } from '@mui/material'; 
+import projectsData from '../../service-API/projects.json';
 
 const Dashboard = (props) => {
   const [columnDefs, setColumnDefs] = useState([]); // Colonne
@@ -25,10 +25,17 @@ const Dashboard = (props) => {
     const state = localStorage.getItem('dashboardFilters');
     if (state) {
       const parsedState = JSON.parse(state);
+      // Puoi usare il parsedState qui
     }
   };
-  
+
+  // Funzione per controllare chiavi duplicate
   const checkForDuplicateKeys = (rows) => {
+    if (!Array.isArray(rows)) {
+      console.warn('rows is not an array:', rows);
+      return;
+    }
+
     const seen = new Set();
     rows.forEach((row) => {
       const key = row[0]; 
@@ -39,10 +46,14 @@ const Dashboard = (props) => {
       }
     });
   };
-  
+
   useEffect(() => {
-    checkForDuplicateKeys(projects.values); 
-  }, []);
+    if (projects && Array.isArray(projects.values)) {
+      checkForDuplicateKeys(projects.values);
+    } else {
+      console.warn('projects.values is not an array or is undefined', projects);
+    }
+  }, [projects]);
 
   // Funzione per convertire i tipi di colonne
   const convertTypeColumn = (type) => {
@@ -64,7 +75,7 @@ const Dashboard = (props) => {
   const setColumns = (fields) => {
     return fields
       .filter(field => field.show)  
-      .map((field, index) => ({
+      .map((field) => ({
         field: field.forcount.toString(), 
         headerName: field.name,
         width: field.type === 'N' ? 60 : props.isModal ? 200 : 250,
@@ -78,21 +89,17 @@ const Dashboard = (props) => {
   useEffect(() => {
     const getDashboard = async () => {
       try {
-       const api = new ApiRest();
-       const data = await api.getDashboard(token); // Chiamata API per ottenere i dati
-        dispatch({ type: 'set', date: new Date().getTime() });
-        dispatch({ type: 'set', projects: data.values });
+        const api = new ApiRest();
+        const data = await api.getDashboard(token); // Chiamata API per ottenere i dati
+        dispatch({ type: 'set', payload: { date: new Date().getTime(), projects: data.values } });
         const columns = setColumns(data.fields);
         setColumnDefs(columns);
-        dispatch({ type: 'set', fieldsProject: columns });
+        dispatch({ type: 'set', payload: { fieldsProject: columns } });
       } catch (error) {
         console.error("API error, using mocked data", error);
-
-        // Usa dati mockati in caso di errore
-        const columns = setColumns(projects.fields.map(field => Object.values(field)[0]));
+        const columns = setColumns(projectsData.fields.map(field => Object.values(field)[0]));
         setColumnDefs(columns);
-        dispatch({ type: 'set', projects: projects.values });
-        dispatch({ type: 'set', fieldsProject: columns });
+        dispatch({ type: 'set', payload: { projects: projectsData.values, fieldsProject: columns } });
       }
 
       loadFilters(); 
@@ -111,9 +118,7 @@ const Dashboard = (props) => {
   }, []);
 
   return (
-    <Container
-      //sx={{ width: props.isModal ? '55vw' : '60vw', marginBottom: '180px' }}
-    >
+    <Container>
       <Typography variant="h4" align="center" gutterBottom>
         Dashboard - Lista di tutti i progetti
       </Typography>
@@ -127,15 +132,6 @@ const Dashboard = (props) => {
       <AppTable ref={ref} columns={columnDefs} rows={projects || []} useChips={true} />
     </Container>
   );
-};
-
-export default Dashboard;
-*/
-
-import React from 'react';
-
-const Dashboard = () => {
-  return <div>Dashboard</div>;
 };
 
 export default Dashboard;

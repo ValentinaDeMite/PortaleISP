@@ -32,17 +32,18 @@ const StatusChip = ({ status }) => {
 };
 
 // Tabella con colori alternati per le righe
-const ODD_OPACITY = 0.2;
+const ODD_COLOR = 'rgba(217, 217, 217, 0.7)'; 
+const EVEN_COLOR = 'rgba(255, 255, 255, 1)';  
 
 const StripedDataGrid = styled(DataGridPremium)(({ theme }) => ({
   [`& .MuiDataGrid-row.even`]: {
-    backgroundColor: theme.palette.common.white,
+    backgroundColor: EVEN_COLOR,
   },
   [`& .MuiDataGrid-row.odd`]: {
-    backgroundColor: theme.palette.grey[200],
+    backgroundColor: ODD_COLOR,
   },
   [`& .MuiDataGrid-row:hover`]: {
-    backgroundColor: alpha(theme.palette.primary.main, ODD_OPACITY),
+    backgroundColor: alpha(theme.palette.primary.main, 0.2),
     '@media (hover: none)': {
       backgroundColor: 'transparent',
     },
@@ -50,24 +51,22 @@ const StripedDataGrid = styled(DataGridPremium)(({ theme }) => ({
   [`& .MuiDataGrid-row.Mui-selected`]: {
     backgroundColor: alpha(
       theme.palette.primary.main,
-      ODD_OPACITY + theme.palette.action.selectedOpacity,
+      0.4,
     ),
     '&:hover': {
       backgroundColor: alpha(
         theme.palette.primary.main,
-        ODD_OPACITY +
-        theme.palette.action.selectedOpacity +
-        theme.palette.action.hoverOpacity,
+        0.6,
       ),
       '@media (hover: none)': {
         backgroundColor: alpha(
           theme.palette.primary.main,
-          ODD_OPACITY + theme.palette.action.selectedOpacity,
+          0.4,
         ),
       },
     },
   },
-}))
+}));
 
 function Table2({ columns, rows, useChips = false }) {
   const [searchText, setSearchText] = useState('');
@@ -176,11 +175,37 @@ function Table2({ columns, rows, useChips = false }) {
           '& p': {
             marginTop: 2,
           },
-          '& .css-yrdy0g-MuiDataGrid-columnHeaderRow': {
-            backgroundColor: 'rgb(27, 158, 62, .9) !important',
-            color: 'white',
-            textAlign: 'center',
+          '& .MuiDataGrid':{
+            fontFamily: 'Poppins !important',
           },
+          '& .MuiDataGrid-columnHeaderRow': {
+            textAlign: 'center',
+            color:'white !important'
+          },
+          '& .MuiDataGrid-columnHeaderTitleContainerContent':{
+            color:'white'
+          },
+
+          '& .MuiDataGrid-columnHeaderRow>.MuiButtonBase-root':{
+            color:'white'
+
+          },
+
+          '& .MuiDataGrid-container--top [role=row]': {
+            backgroundColor: 'rgb(75, 168, 61, .9) !important',
+          },
+
+          '& .MuiDataGrid-withBorderColor':{
+            backgroundColor: 'rgb(75, 168, 61, .9) !important',
+          },
+          '& .MuiTablePagination-root':{
+            color:'white'
+          },
+          '& .MuiTablePagination-selectIcon ':{
+            color:'white !important'
+
+          },
+
           '& .MuiDataGrid-cell': {
             textAlign: 'center',
           },
@@ -197,7 +222,8 @@ function Table2({ columns, rows, useChips = false }) {
           },
           '&.MuiDataGrid-virtualScrollerContent':{
             height:'100%'
-          }
+          },
+         
         }}
         rows={filteredRows}
         columns={columns.map((col) => ({
@@ -205,7 +231,7 @@ function Table2({ columns, rows, useChips = false }) {
           headerAlign: 'center',
           flex:  1,
           renderCell: (params) => {
-            
+           
             if (isGroupingActive) return params.value;
 
             if (['3', '4', '8', '9', '10'].includes(col.field)) {
@@ -223,8 +249,8 @@ function Table2({ columns, rows, useChips = false }) {
                     justifyContent: 'center',
                     alignItems: 'center',
                     height: '100%',
+                    
                   }}>
-                
                   <StatusChip status={params.value} />
                 </Box>
               );
@@ -234,19 +260,19 @@ function Table2({ columns, rows, useChips = false }) {
                   <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <div>
                       <Tooltip title="Richieste Pending">
-                            <NotificationImportantIcon
-                              sx={{
-                                color: blue[500],
-                                fontSize: '25px',
-                                cursor: 'pointer',
-                                margin: 'auto',
-                                transition: 'transform 0.3s ease-in-out',
-                                '&:hover': {
-                                  transform: 'scale(1.2)',
-                                },
-                              }}
-                              onClick={() => alert(`Richieste Pending ID: ${params.row[0]}`)}
-                            />
+                        <NotificationImportantIcon
+                          sx={{
+                            color: blue[500],
+                            fontSize: '25px',
+                            cursor: 'pointer',
+                            margin: 'auto',
+                            transition: 'transform 0.3s ease-in-out',
+                            '&:hover': {
+                              transform: 'scale(1.2)',
+                            },
+                          }}
+                          onClick={() => alert(`Richieste Pending ID: ${params.row[0]}`)}
+                        />
                       </Tooltip>
                     </div>
                   </Box>
@@ -260,6 +286,8 @@ function Table2({ columns, rows, useChips = false }) {
                                 fontSize: '25px',
                                 cursor: 'pointer',
                                 margin: 'auto',
+                                textAlign: 'center',
+                                marginTop:'4px'
                               }}
                             />
                           </Tooltip>
@@ -292,11 +320,12 @@ function Table2({ columns, rows, useChips = false }) {
         groupRowsByColumn="status" 
         rowGroupingModel={rowGroupingModel}
         onRowGroupingModelChange={setRowGroupingModel}
+        getRowClassName={(params) => 
+          params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+        }
       />
     </Box>
   );
 }
 
 export default Table2;
-
-
