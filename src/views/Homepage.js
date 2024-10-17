@@ -1,4 +1,4 @@
-import React from 'react';
+/*import React from 'react';
 import { Box, Typography, useMediaQuery } from '@mui/material';
 import logo_s_isp from '../assets/img/logo_s_isp.png';
 
@@ -12,12 +12,12 @@ const Homepage = () => {
       display="flex"
       alignItems="center"
       justifyContent="center" 
-      height="70vh"
+      height="100%"
       width="100%"
       margin="auto"
       flexDirection={isSmallScreen ? 'column' : 'row'}
     >
-      {/* Colonna del testo */}
+      { Colonna del testo }
       <Box
         display="flex"
         width={isSmallScreen ? '100%' : '40%'} 
@@ -58,7 +58,6 @@ const Homepage = () => {
         </Typography>
       </Box>
 
-      {/* Colonna dell'immagine */}
       <Box
         display="flex"
         width={isSmallScreen ? '100%' : '50%'} 
@@ -71,13 +70,86 @@ const Homepage = () => {
           src={logo_s_isp}
           alt="Logo"
           style={{
-            width: isMediumScreen ? '90%' : '50%', 
-            height: 'auto',
+            width: isMediumScreen ? '100%' : '50%', 
+            height: '100%',
             objectFit:'contain'
           }}
         />
       </Box>
     </Box>
+  );
+};
+
+export default Homepage;
+*/
+
+
+import React from 'react';
+import { Box, Typography } from '@mui/material';
+import logo_s_isp from '../assets/img/logo_s_isp.png';
+import { styled } from '@mui/material/styles';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid2';
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: '#fff',
+  padding: theme.spacing(2),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+  boxShadow: 'none',
+  height: '100%',
+  display: 'flex',
+  alignItems: 'center',
+}));
+
+const Homepage = () => {
+  return (
+    <Grid container height="100%" width="100%" spacing={2} alignItems="center" justifyContent="space-evenly">
+      <Grid xs={6} item display="flex" alignItems="center" justifyContent="center">
+        <Item>
+          <Box>
+            <Typography
+              fontSize={{ xs: '40px', sm: '50px', md: '60px', lg: '70px', xl: '80px' }}
+              fontWeight="bold"
+              align="left"
+              lineHeight="1.1"
+            >
+              Bentornato,
+            </Typography>
+            <Typography
+              fontSize={{ xs: '40px', sm: '50px', md: '60px', lg: '70px', xl: '80px' }}
+              fontWeight="bold"
+              align="left"
+              lineHeight="1.1"
+            >
+              Nome Utente
+            </Typography>
+            <Typography
+              fontSize={{ xs: '16px', sm: '18px', md: '20px', lg: '22px', xl: '24px' }}
+              align="left"
+              gutterBottom
+              lineHeight="1.2"
+            >
+              Role: Supervisor <br />
+              Ultimo accesso: 01/10/2024 11:37
+            </Typography>
+          </Box>
+        </Item>
+      </Grid>
+      <Grid xs={6} item display="flex" alignItems="center" justifyContent="center">
+        <Item>
+          <Box
+            component="img"
+            sx={{
+              height: { xs: '150px', sm: '200px', md: '250px', lg: '300px', xl: '400px' },
+              width: { xs: '150px', sm: '200px', md: '250px', lg: '300px', xl: '400px' },
+            }}
+            alt="Logo"
+            src={logo_s_isp}
+          />
+        </Item>
+      </Grid>
+    </Grid>
   );
 };
 

@@ -5,7 +5,7 @@ import routes from '../routes';
 
 const AppContent = () => {
   return (
-    <Box display="flex" justifyContent="space-between" alignItems="center" paddingX="40px">
+    <Box display="flex" justifyContent="space-between"  height='100%' width="100%" >
       <Suspense fallback={<CircularProgress color="primary" />}>
         <Routes>
           {routes.map((route, idx) => (

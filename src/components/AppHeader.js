@@ -129,7 +129,7 @@ function AppHeader() {
   };
 
   return (
-    <Box display="flex" justifyContent="space-between" alignItems="center" p="30px 40px">
+    <Box display="flex" justifyContent="space-between" alignItems="center" height='5vh' marginBottom='40px'>
       
       {/* Breadcrumbs dinamici */}
       <Box display="flex" alignItems="center">

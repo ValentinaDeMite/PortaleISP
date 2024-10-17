@@ -34,7 +34,8 @@ const Layout = () => {
           backgroundColor: 'white',
           //padding: '20px',
           transition: 'margin-left 0.5s ease', 
-          borderRadius:'15px'
+          borderRadius:'15px',
+          padding:'30px 40px'
         }}
       >
         <AppMain />
