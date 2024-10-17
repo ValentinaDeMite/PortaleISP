@@ -1,83 +1,3 @@
-
-/*
-import React, { useState } from 'react';
-import { Box, colors, IconButton, Menu, MenuItem, Container } from '@mui/material';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-
-function AppHeader() {
-  const iconSize = '25px';
-
-  // Funzione menù
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const [iconColor, setIconColor] = useState('#777');
-
- 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-    setIconColor('#ff9800');
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-    setIconColor('#777');
-  };
-
-  return (
-    <Box display="flex" justifyContent="space-between" alignItems="center" p="30px 40px">
-      
-      <Box display="flex" alignItems="center">
-        <p>Home/ Dashboard</p>
-      </Box>
-
-      <Box display="flex" alignItems="center" m="0">
-        <IconButton
-          id="account-button"
-          aria-controls={open ? 'account-menu' : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
-          onClick={handleClick}
-          sx={{
-            cursor: 'pointer', 
-          }}
-        >
-          <AccountCircleOutlinedIcon sx={{ color: iconColor, fontSize: iconSize }}/>
-        </IconButton>
-
-        <Menu 
-          id="account-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            'aria-labelledby': 'account-button',
-          }}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          PaperProps={{
-            style:{
-              borderRadius: 10,
-              boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-              padding: '5px 10px', 
-            },
-          }}
-        >
-          <MenuItem onClick={handleClose}>Logout</MenuItem>
-        </Menu>
-      </Box>
-    </Box>
-  );
-}
-
-export default AppHeader; 
-
-*/
 import React, { useState } from 'react';
 import { Box, IconButton, Menu, MenuItem } from '@mui/material';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
@@ -131,7 +51,7 @@ function AppHeader() {
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center" height='5vh' marginBottom='40px'>
       
-      {/* Breadcrumbs dinamici */}
+      {/* Breadcrumbs */}
       <Box display="flex" alignItems="center">
         <Breadcrumbs aria-label="breadcrumb" separator=" / " sx={{ fontSize: '1rem' }}>
           <Link
@@ -170,7 +90,7 @@ function AppHeader() {
                 key={to}
                 aria-current={index === pathnames.length - 1 ? 'page' : undefined}
                 onClick={(event) => handleBreadcrumbClick(event, to)}>
-                {formatBreadcrumbName(value)} {/* Formattazione del nome della rotta */}
+                {formatBreadcrumbName(value)} 
               </Link>
             );
           })}

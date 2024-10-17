@@ -109,7 +109,7 @@ const Homepage = () => {
         <Item>
           <Box>
             <Typography
-              fontSize={{ xs: '40px', sm: '50px', md: '60px', lg: '70px', xl: '80px' }}
+              fontSize={{ xs: '30px', sm: '40px', md: '50px', lg: '60px', xl: '70px' }}
               fontWeight="bold"
               align="left"
               lineHeight="1.1"
@@ -117,7 +117,7 @@ const Homepage = () => {
               Bentornato,
             </Typography>
             <Typography
-              fontSize={{ xs: '40px', sm: '50px', md: '60px', lg: '70px', xl: '80px' }}
+              fontSize={{ xs: '30px', sm: '40px', md: '50px', lg: '60px', xl: '70px' }}
               fontWeight="bold"
               align="left"
               lineHeight="1.1"
