@@ -6,7 +6,9 @@ import AppContent from './AppContent';
 
 function AppMain() {
   return (
-    <div className="contentBox">
+    <div style={{
+     height:'70vh'
+    }}>
       <AppHeader />
       <AppContent />
     </div>
