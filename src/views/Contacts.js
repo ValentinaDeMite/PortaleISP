@@ -28,7 +28,7 @@ const Contacts = () => {
   const isSmallScreen = useMediaQuery('(max-width:800px)');
 
   return (
-    <Grid container height="100%" width="100%" alignItems="center" justifyContent="space-evenly">
+    <Grid container height="100%" width="100%" alignItems="center" justifyContent="space-around">
       <Grid xs={4} item display="flex" alignItems="center" justifyContent="center">
         <Item>
           <Box>

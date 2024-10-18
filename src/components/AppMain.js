@@ -1,17 +1,18 @@
 import React from 'react';
 import AppHeader from './AppHeader';
 import AppContent from './AppContent';
+import {Box} from '@mui/material'
 
 
 
 function AppMain() {
   return (
-    <div style={{
-     height:'70vh'
-    }}>
-      <AppHeader />
-      <AppContent />
-    </div>
+    <Box style={{
+      height:'70vh',
+      
+     }}>
+    
+    </Box>
   );
 }
 

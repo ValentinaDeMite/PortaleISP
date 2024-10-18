@@ -104,7 +104,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const Homepage = () => {
   return (
-    <Grid container height="100%" width="100%" spacing={2} alignItems="center" justifyContent="space-evenly">
+    <Grid container height="100%" width="100%" spacing={2} alignItems="center" justifyContent='space-around'>
       <Grid xs={6} item display="flex" alignItems="center" justifyContent="center">
         <Item>
           <Box>

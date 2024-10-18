@@ -6,8 +6,6 @@ import Link from '@mui/material/Link';
 import { useLocation, Link as RouterLink, useNavigate } from 'react-router-dom';
 
 function AppHeader() {
-  const iconSize = '25px';
-
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [iconColor, setIconColor] = useState('#777');
@@ -43,17 +41,26 @@ function AppHeader() {
     }
   }, [location.pathname]);
 
-  // Funzione per formattare il nome della rotta
   const formatBreadcrumbName = (name) => {
     return name.replace('-', ' ').replace(/\b\w/g, char => char.toUpperCase());
   };
 
   return (
-    <Box display="flex" justifyContent="space-between" alignItems="center" height='5vh' marginBottom='40px'>
+    <Box display="flex" justifyContent="space-between" alignItems="center"  >
       
       {/* Breadcrumbs */}
       <Box display="flex" alignItems="center">
-        <Breadcrumbs aria-label="breadcrumb" separator=" / " sx={{ fontSize: '1rem' }}>
+        <Breadcrumbs aria-label="breadcrumb" separator=" / " 
+          sx={{ 
+            fontSize: {
+              xs: '0.7rem', // Molto piccoli
+              sm: '0.8rem', // Piccoli
+              md: '0.9rem', // Medi
+              lg: '1rem',   // Grandi
+              xl: '1rem',   // Extra grandi
+            } 
+          }}
+        >
           <Link
             underline="hover"
             color="inherit"
@@ -108,7 +115,18 @@ function AppHeader() {
           sx={{
             cursor: 'pointer', 
           }}>
-          <AccountCircleOutlinedIcon sx={{ color: iconColor, fontSize: iconSize }} />
+          <AccountCircleOutlinedIcon 
+            sx={{ 
+              color: iconColor, 
+              fontSize: {
+                xs: '15px',  // Molto piccoli
+                sm: '15px',  // Piccoli
+                md: '20px',  // Medi
+                lg: '25px',  // Grandi
+                xl: '30px',  // Extra grandi
+              } 
+            }} 
+          />
         </IconButton>
 
         <Menu 
@@ -131,7 +149,14 @@ function AppHeader() {
             style:{
               borderRadius: 10,
               boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-              padding: '5px 10px', 
+              padding: '5px 10px',
+              fontSize: {
+                xs: '0.7rem', // Molto piccoli
+                sm: '0.8rem', // Piccoli
+                md: '0.9rem', // Medi
+                lg: '0.9rem',   // Grandi
+                xl: '0.9rem',   // Extra grandi
+              },  
             },
           }}>
           <MenuItem onClick={handleClose}>Logout</MenuItem>

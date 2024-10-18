@@ -2,32 +2,17 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ApiRest from '../../service-API/ApiRest';
 import AppTable from "../../components/AppTable";
-import { Box, Container, Typography } from '@mui/material'; 
+import { Box, Typography, CircularProgress } from '@mui/material'; // Importa CircularProgress
 import projectsData from '../../service-API/projects.json';
 
 const Dashboard = (props) => {
   const [columnDefs, setColumnDefs] = useState([]); // Colonne
+  const [loading, setLoading] = useState(true); // Stato di caricamento
   const date = useSelector((state) => state.date);
   const projects = useSelector((state) => state.projects);
-  const projectFields = useSelector((state) => state.fieldsProject);
-  const token = useSelector((state) => state.token); 
+  const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
-  const ref = useRef(); 
-
-  // Funzione per salvare i filtri
-  const saveFilters = () => {
-    let state = ref.current.savestate();
-    localStorage.setItem('dashboardFilters', JSON.stringify(state));
-  };
-
-  // Funzione per caricare i filtri
-  const loadFilters = () => {
-    const state = localStorage.getItem('dashboardFilters');
-    if (state) {
-      const parsedState = JSON.parse(state);
-      // Puoi usare il parsedState qui
-    }
-  };
+  const ref = useRef();
 
   // Funzione per controllare chiavi duplicate
   const checkForDuplicateKeys = (rows) => {
@@ -35,10 +20,9 @@ const Dashboard = (props) => {
       console.warn('rows is not an array:', rows);
       return;
     }
-
     const seen = new Set();
     rows.forEach((row) => {
-      const key = row[0]; 
+      const key = row[0];
       if (seen.has(key)) {
         console.warn(`Duplicate key found: ${key}`);
       } else {
@@ -65,7 +49,7 @@ const Dashboard = (props) => {
       case 'D':
         return 'date';
       case 'B':
-        return 'button'; 
+        return 'button';
       default:
         return 'text';
     }
@@ -74,13 +58,13 @@ const Dashboard = (props) => {
   // Funzione per impostare le colonne in base ai campi
   const setColumns = (fields) => {
     return fields
-      .filter(field => field.show)  
+      .filter(field => field.show)
       .map((field) => ({
-        field: field.forcount.toString(), 
+        field: field.forcount.toString(),
         headerName: field.name,
         width: field.type === 'N' ? 60 : props.isModal ? 200 : 250,
-        hide: !(field.show || (props.isModal && field.name === 'Allocare')), 
-        type: convertTypeColumn(field.type), 
+        hide: !(field.show || (props.isModal && field.name === 'Allocare')),
+        type: convertTypeColumn(field.type),
         editable: field.editable,
       }));
   };
@@ -88,6 +72,7 @@ const Dashboard = (props) => {
   // Effetto per caricare i dati della dashboard
   useEffect(() => {
     const getDashboard = async () => {
+      setLoading(true); // Imposta lo stato di caricamento
       try {
         const api = new ApiRest();
         const data = await api.getDashboard(token); // Chiamata API per ottenere i dati
@@ -100,37 +85,96 @@ const Dashboard = (props) => {
         const columns = setColumns(projectsData.fields.map(field => Object.values(field)[0]));
         setColumnDefs(columns);
         dispatch({ type: 'set', payload: { projects: projectsData.values, fieldsProject: columns } });
+      } finally {
+        setLoading(false); // Fine del caricamento
       }
-
-      loadFilters(); 
     };
 
     getDashboard();
   }, [dispatch, token]);
 
-  // Effetto per gestire i filtri alla chiusura o ricaricamento della pagina
-  useEffect(() => {
-    loadFilters();
-    window.addEventListener('beforeunload', saveFilters);
-    return () => {
-      window.removeEventListener('beforeunload', saveFilters);
-    };
-  }, []);
-
   return (
-    <Container>
-      <Typography variant="h4" align="center" gutterBottom>
-        Dashboard - Lista di tutti i progetti
-      </Typography>
-      <Typography variant="subtitle1" align="center" color="textSecondary" gutterBottom>
-        Last update:{' '}
-        {date !== undefined
-          ? new Date(date).toLocaleString('it-IT', { hour12: false })
-          : '--/--/----, --:--:--'}
-      </Typography>
-   
-      <AppTable ref={ref} columns={columnDefs} rows={projects || []} useChips={true} />
-    </Container>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        width: '100%',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Mostra CircularProgress se lo stato di caricamento è true */}
+      {loading && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%',
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
+
+      {/* Box con grandezza fissa per le scritte */}
+      {!loading && (
+        <Box
+          sx={{
+            flexShrink: 0,
+            minHeight: '5%',
+          }}
+        >
+          <Typography
+            variant="h5"
+            align="start"
+            gutterBottom
+            sx={{
+              fontSize: {
+                xs: '0.5rem',   // Schermi molto piccoli
+                sm: '0.8rem',    // Schermi piccoli
+                md: '1rem',      // Schermi medi
+                lg: '1rem',      // Schermi grandi
+                xl: '1.2rem',    // Schermi extra-grandi
+              },
+            }}
+          >
+            Dashboard - Lista di tutti i progetti
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            align="start"
+            color="textSecondary"
+            gutterBottom
+            sx={{
+              fontSize: {
+                xs: '0.5rem',   // Schermi molto piccoli
+                sm: '0.7rem',   // Schermi piccoli
+                md: '0.8rem',   // Schermi medi
+                lg: '0.9rem',   // Schermi grandi
+                xl: '1rem',     // Schermi extra-grandi
+              },
+            }}
+          >
+            Last update: {date !== undefined
+              ? new Date(date).toLocaleString('it-IT', { hour12: false })
+              : '--/--/----, --:--:--'}
+          </Typography>
+        </Box>
+      )}
+
+      {/* Tabella che si adatta allo spazio rimanente */}
+      <Box
+        sx={{
+          flexGrow: 1,
+          overflowY: 'auto',
+        }}
+      >
+        {!loading && (  // Mostra la tabella solo quando il caricamento è completato
+          <AppTable ref={ref} columns={columnDefs} rows={projects || []} useChips={true} />
+        )}
+      </Box>
+    </Box>
   );
 };
 
