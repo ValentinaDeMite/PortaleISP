@@ -2,12 +2,12 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ApiRest from '../../service-API/ApiRest';
 import AppTable from "../../components/AppTable";
-import { Box, Typography, CircularProgress } from '@mui/material'; // Importa CircularProgress
+import { Box, Typography, CircularProgress } from '@mui/material';
 import projectsData from '../../service-API/projects.json';
 
 const Dashboard = (props) => {
-  const [columnDefs, setColumnDefs] = useState([]); // Colonne
-  const [loading, setLoading] = useState(true); // Stato di caricamento
+  const [columnDefs, setColumnDefs] = useState([]); 
+  const [loading, setLoading] = useState(true); 
   const date = useSelector((state) => state.date);
   const projects = useSelector((state) => state.projects);
   const token = useSelector((state) => state.token);
@@ -39,7 +39,6 @@ const Dashboard = (props) => {
     }
   }, [projects]);
 
-  // Funzione per convertire i tipi di colonne
   const convertTypeColumn = (type) => {
     switch (type) {
       case 'T':
@@ -55,7 +54,6 @@ const Dashboard = (props) => {
     }
   };
 
-  // Funzione per impostare le colonne in base ai campi
   const setColumns = (fields) => {
     return fields
       .filter(field => field.show)
@@ -69,13 +67,12 @@ const Dashboard = (props) => {
       }));
   };
 
-  // Effetto per caricare i dati della dashboard
   useEffect(() => {
     const getDashboard = async () => {
-      setLoading(true); // Imposta lo stato di caricamento
+      setLoading(true);
       try {
         const api = new ApiRest();
-        const data = await api.getDashboard(token); // Chiamata API per ottenere i dati
+        const data = await api.getDashboard(token); 
         dispatch({ type: 'set', payload: { date: new Date().getTime(), projects: data.values } });
         const columns = setColumns(data.fields);
         setColumnDefs(columns);
@@ -86,7 +83,7 @@ const Dashboard = (props) => {
         setColumnDefs(columns);
         dispatch({ type: 'set', payload: { projects: projectsData.values, fieldsProject: columns } });
       } finally {
-        setLoading(false); // Fine del caricamento
+        setLoading(false); 
       }
     };
 
@@ -103,7 +100,6 @@ const Dashboard = (props) => {
         overflow: 'hidden',
       }}
     >
-      {/* Mostra CircularProgress se lo stato di caricamento è true */}
       {loading && (
         <Box
           sx={{
@@ -117,7 +113,6 @@ const Dashboard = (props) => {
         </Box>
       )}
 
-      {/* Box con grandezza fissa per le scritte */}
       {!loading && (
         <Box
           sx={{
@@ -131,11 +126,11 @@ const Dashboard = (props) => {
             gutterBottom
             sx={{
               fontSize: {
-                xs: '0.5rem',   // Schermi molto piccoli
-                sm: '0.8rem',    // Schermi piccoli
-                md: '1rem',      // Schermi medi
-                lg: '1rem',      // Schermi grandi
-                xl: '1.2rem',    // Schermi extra-grandi
+                xs: '0.5rem',   
+                sm: '0.8rem',    
+                md: '1rem',     
+                lg: '1rem',      
+                xl: '1.2rem',    
               },
             }}
           >
@@ -148,11 +143,11 @@ const Dashboard = (props) => {
             gutterBottom
             sx={{
               fontSize: {
-                xs: '0.5rem',   // Schermi molto piccoli
-                sm: '0.7rem',   // Schermi piccoli
-                md: '0.8rem',   // Schermi medi
-                lg: '0.9rem',   // Schermi grandi
-                xl: '1rem',     // Schermi extra-grandi
+                xs: '0.5rem',   
+                sm: '0.7rem',   
+                md: '0.8rem',   
+                lg: '0.9rem', 
+                xl: '1rem',     
               },
             }}
           >
@@ -163,14 +158,13 @@ const Dashboard = (props) => {
         </Box>
       )}
 
-      {/* Tabella che si adatta allo spazio rimanente */}
       <Box
         sx={{
           flexGrow: 1,
           overflowY: 'auto',
         }}
       >
-        {!loading && (  // Mostra la tabella solo quando il caricamento è completato
+        {!loading && ( 
           <AppTable ref={ref} columns={columnDefs} rows={projects || []} useChips={true} />
         )}
       </Box>
