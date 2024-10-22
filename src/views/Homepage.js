@@ -129,6 +129,7 @@ const Homepage = () => {
               align="left"
               gutterBottom
               lineHeight="1.2"
+              marginTop={'1rem'}
             >
               Role: Supervisor <br />
               Ultimo accesso: 01/10/2024 11:37

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, IconButton, Menu, MenuItem } from '@mui/material';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
@@ -11,6 +11,8 @@ function AppHeader() {
   const [iconColor, setIconColor] = useState('#777');
   const [visitedDashboard, setVisitedDashboard] = useState(false); 
   const navigate = useNavigate(); 
+  const location = useLocation();
+  const pathnames = location.pathname.split('/').filter((x) => x); 
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -22,9 +24,6 @@ function AppHeader() {
     setIconColor('#777');
   };
 
-  const location = useLocation();
-  const pathnames = location.pathname.split('/').filter((x) => x); 
-
   const handleBreadcrumbClick = (event, to) => {
     event.preventDefault();
     if (to === '/nuovo-progetto' && !visitedDashboard) {
@@ -35,29 +34,32 @@ function AppHeader() {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (location.pathname === '/dashboard') {
       setVisitedDashboard(true); 
     }
   }, [location.pathname]);
 
   const formatBreadcrumbName = (name) => {
+    if (name === 'projectitems') {
+      return 'Dettagli Progetto'; 
+    }
     return name.replace('-', ' ').replace(/\b\w/g, char => char.toUpperCase());
   };
 
   return (
-    <Box display="flex" justifyContent="space-between" alignItems="center"  >
+    <Box display="flex" justifyContent="space-between" alignItems="center">
       
       {/* Breadcrumbs */}
       <Box display="flex" alignItems="center">
         <Breadcrumbs aria-label="breadcrumb" separator=" / " 
           sx={{ 
             fontSize: {
-              xs: '0.7rem', // Molto piccoli
-              sm: '0.8rem', // Piccoli
-              md: '0.9rem', // Medi
-              lg: '1rem',   // Grandi
-              xl: '1rem',   // Extra grandi
+              xs: '0.7rem', 
+              sm: '0.8rem',
+              md: '0.9rem', 
+              lg: '1rem',  
+              xl: '1rem',  
             } 
           }}
         >
@@ -97,7 +99,7 @@ function AppHeader() {
                 key={to}
                 aria-current={index === pathnames.length - 1 ? 'page' : undefined}
                 onClick={(event) => handleBreadcrumbClick(event, to)}>
-                {formatBreadcrumbName(value)} 
+                {formatBreadcrumbName(value)}  
               </Link>
             );
           })}
@@ -119,11 +121,11 @@ function AppHeader() {
             sx={{ 
               color: iconColor, 
               fontSize: {
-                xs: '15px',  // Molto piccoli
-                sm: '15px',  // Piccoli
-                md: '20px',  // Medi
-                lg: '25px',  // Grandi
-                xl: '30px',  // Extra grandi
+                xs: '15px',  
+                sm: '15px', 
+                md: '20px',
+                lg: '25px',
+                xl: '30px',
               } 
             }} 
           />
@@ -151,11 +153,11 @@ function AppHeader() {
               boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
               padding: '5px 10px',
               fontSize: {
-                xs: '0.7rem', // Molto piccoli
-                sm: '0.8rem', // Piccoli
-                md: '0.9rem', // Medi
-                lg: '0.9rem',   // Grandi
-                xl: '0.9rem',   // Extra grandi
+                xs: '0.7rem', 
+                sm: '0.8rem', 
+                md: '0.9rem',
+                lg: '0.9rem',  
+                xl: '0.9rem',
               },  
             },
           }}>

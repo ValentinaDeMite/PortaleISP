@@ -20,12 +20,12 @@ const routes = [
   { path: '/nuovo-progetto', name: 'New Project', component: NewProject },
   { path: '/richieste', exact: true, name: 'RequestList', component: RequestList },
   { path: '/stock', name: 'Stock', component: Stock },
- // {
-//    path: '/dashboard/projectitems/:id',
-  //  exact: true,
-    //name: 'Project Items',
-    //component: ProjectItems,
- // },
+  {
+    path: '/dashboard/projectitems',
+    exact: true,
+    name: 'Project Items',
+    component: ProjectItems,
+  },
   //{
   //  path: '/dashboard/projectitems:id/projectdetails:id',
     //exact: true,

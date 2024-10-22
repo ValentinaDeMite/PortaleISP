@@ -1,0 +1,283 @@
+{
+    "code": 200,
+    "values": [
+    
+      {
+        "0": 1,
+        "1": 2,
+        "2": 4,
+        "3": "REQ",
+        "4": "Richiesta pendente",
+        "6": "2024-08-27 10:59:0.0",
+        "7": "GIOVANNI CASAROLI",
+        "8": "2024-08-27 11:16:54.0",
+        "9": "GIOVANNI CASAROLI",
+        "10": 0,
+        "11": "4739401ALIMENTATORE DOCK HP 120W",
+        "12": "4739401",
+        "13": "9N0745",
+        "14": "ALIMENTATORE DOCK HP 120W",
+        "15": "ACCESSORIO",
+        "16": 1000,
+        "17": 0,
+        "18": 0,
+        "19": "Edit",
+        "20": "Delete row"
+      }
+    ],
+    "text": "OK",
+    "fields": [
+      {
+        "0": {
+          "important": false,
+          "exportable": false,
+          "editable": false,
+          "name": "ID Item",
+          "show": true,
+          "description": "Identificativo riga progetto",
+          "type": "N",
+          "forcount": 0
+        }
+      },
+      {
+        "1": {
+          "important": false,
+          "exportable": false,
+          "editable": false,
+          "name": "IDPRJ",
+          "show": false,
+          "description": "ID PROGETTO",
+          "type": "N",
+          "forcount": 1
+        }
+      },
+      {
+        "2": {
+          "important": false,
+          "exportable": false,
+          "editable": false,
+          "name": "ID STATO",
+          "show": false,
+          "description": "ID STATO",
+          "type": "N",
+          "forcount": 2
+        }
+      },
+      {
+        "3": {
+          "important": true,
+          "exportable": false,
+          "editable": false,
+          "name": "Stato Item",
+          "show": true,
+          "description": "Stato riga allocazione",
+          "type": "T",
+          "forcount": 3
+        }
+      },
+      {
+        "4": {
+          "important": false,
+          "exportable": false,
+          "editable": false,
+          "name": "Descrizione Stato",
+          "show": true,
+          "description": "Descrizione stato Allocazione",
+          "type": "T",
+          "forcount": 4
+        }
+      },
+      {
+        "5": {
+          "important": false,
+          "exportable": false,
+          "editable": false,
+          "name": "CREATED",
+          "show": false,
+          "description": "CREATED",
+          "type": "D",
+          "forcount": 5
+        }
+      },
+      {
+        "6": {
+          "important": false,
+          "exportable": false,
+          "editable": false,
+          "name": "CREATEDBY",
+          "show": false,
+          "description": "CREATEDBY",
+          "type": "T",
+          "forcount": 6
+        }
+      },
+      {
+        "7": {
+          "important": false,
+          "exportable": false,
+          "editable": false,
+          "name": "Data Aggiornato",
+          "show": false,
+          "description": "Data ultimo aggiornamento",
+          "type": "D",
+          "forcount": 7
+        }
+      },
+      {
+        "8": {
+          "important": false,
+          "exportable": false,
+          "editable": false,
+          "name": "Aggiornato Da",
+          "show": false,
+          "description": "Utente ultimo aggiornamento",
+          "type": "T",
+          "forcount": 8
+        }
+      },
+      {
+        "9": {
+          "important": false,
+          "exportable": false,
+          "editable": false,
+          "name": "DELETED",
+          "show": false,
+          "description": "DELETED",
+          "type": "N",
+          "forcount": 9
+        }
+      },
+      {
+        "10": {
+          "important": false,
+          "exportable": false,
+          "editable": false,
+          "name": "PCID",
+          "show": false,
+          "description": "ID CATALOGO STOCK",
+          "type": "T",
+          "forcount": 10
+        }
+      },
+      {
+        "11": {
+          "important": false,
+          "exportable": false,
+          "editable": false,
+          "name": "CODESIGMA",
+          "show": false,
+          "description": "CODICE CLIENTE STOCK",
+          "type": "T",
+          "forcount": 11
+        }
+      },
+      {
+        "12": {
+          "important": false,
+          "exportable": true,
+          "editable": false,
+          "name": "PRIMARIO",
+          "show": true,
+          "description": "Part number Lambda",
+          "type": "T",
+          "forcount": 12
+        }
+      },
+      {
+        "13": {
+          "important": true,
+          "exportable": true,
+          "editable": false,
+          "name": "SEONDARIO",
+          "show": true,
+          "description": "Part number Cliente",
+          "type": "T",
+          "forcount": 13
+        }
+      },
+      {
+        "14": {
+          "important": false,
+          "exportable": true,
+          "editable": false,
+          "name": "DESCRIZIONE",
+          "show": true,
+          "description": "Descrizione Articolo",
+          "type": "T",
+          "forcount": 14
+        }
+      },
+      {
+        "15": {
+          "important": false,
+          "exportable": true,
+          "editable": false,
+          "name": "CATEGORIA",
+          "show": true,
+          "description": "Categoria Cliente",
+          "type": "T",
+          "forcount": 15
+        }
+      },
+      {
+        "16": {
+          "important": true,
+          "exportable": true,
+          "editable": false,
+          "name": "QTY ALLOCATA",
+          "show": true,
+          "description": "Quantità allocata sul progetto",
+          "type": "N",
+          "forcount": 16
+        }
+      },
+      {
+        "17": {
+          "important": false,
+          "exportable": true,
+          "editable": false,
+          "name": "QTY PO",
+          "show": true,
+          "description": "Quantità allocata ancora in PO",
+          "type": "N",
+          "forcount": 17
+        }
+      },
+      {
+        "18": {
+          "important": false,
+          "exportable": true,
+          "editable": false,
+          "name": "QTY VAT",
+          "show": true,
+          "description": "Quantità allocata ancora in Refurbish",
+          "type": "N",
+          "forcount": 18
+        }
+      },
+      {
+        "19": {
+          "important": true,
+          "exportable": true,
+          "editable": false,
+          "name": "Edit",
+          "show": true,
+          "description": "Edit",
+          "type": "B",
+          "forcount": 19
+        }
+      },
+      {
+        "20": {
+          "important": true,
+          "exportable": true,
+          "editable": false,
+          "name": "Delete row",
+          "show": true,
+          "description": "Delete row",
+          "type": "B",
+          "forcount": 20
+        }
+      }
+    ]
+  }

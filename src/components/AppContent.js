@@ -11,8 +11,8 @@ const AppContent = () => {
       alignItems="center" 
       sx={{ 
         width: '100%', 
-        height: '100%', // Fa in modo che il contenitore occupi il 100% dell'AppContent
-        flexGrow: 1 
+        height: '100%', 
+        flexGrow: 1 ,
       }}
     >
       <Suspense fallback={<CircularProgress color="primary" />}>

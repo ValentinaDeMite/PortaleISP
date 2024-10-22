@@ -150,10 +150,11 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                     <HomeIcon />
                   </IconButton>
                 }
-                onClick={() => navigate("/homepage")}
+
               >
                 {!isCollapsed && (
                   <Typography
+                  onClick={() => navigate("/homepage")}
                     sx={{
                       fontSize: {
                         xs: '0.65rem',
@@ -191,7 +192,6 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                     <DashboardIcon />
                   </IconButton>
                 }
-                onClick={() => navigate("/dashboard")}
               >
                 {!isCollapsed && (
                   <Box
@@ -201,6 +201,7 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                     sx={{ width: '100%' }}
                   >
                     <Typography
+                      onClick={() => navigate("/dashboard")}
                       sx={{
                         fontSize: {
                           xs: '0.65rem',
@@ -272,10 +273,10 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                     <FeedbackOutlinedIcon />
                   </IconButton>
                 }
-                onClick={() => navigate("/richieste")}
               >
                 {!isCollapsed && (
                   <Typography
+                    onClick={() => navigate("/richieste")}
                     sx={{
                       fontSize: {
                         xs: '0.65rem',
@@ -308,10 +309,10 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                     <InsertChartOutlinedIcon />
                   </IconButton>
                 }
-                onClick={() => navigate("/stock")}
               >
                 {!isCollapsed && (
                   <Typography
+                    onClick={() => navigate("/stock")}
                     sx={{
                       fontSize: {
                         xs: '0.65rem',
@@ -343,7 +344,6 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
               style={{ color: 'white' }}
               icon={
                 <IconButton
-                  onClick={handleIconClick}
                   sx={{
                     backgroundColor: 'white',
                     color: 'white',

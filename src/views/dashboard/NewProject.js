@@ -60,10 +60,28 @@ const NewProject = () => {
     <Box sx={{
       display: 'flex',
       flexDirection: 'column',
-      height: '90%',
+      height: '100%',
       width: '100%',
       overflow: 'hidden',
-      alignItems: 'center'
+      alignItems: 'center',
+      '& .MuiInputBase-input ':{
+        fontSize:{
+          xs: '0.5rem !important',  
+          sm: '0.7rem !important',   
+          md: '0.8rem !important',  
+          lg: '0.9rem !important',   
+          xl: '1rem !important',  
+        }
+      },
+      '& .MuiInputLabel-root ':{
+        fontSize:{
+          xs: '0.5rem !important',  
+          sm: '0.7rem !important',   
+          md: '0.8rem !important',  
+          lg: '0.9rem !important',   
+          xl: '1rem !important',  
+        }
+      }
     }}>
       <Box sx={{ width: '100%', height: '10%' }}>
         <Typography variant="h4" sx={{ color: '#333', fontWeight: 'bold', textAlign: 'left', fontSize: {
@@ -78,7 +96,8 @@ const NewProject = () => {
       </Box>
       <Box sx={{
         width: '100%',
-        margin: 'auto'
+        height:'80%',
+
       }}>
         <Box
           sx={{
@@ -91,7 +110,13 @@ const NewProject = () => {
           <Box
             sx={{
               backgroundColor: '#4CAF50',
-              padding: '1rem',
+              padding: {
+                xs: '0.5rem',  
+                sm: '0.7rem',   
+                md: '0.8rem',  
+                lg: '0.9rem',   
+                xl: '1rem',     
+              },
               borderTopLeftRadius: '8px',
               borderTopRightRadius: '8px',
             }}
@@ -113,7 +138,14 @@ const NewProject = () => {
           {/* Form */}
           <Box
             sx={{
-              padding: '2rem',
+              padding: {
+                xs: '0.5rem',  
+                sm: '0.8rem',   
+                md: '1rem',  
+                lg: '1.5rem',   
+                xl: '2rem',     
+              },
+              heigth:'70%'
             }}
           >
             <form onSubmit={handleSubmit}>
@@ -127,7 +159,7 @@ const NewProject = () => {
                   value={projectName}
                   fullWidth
                   required
-                  sx={{ borderColor: '#999', '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+                  sx={{ borderColor: '#999', '& .MuiOutlinedInput-root': { borderRadius: '8px'}}}
                 />
                 <TextField
                   type="text"
@@ -138,7 +170,7 @@ const NewProject = () => {
                   value={description}
                   fullWidth
                   required
-                  sx={{ borderColor: '#999', '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+                  sx={{ borderColor: '#999', '& .MuiOutlinedInput-root': { borderRadius: '8px' }}}
                 />
               </Stack>
 
@@ -153,9 +185,9 @@ const NewProject = () => {
                   fullWidth
                   required
                   multiline
-                  sx={{ borderColor: '#999', '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+                  sx={{ borderColor: '#999', '& .MuiOutlinedInput-root': { borderRadius: '8px' }}}
                 />
-                <FormControl sx={{ width: '30%',  '& .MuiOutlinedInput-root': { borderRadius: '8px' }  }}> 
+                <FormControl sx={{ width: '30%',  '& .MuiOutlinedInput-root': { borderRadius: '8px' }, ' input ':{ width: '30%',  '& .MuiOutlinedInput-root': { borderRadius: '8px'}} }}> 
                   <InputLabel>Stato:</InputLabel>
                   <Select
                     label="Stato:"
@@ -163,16 +195,32 @@ const NewProject = () => {
                     onChange={(e) => setStatus(e.target.value)}
                     fullWidth
                     required
+                    sx={{fontSize: {
+                      xs: '0.5rem',  
+                      sm: '0.7rem',   
+                      md: '0.8rem',  
+                      lg: '0.9rem',   
+                      xl: '1rem ' }}}
                   >
-                    <MenuItem value="OPN">Open</MenuItem>
-                    <MenuItem value="CLO" disabled>
+                    <MenuItem value="OPN" sx={{fontSize: {
+                    xs: '0.5rem',  
+                    sm: '0.7rem',   
+                    md: '0.8rem',  
+                    lg: '0.9rem',   
+                    xl: '1rem ' }}}>Open</MenuItem>
+                    <MenuItem value="CLO" disabled  sx={{fontSize: {
+                    xs: '0.5rem',  
+                    sm: '0.7rem',   
+                    md: '0.8rem',  
+                    lg: '0.9rem',   
+                    xl: '1rem ' }}}>
                       Closed
                     </MenuItem>
                   </Select>
                 </FormControl>
               </Stack>
 
-              <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
+              <Stack spacing={2} direction="row" sx={{ marginBottom: 4, '& .MuiOutlinedInput-root': { borderRadius: '8px' }}}>
                 <FormControl fullWidth>
                   <InputLabel>Project Manager</InputLabel>
                   <Select
@@ -198,7 +246,7 @@ const NewProject = () => {
                   value={startDate}
                   fullWidth
                   required
-                />
+                  />
 
                 <TextField
                   type="date"
@@ -210,6 +258,7 @@ const NewProject = () => {
                   value={endDate}
                   fullWidth
                   required
+                  
                 /> 
               </Stack>
 
@@ -222,7 +271,7 @@ const NewProject = () => {
                 value={refOrder}
                 fullWidth
                 required
-                sx={{ marginBottom: 4, width: '50%', borderColor: '#999', '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+                sx={{ borderColor: '#999', width:'50%', '& .MuiOutlinedInput-root': { borderRadius: '8px' }}}
               />
 
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2 }}>
@@ -237,6 +286,13 @@ const NewProject = () => {
                     textTransform: 'none',
                     '&:hover': {
                       backgroundColor: '#FF9F1A',
+                    },
+                    fontSize: {
+                      xs: '0.5rem',  
+                      sm: '0.7rem',   
+                      md: '0.8rem',  
+                      lg: '0.9rem',   
+                      xl: '1rem',     
                     },
                   }}
                   type="submit"
