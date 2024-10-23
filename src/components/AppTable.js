@@ -400,7 +400,7 @@ function Table2({ columns, rows = [], useChips = false }) {
 
 export default Table2; */
 
-
+// giusta
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGridPremium, useGridApiRef } from '@mui/x-data-grid-premium';
@@ -418,6 +418,7 @@ import Tooltip from '@mui/material/Tooltip';
 import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
 
 
 // Stato e colore dei chip
@@ -482,7 +483,7 @@ const StripedDataGrid = styled(DataGridPremium)(({ theme }) => ({
   },
 }));
 
-function Table2({ columns, rows = [], useChips = false, onRowDoubleClick }) { 
+function Table2({ columns, rows = [], useChips = false, onRowDoubleClick , action = false }) { 
   const [searchText, setSearchText] = useState('');
   const [pageSize, setPageSize] = useState(10);  
   const [page, setPage] = useState(0); 
@@ -523,7 +524,7 @@ function Table2({ columns, rows = [], useChips = false, onRowDoubleClick }) {
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
 
   return (
-    <Box sx={{ height: '100%', width: '100%' }}>
+    <Box sx={{ height: '90%', width: '100%' }}>
       <Box 
         display="flex" 
         justifyContent="space-between"
@@ -687,6 +688,7 @@ function Table2({ columns, rows = [], useChips = false, onRowDoubleClick }) {
             flex: 1,
             renderCell: (params) => {
               if (rowGroupingModel.length > 0) return params.value;
+              
               if (['3', '4', '8', '9', '10'].includes(col.field)) {
                 return (
                   <Tooltip title={params.value || 'N/A'} placement="top">
@@ -694,6 +696,7 @@ function Table2({ columns, rows = [], useChips = false, onRowDoubleClick }) {
                   </Tooltip>
                 );
               }
+          
               if (col.field === '1' && useChips) {
                 return (
                   <Box
@@ -707,7 +710,9 @@ function Table2({ columns, rows = [], useChips = false, onRowDoubleClick }) {
                     <StatusChip status={params.value} />
                   </Box>
                 );
-              } else if (col.field === '15') {
+              }
+          
+              else if (col.field === '15') {
                 return params.value === '1' ? (
                   <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <Tooltip title="Richieste Pending">
@@ -740,29 +745,74 @@ function Table2({ columns, rows = [], useChips = false, onRowDoubleClick }) {
                     />
                   </Tooltip>
                 );
-              } else if (col.field === '19') {
+              }
+          
+              if (action && col.field === 'actions') {
                 return (
-                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                        <Tooltip title="Edit">
-                            <EditIcon 
-                                sx={{ cursor: 'pointer', color: blue[500] }}
-                                onClick={() => alert(`Edit ID: ${params.row.id}`)} 
-                            />
-                        </Tooltip>
-                    </Box>
+                  <Box 
+                    sx={{ 
+                      display: 'flex', 
+                      justifyContent: 'center',  // Centra orizzontalmente le icone
+                      alignItems: 'center',      // Centra verticalmente le icone
+                      height: '100%',            // Assicura che il Box occupi l'intera altezza della cella
+                    }}
+                  >
+                    <Tooltip title="Edita">
+                      <IconButton
+                        sx={{
+                          backgroundColor: '#108CCB',  
+                          color: 'white',                  
+                          '&:hover': {
+                            backgroundColor: '#6CACFF', 
+                          },
+                        }}
+                        onClick={() => alert(`Edit ID: ${params.row.id}`)}
+                      >
+                        <EditIcon
+                          sx={{
+                            fontSize: {
+                              xl: '18px',  // Dimensione per schermi molto grandi
+                              lg: '16px',  // Dimensione per schermi grandi
+                              md: '14px',  // Dimensione per schermi medi
+                              sm: '12px',  // Dimensione per schermi piccoli
+                              xs: '10px',  // Dimensione per schermi molto piccoli
+                            },
+                          }}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Elimina">
+                      <IconButton
+                        sx={{
+                          backgroundColor: 'red',   
+                          color: 'white',                  
+                          marginLeft: 1,                     
+                          '&:hover': {
+                            backgroundColor: 'rgba(244, 67, 54, .7)',
+                          },
+                        }}
+                        onClick={() => alert(`Delete ID: ${params.row.id}`)}
+                      >
+                        <DeleteIcon
+                          sx={{
+                            fontSize: {
+                              xl: '18px',  // Dimensione per schermi molto grandi
+                              lg: '16px',  // Dimensione per schermi grandi
+                              md: '14px',  // Dimensione per schermi medi
+                              sm: '12px',  // Dimensione per schermi piccoli
+                              xs: '10px',  // Dimensione per schermi molto piccoli
+                            },
+                          }}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
                 );
-              } else if (col.field === '20') {
-                return (
-                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                        <Tooltip title="Delete">
-                            <DeleteIcon 
-                                sx={{ cursor: 'pointer', color: red[500] }}
-                                onClick={() => alert(`Delete ID: ${params.row.id}`)} 
-                            />
-                        </Tooltip>
-                    </Box>
-                );
-              } else {
+              }
+              
+              
+              
+              else {
                 return params.value;
               }
             },

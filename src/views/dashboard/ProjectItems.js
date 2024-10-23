@@ -343,6 +343,8 @@ const ProjectItems = () => {
             columns={columnDefs} 
             rows={formattedData}  // Usa i dati formattati qui
             onRowDoubleClick={handleRowDoubleClick}  
+            action={true} 
+
         />
       </Box>
     </Box>

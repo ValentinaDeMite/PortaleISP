@@ -57,7 +57,7 @@ const Layout = () => {
             flexGrow: 1,
             overflowY: 'auto', 
             padding: '2% 2%', 
-            minHeight: '90%', 
+            height: '90%', 
             boxSizing: 'border-box', 
           }}
         >
