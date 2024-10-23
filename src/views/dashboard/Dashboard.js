@@ -361,28 +361,30 @@ const Dashboard = (props) => {
 
 export default Dashboard;
 */
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import ApiRest from '../../service-API/ApiRest';
 import AppTable from "../../components/AppTable";
-import { Box, Typography, CircularProgress } from '@mui/material';
+import { Box, Typography, CircularProgress, TextField, InputAdornment, Tooltip } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import DownloadForOfflineRoundedIcon from '@mui/icons-material/DownloadForOfflineRounded';
+import * as XLSX from 'xlsx';
 import projectsData from '../../service-API/projects.json';
 
 const Dashboard = (props) => {
   const [columnDefs, setColumnDefs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState('');
   const date = useSelector((state) => state.date);
   const projects = useSelector((state) => state.projects);
   const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
   const ref = useRef();
-  const navigate = useNavigate();  // Inizializza useNavigate
+  const navigate = useNavigate();
 
-  // Funzione per gestire il doppio click su una riga
   const handleRowDoubleClick = (rowData) => {
-    navigate(`/dashboard/projectitems/${rowData['0']}`); // Passa l'ID del progetto
+    navigate(`/dashboard/projectitems/${rowData['0']}`);
   };
 
   const convertTypeColumn = (type) => {
@@ -411,6 +413,21 @@ const Dashboard = (props) => {
         type: convertTypeColumn(field.type),
       }));
   };
+
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(filteredProjects); 
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Progetti');
+    XLSX.writeFile(workbook, 'lista_progetti.xlsx');
+  };
+
+  const filteredProjects = Array.isArray(projects)
+    ? projects.filter((project) =>
+        Object.values(project).some((value) =>
+          String(value).toLowerCase().includes(searchText.toLowerCase())
+        )
+      )
+    : [];
 
   useEffect(() => {
     const getDashboard = async () => {
@@ -462,7 +479,8 @@ const Dashboard = (props) => {
         <Box
           sx={{
             flexShrink: 0,
-            minHeight: '5%',
+            height :{xl:'27%', lg:'25%'},
+            width:'99%'
           }}
         >
           <Typography
@@ -474,8 +492,8 @@ const Dashboard = (props) => {
                 xs: '0.5rem',   
                 sm: '0.8rem',    
                 md: '1rem',     
-                lg: '1rem',      
-                xl: '1.2rem',    
+                lg: '1.2rem',      
+                xl: '1.5rem',    
               },
             }}
           >
@@ -488,11 +506,11 @@ const Dashboard = (props) => {
             gutterBottom
             sx={{
               fontSize: {
-                xs: '0.5rem',   
-                sm: '0.7rem',   
-                md: '0.8rem',   
-                lg: '0.9rem', 
-                xl: '1rem',     
+                xs: '0.4rem',   
+                sm: '0.5rem',   
+                md: '0.7rem',   
+                lg: '0.8rem', 
+                xl: '0.9rem',     
               },
             }}
           >
@@ -500,6 +518,75 @@ const Dashboard = (props) => {
               ? new Date(date).toLocaleString('it-IT', { hour12: false })
               : '--/--/----, --:--:--'}
           </Typography>
+          
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginY: 5,
+            }}
+          >
+            {/* Searchbar */}
+            <TextField
+              variant="standard"
+              placeholder="Cerca"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ color: 'rgb(27, 158, 62, .9)' }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                width: '20%',
+                "& .MuiInput-root": {
+                  fontSize: {
+                    xs: '0.7rem',  
+                    sm: '0.75rem',  
+                    md: '0.8rem',   
+                    lg: '0.85rem',  
+                    xl: '0.9rem',   
+                  },
+                  borderBottom: '1px solid rgb(27, 158, 62, .5)',
+                  "&:before": {
+                    borderBottom: '1px solid rgb(27, 158, 62, .5)',
+                  },
+                  "&:after": {
+                    borderBottom: '2px solid rgb(27, 158, 62, .8)',
+                  },
+                  ":hover:not(.Mui-focused)": {
+                    "&:before": {
+                      borderBottom: '2px solid rgb(27, 158, 62, .9)',
+                    },
+                  },
+                }
+              }}
+            />
+            
+            <Tooltip title='Scarica in formato Excel'>
+              <DownloadForOfflineRoundedIcon
+                sx={{
+                  color: 'orange',
+                  cursor: 'pointer',
+                  fontSize: {
+                    xs: '20px',  
+                    sm: '25px',  
+                    md: '30px', 
+                    lg: '32px', 
+                    xl: '35px',  
+                  },
+                  transition: 'transform 0.3s ease-in-out',
+                  '&:hover': {
+                    transform: 'scale(1.2)',
+                  },
+                }}
+                onClick={exportToExcel} 
+              />
+            </Tooltip>
+          </Box>
         </Box>
       )}
 
@@ -513,7 +600,7 @@ const Dashboard = (props) => {
           <AppTable 
             ref={ref} 
             columns={columnDefs} 
-            rows={projects || []} 
+            rows={filteredProjects || []}  
             useChips={true} 
             onRowDoubleClick={handleRowDoubleClick}  
           />

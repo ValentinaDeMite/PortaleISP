@@ -404,13 +404,8 @@ export default Table2; */
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGridPremium, useGridApiRef } from '@mui/x-data-grid-premium';
-import TextField from '@mui/material/TextField';
 import { useState } from 'react';
-import InputAdornment from '@mui/material/InputAdornment';
-import SearchIcon from '@mui/icons-material/Search';
 import { alpha, styled } from '@mui/material/styles';
-import * as XLSX from 'xlsx';
-import DownloadForOfflineRoundedIcon from '@mui/icons-material/DownloadForOfflineRounded';
 import Chip from '@mui/material/Chip';
 import { green, red, orange, blue, grey } from '@mui/material/colors';
 import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
@@ -419,7 +414,6 @@ import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
-
 
 // Stato e colore dei chip
 const statusMapping = {
@@ -484,38 +478,11 @@ const StripedDataGrid = styled(DataGridPremium)(({ theme }) => ({
 }));
 
 function Table2({ columns, rows = [], useChips = false, onRowDoubleClick , action = false }) { 
-  const [searchText, setSearchText] = useState('');
   const [pageSize, setPageSize] = useState(10);  
   const [page, setPage] = useState(0); 
 
   const apiRef = useGridApiRef(); 
   const [rowGroupingModel, setRowGroupingModel] = useState([]); 
-
-  const filteredRows = Array.isArray(rows)
-    ? rows.filter((row) => {
-        return Object.values(row).some((value) =>
-          String(value).toLowerCase().includes(searchText.toLowerCase())
-        );
-      })
-    : []; 
-
-  const handleSearch = (event) => {
-    setSearchText(event.target.value);
-  };
-
-  const exportToExcel = () => {
-    const selectedRows = filteredRows.filter((row) =>
-      rowSelectionModel.includes(getRowId(row))
-    );   
-    if (selectedRows.length === 0) {
-      alert('Seleziona almeno una riga da esportare');
-      return;
-    }
-    const worksheet = XLSX.utils.json_to_sheet(selectedRows);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-    XLSX.writeFile(workbook, 'selezione_tabella_dati.xlsx');
-  };
 
   const getRowId = (row) => {
     return row.id || row.uniqueKey || rows.indexOf(row);
@@ -524,92 +491,8 @@ function Table2({ columns, rows = [], useChips = false, onRowDoubleClick , actio
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
 
   return (
-    <Box sx={{ height: '90%', width: '100%' }}>
-      <Box 
-        display="flex" 
-        justifyContent="space-between"
-        alignItems='center' 
-        mb={2}
-        sx={{
-          height: '15%',  
-        }}
-      >
-        <TextField
-          variant="standard"
-          placeholder="Cerca"
-          fullWidth
-          value={searchText}
-          onChange={handleSearch}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon 
-                  sx={{ 
-                    color: 'rgb(27, 158, 62, .9)',
-                    fontSize: {
-                      xs: '16px',  
-                      sm: '18px',  
-                      md: '20px',  
-                      lg: '22px', 
-                      xl: '24px',  
-                    }
-                  }} 
-                />
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            marginY: 3.5,
-            width: '15%',
-            "& .MuiInput-root": {
-              fontSize: {
-                xs: '0.7rem',  
-                sm: '0.75rem',  
-                md: '0.8rem',   
-                lg: '0.85rem',  
-                xl: '0.9rem',   
-              },
-              borderBottom: '1px solid rgb(27, 158, 62, .5)',
-              "&:before": {
-                borderBottom: '1px solid rgb(27, 158, 62, .5)',
-              },
-              "&:after": {
-                borderBottom: '2px solid rgb(27, 158, 62, .8)',
-              },
-              ":hover:not(.Mui-focused)": {
-                "&:before": {
-                  borderBottom: '2px solid rgb(27, 158, 62, .9)',
-                },
-              },
-            }
-          }}
-        />
-        <Tooltip title='Scarica in formato Excel'>
-          <DownloadForOfflineRoundedIcon
-            sx={{
-              color: orange[500],
-              marginX: '.5em',
-              marginY: '.5em',
-              fontSize: {
-                xs: '20px', 
-                sm: '25px', 
-                md: '30px', 
-                lg: '32px', 
-                xl: '35px',  
-              },
-              transition: 'transform 0.3s ease-in-out',
-              '&:hover': {
-                transform: 'scale(1.2)',
-              },
-              cursor: 'pointer',
-            }}
-            onClick={exportToExcel}
-          />
-        </Tooltip>
-      </Box>
-
-
-      <Box sx={{ height: '90%', width: '100%' }}>  
+    <Box sx={{ height: '100%', width: '100%' }}>
+      <Box sx={{ height: 'auto', width: '100%' }}>  
         <StripedDataGrid
           apiRef={apiRef}
           rowHeight={40}
@@ -681,7 +564,7 @@ function Table2({ columns, rows = [], useChips = false, onRowDoubleClick , actio
               height: '100%',  
             },
           }}
-          rows={filteredRows}
+          rows={rows}
           columns={columns.map((col) => ({
             ...col,
             headerAlign: 'center',
@@ -752,12 +635,12 @@ function Table2({ columns, rows = [], useChips = false, onRowDoubleClick , actio
                   <Box 
                     sx={{ 
                       display: 'flex', 
-                      justifyContent: 'center',  // Centra orizzontalmente le icone
-                      alignItems: 'center',      // Centra verticalmente le icone
-                      height: '100%',            // Assicura che il Box occupi l'intera altezza della cella
+                      justifyContent: 'center',  
+                      alignItems: 'center',     
+                      height: '100%',           
                     }}
                   >
-                    <Tooltip title="Edita">
+                    <Tooltip title="Modifica">
                       <IconButton
                         sx={{
                           backgroundColor: '#108CCB',  
@@ -771,11 +654,11 @@ function Table2({ columns, rows = [], useChips = false, onRowDoubleClick , actio
                         <EditIcon
                           sx={{
                             fontSize: {
-                              xl: '18px',  // Dimensione per schermi molto grandi
-                              lg: '16px',  // Dimensione per schermi grandi
-                              md: '14px',  // Dimensione per schermi medi
-                              sm: '12px',  // Dimensione per schermi piccoli
-                              xs: '10px',  // Dimensione per schermi molto piccoli
+                              xl: '16px',  
+                              lg: '14px',  
+                              md: '12px',  
+                              sm: '10px',  
+                              xs: '8px',  
                             },
                           }}
                         />
@@ -796,11 +679,11 @@ function Table2({ columns, rows = [], useChips = false, onRowDoubleClick , actio
                         <DeleteIcon
                           sx={{
                             fontSize: {
-                              xl: '18px',  // Dimensione per schermi molto grandi
-                              lg: '16px',  // Dimensione per schermi grandi
-                              md: '14px',  // Dimensione per schermi medi
-                              sm: '12px',  // Dimensione per schermi piccoli
-                              xs: '10px',  // Dimensione per schermi molto piccoli
+                              xl: '16px',  
+                              lg: '14px',  
+                              md: '12px',  
+                              sm: '10px',  
+                              xs: '8px',  
                             },
                           }}
                         />
@@ -808,18 +691,12 @@ function Table2({ columns, rows = [], useChips = false, onRowDoubleClick , actio
                     </Tooltip>
                   </Box>
                 );
-              }
-              
-              
-              
-              else {
+              } else {
                 return params.value;
               }
             },
           }))}
-
           onRowDoubleClick={(params) => onRowDoubleClick(params.row)} 
-          
           getRowId={getRowId}
           pagination
           paginationMode="client" 

@@ -2,55 +2,36 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ApiRest from '../service-API/ApiRest';
 import AppTable from "../components/AppTable";
-import { Box, Typography, CircularProgress } from '@mui/material'; 
+import { Box, Typography, CircularProgress, TextField, InputAdornment, Tooltip } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import DownloadForOfflineRoundedIcon from '@mui/icons-material/DownloadForOfflineRounded';
+import * as XLSX from 'xlsx';
 import StockData from '../service-API/stock.json';
 
 const Stock = (props) => {
-  const [columnDefs, setColumnDefs] = useState([]); 
-  const [loading, setLoading] = useState(true); 
+  const [columnDefs, setColumnDefs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState('');
   const date = useSelector((state) => state.date);
   const stock = useSelector((state) => state.stock || StockData.values);
-  const stockFields = useSelector((state) => state.stockFields);
   const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
   const ref = useRef();
 
-  const checkForDuplicateKeys = (rows) => {
-    if (!Array.isArray(rows)) {
-      console.warn('rows is not an array:', rows);
-      return;
-    }
-    const seen = new Set();
-    rows.forEach((row) => {
-      const key = row[0];
-      if (seen.has(key)) {
-        console.warn(`Duplicate key found: ${key}`);
-      } else {
-        seen.add(key);
-      }
-    });
-  };
+  const filteredStock = Array.isArray(stock)
+    ? stock.filter((item) =>
+        Object.values(item).some((value) =>
+          String(value).toLowerCase().includes(searchText.toLowerCase())
+        )
+      )
+    : [];
 
-  const saveFilters = () => {
-    let state = ref.current.savestate();
-    localStorage.setItem('stockFilters', JSON.stringify(state));
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(filteredStock); 
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Stock');
+    XLSX.writeFile(workbook, 'lista_stock.xlsx');
   };
-
-  const loadFilters = () => {
-    const state = localStorage.getItem('stockFilters');
-    if (state) {
-      const parsedState = JSON.parse(state);
-    }
-  };
-  
-
-  useEffect(() => {
-    if (Stock && Array.isArray(stock.values)) {
-      checkForDuplicateKeys(Stock.values);
-    } else {
-      console.warn('Stock.values is not an array or is undefined', Stock);
-    }
-  }, [Stock]);
 
   const convertTypeColumn = (type) => {
     switch (type) {
@@ -82,10 +63,10 @@ const Stock = (props) => {
 
   useEffect(() => {
     const getStock = async () => {
-      setLoading(true); 
+      setLoading(true);
       try {
-       const api = new ApiRest();
-       const data = await api.getStock(token); 
+        const api = new ApiRest();
+        const data = await api.getStock(token);
         dispatch({ type: 'set', payload: { date: new Date().getTime(), stock: data.values } });
         const columns = setColumns(data.fields);
         setColumnDefs(columns);
@@ -96,7 +77,7 @@ const Stock = (props) => {
         setColumnDefs(columns);
         dispatch({ type: 'set', payload: { stock: StockData.values, fieldsStock: columns } });
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
@@ -130,7 +111,6 @@ const Stock = (props) => {
         <Box
           sx={{
             flexShrink: 0,
-            minHeight: '5%',
           }}
         >
           <Typography
@@ -139,11 +119,11 @@ const Stock = (props) => {
             gutterBottom
             sx={{
               fontSize: {
-                xs: '0.5rem',  
-                sm: '0.8rem',   
-                md: '1rem',      
-                lg: '1rem',      
-                xl: '1.2rem',    
+                xs: '0.5rem',
+                sm: '0.8rem',
+                md: '1rem',
+                lg: '1.2rem',
+                xl: '1.5rem',
               },
             }}
           >
@@ -156,11 +136,11 @@ const Stock = (props) => {
             gutterBottom
             sx={{
               fontSize: {
-                xs: '0.5rem',   
-                sm: '0.7rem',   
-                md: '0.8rem',   
-                lg: '0.9rem',   
-                xl: '1rem',     
+                xs: '0.4rem',
+                sm: '0.5rem',
+                md: '0.7rem',
+                lg: '0.8rem',
+                xl: '0.9rem',
               },
             }}
           >
@@ -168,23 +148,95 @@ const Stock = (props) => {
               ? new Date(date).toLocaleString('it-IT', { hour12: false })
               : '--/--/----, --:--:--'}
           </Typography>
+          
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginY: 5,
+              paddingX:2
+            }}
+          >
+            <TextField
+              variant="standard"
+              placeholder="Cerca"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ color: 'rgb(27, 158, 62, .9)' }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                width: '20%',
+                "& .MuiInput-root": {
+                  fontSize: {
+                    xs: '0.7rem',
+                    sm: '0.75rem',
+                    md: '0.8rem',
+                    lg: '0.85rem',
+                    xl: '0.9rem',
+                  },
+                  borderBottom: '1px solid rgb(27, 158, 62, .5)',
+                  "&:before": {
+                    borderBottom: '1px solid rgb(27, 158, 62, .5)',
+                  },
+                  "&:after": {
+                    borderBottom: '2px solid rgb(27, 158, 62, .8)',
+                  },
+                  ":hover:not(.Mui-focused)": {
+                    "&:before": {
+                      borderBottom: '2px solid rgb(27, 158, 62, .9)',
+                    },
+                  },
+                }
+              }}
+            />
+
+            <Tooltip title='Scarica in formato Excel'>
+              <DownloadForOfflineRoundedIcon
+                sx={{
+                  color: 'orange',
+                  cursor: 'pointer',
+                  fontSize: {
+                    xs: '20px',
+                    sm: '25px',
+                    md: '30px',
+                    lg: '32px',
+                    xl: '35px',
+                  },
+                  transition: 'transform 0.3s ease-in-out',
+                  '&:hover': {
+                    transform: 'scale(1.2)',
+                  },
+                }}
+                onClick={exportToExcel}  
+              />
+            </Tooltip>
+          </Box>
         </Box>
       )}
 
-    
       <Box
         sx={{
           flexGrow: 1,
           overflowY: 'auto',
         }}
       >
-        {!loading && ( 
-          <AppTable ref={ref} columns={columnDefs} rows={stock || []} useChips={false} />
+        {!loading && (
+          <AppTable
+            ref={ref}
+            columns={columnDefs}
+            rows={filteredStock || []} 
+            useChips={false}
+          />
         )}
       </Box>
     </Box>
   );
-
 };
 
 export default Stock;

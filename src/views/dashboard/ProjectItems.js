@@ -1,24 +1,21 @@
 import React, { useState, useRef } from 'react';
-import { Box, Typography, TextField, Stack, Button, IconButton } from '@mui/material';
+import { Box, Typography, TextField, Stack, Button, IconButton, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AppTable from '../../components/AppTable'; // Assumiamo che tu abbia il componente AppTable
-import projectItems from '../../service-API/data-projects-items.json'; // Importiamo i dati mockati
+import AppTable from '../../components/AppTable'; 
+import projectItems from '../../service-API/data-projects-items.json'; 
+import AddIcon from '@mui/icons-material/Add';
 
 const ProjectItems = () => {
-  const ref = useRef(); // Ref per AppTable
-
-  // Estrarre il primo set di dati dall'array "values"
+  const ref = useRef(); 
   const project = projectItems.values[0];
 
-  // Stato locale per i campi editabili
   const [editableData, setEditableData] = useState({
-    projectName: project[11], // Nome Progetto
-    projectDescription: project[14], // Descrizione Progetto
-    projectNotes: '', // Note Progetto (campo vuoto inizialmente)
+    projectName: project[11], 
+    projectDescription: project[14], 
+    projectNotes: '',
   });
 
-  // Funzione per gestire il cambiamento di stato nei campi
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditableData({
@@ -27,57 +24,98 @@ const ProjectItems = () => {
     });
   };
 
-  // Simulazione della modifica dei dati
   const handleModify = () => {
-    // Aggiorna i dati fittizi (qui è solo un esempio di come fare)
     project[11] = editableData.projectName;
     project[14] = editableData.projectDescription;
     console.log('Modifiche salvate nel mock JSON:', project);
     alert('Modifiche salvate con successo!');
   };
 
-  // Funzione per gestire la cancellazione
   const handleDelete = (rowIndex) => {
     console.log(`Elimina progetto all'indice: ${rowIndex}`);
   };
 
-  // Estrai solo i campi che hanno "show": true, escludendo i campi "Edit" e "Delete row"
   const fieldsToShow = projectItems.fields.filter(field => {
     const fieldKey = Object.keys(field)[0];
-    return field[fieldKey].show && field[fieldKey].forcount !== 19 && field[fieldKey].forcount !== 20; // Escludi i campi 19 e 20
+    return field[fieldKey].show && field[fieldKey].forcount !== 19 && field[fieldKey].forcount !== 20; 
   });
 
-  // Estrarre i nomi delle colonne da fieldsToShow
   const columnDefs = fieldsToShow.map(f => ({
     field: f[Object.keys(f)[0]].name,
-    headerName: f[Object.keys(f)[0]].description, // Descrizione del campo per l'header della tabella
-    flex: 1, // Per gestire la larghezza dinamica delle colonne
+    headerName: f[Object.keys(f)[0]].description, 
+    flex: 1, 
   }));
 
-  // Aggiungi una colonna per le azioni
   columnDefs.push({
     field: 'actions',
     headerName: 'Azioni',
     flex: 1,
     renderCell: (params) => (
       <Stack direction="row" spacing={1}>
-        <IconButton onClick={() => handleModify(params.rowIndex)}>
-          <EditIcon />
-        </IconButton>
-        <IconButton onClick={() => handleDelete(params.rowIndex)}>
-          <DeleteIcon />
-        </IconButton>
+        <Tooltip title="Modifica">
+          <IconButton
+            sx={{
+              backgroundColor: '#108CCB',
+              color: 'white',
+              '&:hover': { backgroundColor: '#6CACFF' },
+              fontSize: {
+                xs: '0.7rem',
+                sm: '0.8rem',
+                md: '0.9rem',
+                lg: '1rem',
+                xl: '1.1rem',
+              },
+            }}
+            onClick={() => handleModify(params.rowIndex)}
+          >
+            <EditIcon sx={{
+              fontSize: {
+                xs: '16px',
+                sm: '18px',
+                md: '20px',
+                lg: '22px',
+                xl: '24px',
+              },
+            }}/>
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Elimina">
+          <IconButton
+            sx={{
+              backgroundColor: 'red',
+              color: 'white',
+              '&:hover': { backgroundColor: 'rgba(244, 67, 54, .7)' },
+              fontSize: {
+                xs: '0.7rem',
+                sm: '0.8rem',
+                md: '0.9rem',
+                lg: '1rem',
+                xl: '1.1rem',
+              },
+            }}
+            onClick={() => handleDelete(params.rowIndex)}
+          >
+            <DeleteIcon sx={{
+              fontSize: {
+                xs: '16px',
+                sm: '18px',
+                md: '20px',
+                lg: '22px',
+                xl: '24px',
+              },
+            }}/>
+          </IconButton>
+        </Tooltip>
       </Stack>
     ),
   });
 
-  // Formattare i dati per la tabella, escludendo i campi "Edit" e "Delete row"
   const formattedData = projectItems.values.map(item => {
     const formattedItem = {};
     projectItems.fields.forEach(field => {
       const key = Object.keys(field)[0];
-      if (field[key].show && field[key].forcount !== 19 && field[key].forcount !== 20) { // Escludi i campi 19 e 20
-        formattedItem[field[key].name] = item[key]; // Mappa i valori a nome del campo
+      if (field[key].show && field[key].forcount !== 19 && field[key].forcount !== 20) { 
+        formattedItem[field[key].name] = item[key]; 
       }
     });
     return formattedItem;
@@ -85,10 +123,7 @@ const ProjectItems = () => {
 
   const handleRowDoubleClick = (row) => {
     console.log("Riga selezionata", row);
-    // Implementa l'azione del doppio click sulla riga
   };
-
-  console.log('Dati da mostrare nella tabella:', formattedData); // Controlla i dati formattati
 
   return (
     <Box
@@ -102,10 +137,9 @@ const ProjectItems = () => {
         overflowY: 'auto'
       }}
     >
-      {/* Titolo e specchietto in alto a destra */}
       <Box
         sx={{
-          width: '100%',
+          width: '98%',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -130,7 +164,6 @@ const ProjectItems = () => {
           Nome Progetto
         </Typography>
 
-        {/* Box dinamico con le informazioni */}
         <Box
           sx={{
             backgroundColor: '#F5F5F5',
@@ -140,6 +173,15 @@ const ProjectItems = () => {
             fontSize: '0.8rem',
             color: '#555',
             minWidth: '200px',
+            "& .MuiTypography-body2": {
+              fontSize: {
+                xs: '0.5rem',
+                sm: '0.6rem',
+                md: '0.7rem',
+                lg: '0.8rem',
+                xl: '0.9rem',
+              },
+            },
           }}
         >
           <Typography variant="body2">Creato: {project[6]}</Typography>
@@ -149,7 +191,7 @@ const ProjectItems = () => {
         </Box>
       </Box>
 
-      <Box sx={{ width: '100%', height: '80%' }}>
+      <Box sx={{ width: '99%', height: 'auto' }}>
         <Box
           sx={{
             backgroundColor: 'white',
@@ -190,7 +232,6 @@ const ProjectItems = () => {
             </Typography>
           </Box>
 
-          {/* Form con i campi simili alla foto */}
           <Box
             sx={{
               padding: {
@@ -200,113 +241,215 @@ const ProjectItems = () => {
                 lg: '1.5rem',
                 xl: '2rem',
               },
-              height: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 3, 
             }}
           >
-            <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
+            <Stack spacing={2} direction="row" sx={{boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',}}>
               <TextField
                 label="ID Progetto"
-                value={project[0]}  // Popolazione dinamica del campo ID
+                value={project[0]}  
                 InputProps={{
                   readOnly: true,
-                  style: { backgroundColor: '#E0E0E0' }, // Campo grigio
+                  style: { backgroundColor: '#E0E0E0' }, 
                 }}
                 fullWidth
+                sx={{
+                  "& .MuiInputBase-input": {
+                    fontSize: {
+                      xs: '0.5rem',
+                      sm: '0.7rem',
+                      md: '0.8rem',
+                      lg: '0.9rem',
+                      xl: '1rem',
+                    },
+                  },
+                }}
               />
               <TextField
                 label="Stato"
-                value={project[3]}  // Popolazione dinamica del campo Stato
+                value={project[3]} 
                 InputProps={{
                   readOnly: true,
-                  style: { backgroundColor: '#E0E0E0' }, // Campo grigio
+                  style: { backgroundColor: '#E0E0E0' },
                 }}
                 fullWidth
+                sx={{
+                  "& .MuiInputBase-input": {
+                    fontSize: {
+                      xs: '0.5rem',
+                      sm: '0.7rem',
+                      md: '0.8rem',
+                      lg: '0.9rem',
+                      xl: '1rem',
+                    },
+                  },
+                }}
               />
               <TextField
                 label="Elaborazione"
-                value={project[2]}  // Popolazione dinamica del campo Elaborazione
+                value={project[2]}  
                 InputProps={{
                   readOnly: true,
-                  style: { backgroundColor: '#E0E0E0' }, // Campo grigio
+                  style: { backgroundColor: '#E0E0E0' }, 
                 }}
                 fullWidth
+                sx={{
+                  "& .MuiInputBase-input": {
+                    fontSize: {
+                      xs: '0.5rem',
+                      sm: '0.7rem',
+                      md: '0.8rem',
+                      lg: '0.9rem',
+                      xl: '1rem',
+                    },
+                  },
+                }}
               />
               <TextField
                 label="Errore"
-                value={project[10]}  // Popolazione dinamica del campo Errore
+                value={project[10]}  
                 InputProps={{
                   readOnly: true,
-                  style: { backgroundColor: '#E0E0E0' }, // Campo grigio
+                  style: { backgroundColor: '#E0E0E0' }, 
                 }}
                 fullWidth
+                sx={{
+                  "& .MuiInputBase-input": {
+                    fontSize: {
+                      xs: '0.5rem',
+                      sm: '0.7rem',
+                      md: '0.8rem',
+                      lg: '0.9rem',
+                      xl: '1rem',
+                    },
+                  },
+                }}
               />
               <TextField
                 label="Installati"
-                value={project[16]}  // Popolazione dinamica del campo Installati
+                value={project[16]}  
                 InputProps={{
                   readOnly: true,
-                  style: { backgroundColor: '#E0E0E0' }, // Campo grigio
+                  style: { backgroundColor: '#E0E0E0' }, 
                 }}
                 fullWidth
-              />
-              <TextField
-                label="Totale P."
-                value={project[16]}  // Popolazione dinamica del campo Totale P
-                InputProps={{
-                  readOnly: true,
-                  style: { backgroundColor: '#E0E0E0' }, // Campo grigio
+                sx={{
+                  "& .MuiInputBase-input": {
+                    fontSize: {
+                      xs: '0.5rem',
+                      sm: '0.7rem',
+                      md: '0.8rem',
+                      lg: '0.9rem',
+                      xl: '1rem',
+                    },
+                  },
                 }}
-                fullWidth
               />
             </Stack>
 
-            {/* Campi editabili */}
-            <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
+            <Stack spacing={2} direction="row">
               <TextField
                 label="Nome Progetto"
                 name="projectName"
-                value={editableData.projectName}  // Stato gestito dinamicamente
-                onChange={handleInputChange}  // Modifica il valore dello stato
+                value={editableData.projectName}  
+                onChange={handleInputChange}  
                 fullWidth
+                sx={{
+                  "& .MuiInputBase-input": {
+                    fontSize: {
+                      xs: '0.5rem',
+                      sm: '0.7rem',
+                      md: '0.8rem',
+                      lg: '0.9rem',
+                      xl: '1rem',
+                    },
+                  },
+                }}
               />
               <TextField
                 label="Descrizione Progetto"
                 name="projectDescription"
-                value={editableData.projectDescription}  // Stato gestito dinamicamente
-                onChange={handleInputChange}  // Modifica il valore dello stato
+                value={editableData.projectDescription}  
+                onChange={handleInputChange}  
                 fullWidth
+                sx={{
+                  "& .MuiInputBase-input": {
+                    fontSize: {
+                      xs: '0.5rem',
+                      sm: '0.7rem',
+                      md: '0.8rem',
+                      lg: '0.9rem',
+                      xl: '1rem',
+                    },
+                  },
+                }}
               />
               <TextField
                 label="Note Progetto"
                 name="projectNotes"
-                value={editableData.projectNotes}  // Stato gestito dinamicamente
-                onChange={handleInputChange}  // Modifica il valore dello stato
+                value={editableData.projectNotes}  
+                onChange={handleInputChange}  
                 fullWidth
+                sx={{
+                  "& .MuiInputBase-input": {
+                    fontSize: {
+                      xs: '0.5rem',
+                      sm: '0.7rem',
+                      md: '0.8rem',
+                      lg: '0.9rem',
+                      xl: '1rem',
+                    },
+                  },
+                }}
               />
             </Stack>
 
-            <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
+            <Stack spacing={2} direction="row">
               <TextField
                 label="Riferimento Ordine"
-                value={project[12]}  // Popolazione dinamica del campo Riferimento Ordine
+                value={project[12]}  
                 InputProps={{
                   readOnly: true,
-                  style: { backgroundColor: '#E0E0E0' }, // Campo grigio
+                  style: { backgroundColor: '#E0E0E0' }, 
                 }}
                 fullWidth
+                sx={{
+                  "& .MuiInputBase-input": {
+                    fontSize: {
+                      xs: '0.5rem',
+                      sm: '0.7rem',
+                      md: '0.8rem',
+                      lg: '0.9rem',
+                      xl: '1rem',
+                    },
+                  },
+                }}
               />
               <TextField
                 label="Ultimo File Caricato"
-                value={project[12]}  // Popolazione dinamica del campo Ultimo File Caricato
+                value={project[12]}  
                 InputProps={{
                   readOnly: true,
-                  style: { backgroundColor: '#E0E0E0' }, // Campo grigio
+                  style: { backgroundColor: '#E0E0E0' }, 
                 }}
                 fullWidth
+                sx={{
+                  "& .MuiInputBase-input": {
+                    fontSize: {
+                      xs: '0.5rem',
+                      sm: '0.7rem',
+                      md: '0.8rem',
+                      lg: '0.9rem',
+                      xl: '1rem',
+                    },
+                  },
+                }}
               />
             </Stack>
 
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2, }}>
               <Button
                 variant="contained"
                 sx={{
@@ -327,7 +470,7 @@ const ProjectItems = () => {
                     xl: '1rem',
                   },
                 }}
-                onClick={handleModify}  // Simulazione modifica
+                onClick={handleModify} 
               >
                 Modifica
               </Button>
@@ -336,15 +479,67 @@ const ProjectItems = () => {
         </Box>
       </Box>
 
-      {/* AppTable che mostra i campi con "show": true */}
-      <Box sx={{ width: '100%', marginTop: '2rem' }}>
+      <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '98%',
+            marginTop: '2rem', 
+            padding: '1rem 0',
+          }}
+        >
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 'bold',
+              textAlign: 'left',
+              fontSize: {
+                xs: '0.8rem',
+                sm: '1rem',
+                md: '1.2rem',
+                lg: '1.5rem',
+                
+              },
+            }}
+          >
+            Dettagli Progetto:
+          </Typography>
+          <Tooltip title='Aggiungi un nuovo Item'>
+            <IconButton
+            sx={{
+              backgroundColor: '#FFA500',
+              color: 'white',
+              '&:hover': { transition: 'transform 0.3s ease-in-out',
+                  '&:hover': {
+                    transform: 'scale(1.2)',
+                  backgroundColor: '#FFB84D'}, },
+              cursor: 'pointer',
+              fontSize: {
+                xs: '15px',  
+                sm: '20px',  
+                md: '25px', 
+                lg: '30px', 
+                xl: '32px',  
+              },
+              
+            }}
+            onClick={() => console.log('Aggiungi nuovo progetto')}
+          >
+            <AddIcon />
+          </IconButton>
+          </Tooltip>
+          
+        </Box>
+
+
+      <Box sx={{ width: '99%', marginTop: '2rem' }}>
         <AppTable 
             ref={ref} 
             columns={columnDefs} 
-            rows={formattedData}  // Usa i dati formattati qui
+            rows={formattedData}  
             onRowDoubleClick={handleRowDoubleClick}  
             action={true} 
-
         />
       </Box>
     </Box>
@@ -352,3 +547,4 @@ const ProjectItems = () => {
 };
 
 export default ProjectItems;
+
