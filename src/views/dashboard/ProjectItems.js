@@ -1,14 +1,21 @@
 import React, { useState, useRef } from 'react';
-import { Box, Typography, TextField, Stack, Button, IconButton, Tooltip } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { Box, Typography, TextField, Stack, Button, IconButton, Tooltip, Modal } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AppTable from '../../components/AppTable'; 
 import projectItems from '../../service-API/data-projects-items.json'; 
 import AddIcon from '@mui/icons-material/Add';
+import StockData from '../../service-API/stock.json';
+import AppModalTable from '../../components/AppModalTable'; // Importa il componente della modale
+
 
 const ProjectItems = () => {
   const ref = useRef(); 
   const project = projectItems.values[0];
+  const stock = useSelector((state) => state.stock || StockData.values);
+  // Stato per gestire l'apertura/chiusura della modale
+  const [openModal, setOpenModal] = useState(false);
 
   const [editableData, setEditableData] = useState({
     projectName: project[11], 
@@ -34,6 +41,9 @@ const ProjectItems = () => {
   const handleDelete = (rowIndex) => {
     console.log(`Elimina progetto all'indice: ${rowIndex}`);
   };
+  const filteredStock = Array.isArray(stock)
+   
+  
 
   const fieldsToShow = projectItems.fields.filter(field => {
     const fieldKey = Object.keys(field)[0];
@@ -123,6 +133,18 @@ const ProjectItems = () => {
 
   const handleRowDoubleClick = (row) => {
     console.log("Riga selezionata", row);
+  };
+
+  // Funzione per aprire la modale
+  const handleOpenModal = () => setOpenModal(true);
+
+  // Funzione per chiudere la modale
+  const handleCloseModal = () => setOpenModal(false);
+
+  // Funzione per gestire l'aggiunta di un item dalla modale
+  const handleAddItem = (id, quantity) => {
+    console.log(`Added item with ID: ${id}, Quantity: ${quantity}`);
+    handleCloseModal();
   };
 
   return (
@@ -524,14 +546,13 @@ const ProjectItems = () => {
               },
               
             }}
-            onClick={() => console.log('Aggiungi nuovo progetto')}
+            onClick={handleOpenModal}
           >
             <AddIcon />
           </IconButton>
           </Tooltip>
           
         </Box>
-
 
       <Box sx={{ width: '99%', marginTop: '2rem' }}>
         <AppTable 
@@ -542,9 +563,41 @@ const ProjectItems = () => {
             action={true} 
         />
       </Box>
+
+      {/* Modale per Aggiungere Item */}
+      <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Box
+          sx={{
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            padding: '2rem',
+            width: '80%',
+            maxHeight: '80vh',
+            overflowY: 'auto',
+          }}
+        >
+          <AppModalTable 
+            columns={columnDefs} 
+            rows={StockData} 
+            onAdd={handleAddItem} 
+          />
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
+            <Button variant="contained" color="primary" onClick={handleCloseModal}>
+              Chiudi
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </Box>
   );
 };
 
 export default ProjectItems;
-

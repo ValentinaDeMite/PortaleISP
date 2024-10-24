@@ -398,7 +398,7 @@ function Table2({ columns, rows = [], useChips = false }) {
   );
 }
 
-export default Table2; */
+export default Table2; 
 
 // giusta
 import * as React from 'react';
@@ -727,4 +727,300 @@ function Table2({ columns, rows = [], useChips = false, onRowDoubleClick , actio
   );
 }
 
-export default Table2;
+export default Table2; */
+
+import React from 'react';
+import Box from '@mui/material/Box';
+import { DataGridPremium, useGridApiRef } from '@mui/x-data-grid-premium';
+import { useState } from 'react';
+import { alpha, styled } from '@mui/material/styles';
+import Chip from '@mui/material/Chip';
+import { green, red, orange, blue, grey } from '@mui/material/colors';
+import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
+import Tooltip from '@mui/material/Tooltip';
+import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
+
+
+const ODD_COLOR = 'rgba(217, 217, 217, 0.7)';
+const EVEN_COLOR = 'rgba(255, 255, 255, 1)';
+
+const StripedDataGrid = styled(DataGridPremium)(({ theme }) => ({
+  [`& .MuiDataGrid-row.even`]: {
+    backgroundColor: EVEN_COLOR,
+  },
+  [`& .MuiDataGrid-row.odd`]: {
+    backgroundColor: ODD_COLOR,
+  },
+  [`& .MuiDataGrid-row:hover`]: {
+    backgroundColor: alpha(theme.palette.primary.main, 0.2),
+  },
+  [`& .MuiDataGrid-row.Mui-selected`]: {
+    backgroundColor: alpha(theme.palette.primary.main, 0.4),
+    '&:hover': {
+      backgroundColor: alpha(theme.palette.primary.main, 0.6),
+    },
+  },
+   [`& .MuiDataGrid-columnHeaderTitle`]: {
+    fontFamily: 'Poppins !important', 
+    color: 'white', 
+    fontSize: {
+      xs: '0.5rem',  
+      sm: '0.6rem',  
+      md: '0.7rem',  
+      lg: '0.8rem',    
+      xl: '0.9rem',  
+    },
+  },
+  [`& .MuiDataGrid-columnHeaderRow`]: {
+    textAlign: 'center', 
+    backgroundColor: 'rgb(75, 168, 61, .9) !important', 
+  },
+  [`& .MuiDataGrid-row.even`]: {
+    backgroundColor: 'rgba(255, 255, 255, 1)',
+  },
+  [`& .MuiDataGrid-row.odd`]: {
+    backgroundColor: 'rgba(217, 217, 217, 0.7)',
+  },
+  [`& .MuiDataGrid-row:hover`]: {
+    backgroundColor: alpha(theme.palette.primary.main, 0.2),
+  },
+}));
+
+const AppTable = ({ columns, rows = [], useChips, onRowDoubleClick }) => {
+  const [pageSize, setPageSize] = useState(10);  
+  const [page, setPage] = useState(0); 
+
+  const apiRef = useGridApiRef(); 
+  const [rowGroupingModel, setRowGroupingModel] = useState([]); 
+
+  const getRowId = (row) => {
+    return row.id || row.uniqueKey || rows.indexOf(row);
+  };
+
+
+  const [rowSelectionModel, setRowSelectionModel] = useState([]);
+  const renderStatusChip = (params) => {
+    let chipColor;
+    let label;
+    switch (params.value) {
+      case 'OPN':
+        chipColor = 'success';
+        label = 'Open';
+        break;
+      case 'CLS':
+        chipColor = 'error';
+        label = 'Closed';
+        break;
+      case 'NEW':
+        chipColor = 'primary';
+        label = 'New';
+        break;
+      case 'PEN':
+        chipColor='secondary ';
+        label = 'Pendant';
+      default:
+        chipColor = 'default';
+    }
+
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100%',
+        }}
+      >
+        <Chip label={label} color={chipColor} />
+      </Box>
+    );
+  };
+
+  const updatedColumns = columns.map((col) => {
+    if (col.headerName === 'Stato' && useChips) {
+      return {
+        ...col,
+        headerAlign: 'center',
+        renderCell: (params) => renderStatusChip(params),  
+      };
+    }  if (col.headerName === 'Richieste Pending') {
+      return {
+        ...col,
+        headerAlign: 'center',
+        flex: 1,
+        renderCell: (params) => renderRichiestePendingIcon(params), 
+      };
+    }
+    return {
+      ...col,
+      headerAlign: 'center',
+      flex: 1, 
+    };
+  });
+
+  const renderRichiestePendingIcon = (params) => {
+    if (params.value > 0) {
+      return (
+        <Tooltip title={`Richieste Pending: ${params.value}`}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',  // Assicura l'altezza completa della cella
+            }}
+          >
+            <NotificationImportantIcon
+              sx={{
+                color: red[500],
+                fontSize: '25px',
+                cursor: 'pointer',
+                transition: 'transform 0.3s ease-in-out',
+                '&:hover': {
+                  transform: 'scale(1.2)',
+                },
+              }}
+              onClick={() => alert(`Richieste Pending ID: ${params.row.id}`)}
+            />
+          </Box>
+        </Tooltip>
+      );
+    } else {
+      return (
+        <Tooltip title="Nessuna richiesta pendente">
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',  // Assicura l'altezza completa della cella
+            }}
+          >
+            <NotificationsOffIcon
+              sx={{
+                color: blue[500],
+                fontSize: '25px',
+                cursor: 'pointer',
+                textAlign: 'center',
+              }}
+            />
+          </Box>
+        </Tooltip>
+      );
+    }
+  };
+  
+
+  
+  return (
+    <Box sx={{ height: '100%', width: '100%' }}>
+      <Box sx={{ height: 'auto', width: '100%' }}>
+      <StripedDataGrid
+        apiRef={apiRef}
+        rowHeight={40}
+        sx={{
+          boxShadow: 2,
+          '& .MuiDataGrid-columnHeaderTitle':{
+            fontFamily: 'Poppins !important',
+            fontSize: {
+              xs: '0.5rem',  
+              sm: '0.6rem',  
+              md: '0.7rem',  
+              lg: '0.8rem',    
+              xl: '0.9rem',  
+            },
+          },
+          '& .MuiDataGrid-columnHeaderRow': {
+            textAlign: 'center',
+            color: 'white !important',
+          },
+          '& .MuiDataGrid-columnHeaderTitleContainerContent': {
+            color: 'white',
+          },
+          '& .MuiDataGrid-columnHeaderRow>.MuiButtonBase-root': {
+            color: 'white',
+          },
+          '& .MuiDataGrid-container--top [role=row]': {
+            backgroundColor: 'rgb(75, 168, 61, .9) !important',
+          },
+          '& .MuiDataGrid-withBorderColor': {
+            backgroundColor: 'rgb(75, 168, 61, .9) !important',
+          },
+          '& .MuiTablePagination-root': {
+            color: 'white',
+            fontFamily: 'Poppins !important',
+            fontSize: {
+              xs: '0.5rem',  
+              sm: '0.6rem',  
+              md: '0.7rem',  
+              lg: '0.8rem',    
+              xl: '0.9rem',  
+            },
+          },
+          '& .MuiTablePagination-selectIcon ': {
+            color: 'white !important',
+          },
+          '& .MuiDataGrid-cell': {
+            textAlign: 'center',
+            fontFamily: 'Poppins !important',
+            fontSize: {
+              xs: '0.4rem',  
+              sm: '0.5rem',  
+              md: '0.6rem',  
+              lg: '0.8rem',    
+              xl: '0.9rem',  
+            },
+          },
+          '& .MuiDataGrid-sortIcon': {
+            color: 'white',
+            opacity: '.9 !important',
+          },
+          '& .MuiDataGrid-menuIconButton': {
+            color: 'white',
+            opacity: '.9 !important',
+          },
+          '& .MuiDataGrid-topContainer ': {
+            textAlign: 'center !important',
+          },
+          '&.MuiDataGrid-virtualScrollerContent': {
+            height: '100%',  
+          },
+        }}
+        rows={rows}
+        columns={updatedColumns}
+        pageSize={10}
+        onRowDoubleClick={onRowDoubleClick}
+        getRowId={(row) => row['0']} 
+        pagination
+          paginationMode="client" 
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)} 
+          page={page} 
+          onPageChange={(newPage) => setPage(newPage)} 
+          initialState={{
+            pagination: { paginationModel: { pageSize: 10 } },
+            rowGrouping: { model: rowGroupingModel }, 
+          }}
+          pageSizeOptions={[10, 25, 50]}
+          sortingOrder={['asc', 'desc']}
+          checkboxSelection
+          onRowSelectionModelChange={(newRowSelectionModel) => {
+            setRowSelectionModel(newRowSelectionModel);
+          }}
+          rowSelectionModel={rowSelectionModel}
+          groupRowsByColumn="status" 
+          rowGroupingModel={rowGroupingModel}
+          onRowGroupingModelChange={setRowGroupingModel}
+        getRowClassName={(params) => 
+          params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+        }
+      />
+      </Box>
+    </Box>
+   
+  );
+};
+
+export default AppTable;
