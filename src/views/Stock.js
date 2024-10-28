@@ -232,6 +232,7 @@ const Stock = (props) => {
             columns={columnDefs}
             rows={filteredStock || []} 
             useChips={false}
+            showAddItem={true}
           />
         )}
       </Box>

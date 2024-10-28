@@ -56,7 +56,6 @@ const ProjectItems = () => {
     handleCloseModal();
   };
 
-  // Funzione per creare le colonne della modale da StockData.fields
   const getModalColumnDefs = () => {
     return StockData.fields
       .filter(field => {
@@ -98,15 +97,15 @@ const ProjectItems = () => {
             fontWeight: 'bold',
             textAlign: 'left',
             fontSize: {
-              xs: '0.8rem',
-              sm: '1rem',
-              md: '1.2rem',
-              lg: '1.5rem',
-              xl: '2rem',
+              xs: '0.7rem',
+              sm: '0.9rem',
+              md: '1rem',
+              lg: '1.3rem',
+              xl: '1.8rem',
             },
           }}
         >
-          Nome Progetto
+          {project[8]} 
         </Typography>
 
         <Box
@@ -115,9 +114,17 @@ const ProjectItems = () => {
             borderRadius: '8px',
             padding: '1rem',
             textAlign: 'left',
-            fontSize: '0.8rem',
             color: '#555',
             minWidth: '200px',
+            '& .MuiTypography-body2': {
+              fontSize: {
+                xs: '0.5rem',
+                sm: '0.6rem',
+                md: '0.7rem',
+                lg: '0.8rem',
+                xl: '0.9rem',
+              },
+            },
           }}
         >
           <Typography variant="body2">Creato: {project[6]}</Typography>
@@ -127,7 +134,15 @@ const ProjectItems = () => {
         </Box>
       </Box>
 
-      <Box sx={{ width: '99%', height: 'auto' }}>
+      <Box sx={{ width: '99%', height: 'auto',  '& .MuiInputBase-input': {
+          fontSize: {
+            xs: '0.6rem',
+            sm: '0.7rem',
+            md: '0.8rem',
+            lg: '0.9rem',
+            xl: '1rem',
+          },
+        }, }}>
         <Box
           sx={{
             backgroundColor: 'white',
@@ -148,6 +163,15 @@ const ProjectItems = () => {
               variant="h6"
               color="white"
               align="left"
+              sx={{
+                fontSize: {
+                  xs: '0.7rem',
+                  sm: '0.9rem',
+                  md: '1rem',
+                  lg: '1.1rem',
+                  xl: '1.2rem',
+                },
+              }}
             >
               Nome progetto
             </Typography>
@@ -155,22 +179,75 @@ const ProjectItems = () => {
 
           <Box sx={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: 3 }}>
             <Stack spacing={2} direction="row">
-              <TextField label="ID Progetto" value={project[0]} InputProps={{ readOnly: true }} fullWidth />
-              <TextField label="Stato" value={project[3]} InputProps={{ readOnly: true }} fullWidth />
-              <TextField label="Elaborazione" value={project[2]} InputProps={{ readOnly: true }} fullWidth />
-              <TextField label="Errore" value={project[10]} InputProps={{ readOnly: true }} fullWidth />
-              <TextField label="Installati" value={project[16]} InputProps={{ readOnly: true }} fullWidth />
+              <TextField 
+                label="ID Progetto" 
+                value={project[0]} 
+                InputProps={{ readOnly: true }} 
+                fullWidth
+              />
+              <TextField 
+                label="Stato" 
+                value={project[3]} 
+                InputProps={{ readOnly: true }} 
+                fullWidth
+              />
+              <TextField 
+                label="Elaborazione" 
+                value={project[2]} 
+                InputProps={{ readOnly: true }} 
+                fullWidth
+              />
+              <TextField 
+                label="Errore" 
+                value={project[10]} 
+                InputProps={{ readOnly: true }} 
+                fullWidth
+              />
+              <TextField 
+                label="Installati" 
+                value={project[16]} 
+                InputProps={{ readOnly: true }} 
+                fullWidth
+              />
             </Stack>
 
             <Stack spacing={2} direction="row">
-              <TextField label="Nome Progetto" name="projectName" value={editableData.projectName} onChange={handleInputChange} fullWidth />
-              <TextField label="Descrizione Progetto" name="projectDescription" value={editableData.projectDescription} onChange={handleInputChange} fullWidth />
-              <TextField label="Note Progetto" name="projectNotes" value={editableData.projectNotes} onChange={handleInputChange} fullWidth />
+              <TextField 
+                label="Nome Progetto" 
+                name="projectName" 
+                value={editableData.projectName} 
+                onChange={handleInputChange} 
+                fullWidth
+              />
+              <TextField 
+                label="Descrizione Progetto" 
+                name="projectDescription" 
+                value={editableData.projectDescription} 
+                onChange={handleInputChange} 
+                fullWidth
+              />
+              <TextField 
+                label="Note Progetto" 
+                name="projectNotes" 
+                value={editableData.projectNotes} 
+                onChange={handleInputChange} 
+                fullWidth
+              />
             </Stack>
 
             <Stack spacing={2} direction="row">
-              <TextField label="Riferimento Ordine" value={project[12]} InputProps={{ readOnly: true }} fullWidth />
-              <TextField label="Ultimo File Caricato" value={project[12]} InputProps={{ readOnly: true }} fullWidth />
+              <TextField 
+                label="Riferimento Ordine" 
+                value={project[12]} 
+                InputProps={{ readOnly: true }} 
+                fullWidth
+              />
+              <TextField 
+                label="Ultimo File Caricato" 
+                value={project[12]} 
+                InputProps={{ readOnly: true }} 
+                fullWidth
+              />
             </Stack>
 
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2 }}>
@@ -179,9 +256,16 @@ const ProjectItems = () => {
                 sx={{
                   backgroundColor: '#FF8C00',
                   color: 'white',
-                  padding: '10px 20px',
+                  padding: '8px 16px',
                   borderRadius: '8px',
                   boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                  fontSize: {
+                    xs: '0.6rem',
+                    sm: '0.7rem',
+                    md: '0.8rem',
+                    lg: '0.9rem',
+                    xl: '1rem',
+                  },
                   '&:hover': {
                     backgroundColor: '#FF9F1A',
                   },
@@ -211,10 +295,10 @@ const ProjectItems = () => {
             fontWeight: 'bold',
             textAlign: 'left',
             fontSize: {
-              xs: '0.8rem',
-              sm: '1rem',
-              md: '1.2rem',
-              lg: '1.5rem',
+              xs: '0.7rem',
+              sm: '0.9rem',
+              md: '1rem',
+              lg: '1.3rem',
             },
           }}
         >
@@ -248,6 +332,7 @@ const ProjectItems = () => {
           useChips={true}
           isProjectItems={true} 
           showActions={true}
+          disableCheckboxSelection={true} 
          
         />
       </Box>
@@ -272,6 +357,15 @@ const ProjectItems = () => {
             overflowY: 'auto',
           }}
         >
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold',fontSize: {
+                xs: '0.5rem',
+                sm: '0.8rem',
+                md: '1rem',
+                lg: '1.2rem',
+                xl: '1.5rem',
+              }, }}>
+            Stock Item
+          </Typography>
           <AppModalTable 
             columns={getModalColumnDefs()} 
             rows={StockData.values} 
@@ -280,7 +374,17 @@ const ProjectItems = () => {
           />
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
             <Button variant="contained" color="primary" onClick={handleCloseModal}>
-              Chiudi
+              <Typography sx={{
+              fontSize: {
+                xs: '0.6rem',
+                sm: '0.7rem',
+                md: '0.8rem',
+                lg: '0.8rem',
+                xl: '0.9rem',
+              }
+            }}> 
+                Chiudi
+              </Typography>
             </Button>
           </Box>
         </Box>

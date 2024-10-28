@@ -1140,6 +1140,12 @@ const StripedDataGrid = styled(DataGridPremium)(({ theme }) => ({
       backgroundColor: alpha(theme.palette.primary.main, 0.6),
     },
   },
+  [`& .MuiDataGrid-columnHeader`]: {
+    position: 'sticky',
+    top: 0,
+    zIndex: 2, // Garantisce che l'header sia sopra le righe durante lo scroll
+    backgroundColor: 'rgb(75, 168, 61, .9) !important',
+  },
   [`& .MuiDataGrid-columnHeaderTitle`]: {
     fontFamily: 'Poppins !important',
     color: 'white',
@@ -1157,7 +1163,7 @@ const StripedDataGrid = styled(DataGridPremium)(({ theme }) => ({
   },
 }));
 
-const AppTable = ({ columns, rows = [], useChips, onRowDoubleClick, showActions = false }) => {
+const AppTable = ({ columns, rows = [], useChips, onRowDoubleClick, showActions = false,  disableCheckboxSelection  }) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const apiRef = useGridApiRef();
@@ -1167,6 +1173,7 @@ const AppTable = ({ columns, rows = [], useChips, onRowDoubleClick, showActions 
   const renderStatusChip = (params) => {
     let chipColor;
     let label;
+    
     switch (params.value) {
       case 'OPN':
         chipColor = 'success';
@@ -1187,6 +1194,7 @@ const AppTable = ({ columns, rows = [], useChips, onRowDoubleClick, showActions 
       default:
         chipColor = 'default';
     }
+
     return (
       <Box
         sx={{
@@ -1196,7 +1204,20 @@ const AppTable = ({ columns, rows = [], useChips, onRowDoubleClick, showActions 
           height: '100%',
         }}
       >
-        <Chip label={label} color={chipColor} />
+        <Chip
+          label={label}
+          color={chipColor}
+          sx={{
+            fontSize: {
+              xs: '0.4rem',
+              sm: '0.5rem',
+              md: '0.6rem',
+              lg: '0.7rem',
+              xl: '0.8rem', 
+            },
+          }}
+          
+        />
       </Box>
     );
   };
@@ -1310,7 +1331,7 @@ const AppTable = ({ columns, rows = [], useChips, onRowDoubleClick, showActions 
   if (showActions) {
     updatedColumns.push({
       field: 'action',
-      headerName: 'Action',
+      headerName: 'Azioni',
       flex: 1,
       headerAlign: 'center',
       renderCell: (params) => renderActionButtons(params),
@@ -1334,7 +1355,7 @@ const AppTable = ({ columns, rows = [], useChips, onRowDoubleClick, showActions 
           >
             <NotificationImportantIcon
               sx={{
-                color: 'red',
+                color: '#d32f2f',
                 fontSize: '25px',
                 cursor: 'pointer',
                 transition: 'transform 0.3s ease-in-out',
@@ -1360,7 +1381,7 @@ const AppTable = ({ columns, rows = [], useChips, onRowDoubleClick, showActions 
           >
             <NotificationsOffIcon
               sx={{
-                color: 'blue',
+                color: '#108CCB',
                 fontSize: '25px',
                 cursor: 'pointer',
               }}
@@ -1388,6 +1409,9 @@ const AppTable = ({ columns, rows = [], useChips, onRowDoubleClick, showActions 
                 lg: '0.8rem',
                 xl: '0.9rem',
               },
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              position: "sticky"
             },
             '& .MuiDataGrid-columnHeaderRow': {
               textAlign: 'center',
@@ -1461,7 +1485,7 @@ const AppTable = ({ columns, rows = [], useChips, onRowDoubleClick, showActions 
           }}
           pageSizeOptions={[10, 25, 50]}
           sortingOrder={['asc', 'desc']}
-          checkboxSelection
+          checkboxSelection={!disableCheckboxSelection} 
           onRowSelectionModelChange={(newRowSelectionModel) => {
             setRowSelectionModel(newRowSelectionModel);
           }}
