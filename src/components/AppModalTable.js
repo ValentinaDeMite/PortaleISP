@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField, Tooltip } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import { DataGridPremium, useGridApiRef } from '@mui/x-data-grid-premium';
 import { alpha, styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
-import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
-import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
+import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 
 const ODD_COLOR = 'rgba(217, 217, 217, 0.7)';
 const EVEN_COLOR = 'rgba(255, 255, 255, 1)';
@@ -46,19 +45,20 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const apiRef = useGridApiRef();
-  
-  // Stato per le quantità
-  const [quantities, setQuantities] = useState({});
+
+  const [quantities, setQuantities] = useState(
+    rows.reduce((acc, row) => ({ ...acc, [row[0]]: 0 }), {})
+  );
 
   const handleQuantityChange = (id, value) => {
     setQuantities(prev => ({
       ...prev,
-      [id]: value
+      [id]: Math.max(0, value) // Assicura che il valore non sia negativo
     }));
   };
 
   const handleAddClick = (id) => {
-    const quantity = quantities[id] || 0; // Usa la quantità memorizzata o 0 se non presente
+    const quantity = quantities[id] || 0;
     if (quantity > 0) {
       onAdd(id, quantity);
       setQuantities(prev => ({ ...prev, [id]: 0 })); // Resetta la quantità dopo l'aggiunta
@@ -67,23 +67,63 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
     }
   };
 
-  const renderAddAction = (params) => {
+  const renderAllocateColumn = (params) => {
+    const quantity = quantities[params.row[0]] || 0; // Utilizza l'ID per recuperare la quantità
+    const availableQuantity = params.row[9]; // Totale articoli disponibili
+
     return (
-      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', justifyContent: 'space-evenly' }}>
         <TextField
           size="small"
           type="number"
-          value={quantities[params.id] || ''} // Imposta il valore dell'input
-          onChange={(e) => handleQuantityChange(params.id, e.target.value)}
-          sx={{ width: '70px' }}
+          value={quantity}
+          onChange={(e) => handleQuantityChange(params.row[0], parseInt(e.target.value) || 0)}
+          InputProps={{
+            inputProps: {
+              min: 0,
+              max: availableQuantity,
+              step: 1,
+              onKeyDown: (event) => {
+                if (quantity >= availableQuantity && event.key === "ArrowUp") {
+                  event.preventDefault(); // Blocca il tasto freccia su se al massimo
+                }
+              }
+            }
+          }}
+          sx={{
+            width: {
+              xs: '40px',
+              sm: '45px',
+              md: '50px',
+              lg: '55px',
+              xl: '60px',
+            },
+            '& input': {
+              textAlign: 'center',
+              fontSize: {
+                xs: '0.6rem',
+                sm: '0.65rem',
+                md: '0.7rem',
+                lg: '0.75rem',
+                xl: '0.8rem',
+              },
+            },
+          }}
         />
-        <Button
-          variant="contained"
-          onClick={() => handleAddClick(params.id)}
-          sx={{ textTransform: 'none' }}
-        >
-          Aggiungi
-        </Button>
+        <AddCircleOutlineRoundedIcon
+          color="primary"
+          onClick={() => handleAddClick(params.row[0])}
+          sx={{
+            padding: {
+              xs: '4px',
+              sm: '5px',
+              md: '6px',
+              lg: '7px',
+            },
+            color: 'orange',
+            cursor: 'pointer',
+          }}
+        />
       </Box>
     );
   };
@@ -97,22 +137,22 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
       };
     }
 
-    if (col.field === 'action') {
-      return {
-        ...col,
-        headerName: 'Azione',
-        renderCell: (params) => renderAddAction(params),
-        sortable: false,
-        filterable: false,
-        align: 'center',
-      };
-    }
-
     return {
       ...col,
       headerAlign: 'center',
       flex: 1,
     };
+  });
+
+  updatedColumns.push({
+    field: 'allocate',
+    headerName: 'Allocare',
+    flex: 1,
+    headerAlign: 'center',
+    renderCell: (params) => renderAllocateColumn(params),
+    sortable: false,
+    filterable: false,
+    align: 'center',
   });
 
   return (
@@ -193,7 +233,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
           columns={updatedColumns}
           pageSize={pageSize}
           onRowDoubleClick={(params) => console.log(params.row)}
-          getRowId={(row) => row.id || rows.indexOf(row)}
+          getRowId={(row) => row[0]} // Usare il primo elemento come ID univoco
           pagination
           paginationMode="client"
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
@@ -204,7 +244,6 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
           }}
           pageSizeOptions={[10, 25, 50]}
           sortingOrder={['asc', 'desc']}
-          checkboxSelection
         />
       </Box>
     </Box>
