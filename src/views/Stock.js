@@ -127,7 +127,7 @@ const Stock = (props) => {
               },
             }}
           >
-            Stock - Lista items disponibili
+            Stock - Lista articoli disponibili
           </Typography>
           <Typography
             variant="subtitle1"
@@ -144,7 +144,7 @@ const Stock = (props) => {
               },
             }}
           >
-            Last update: {date !== undefined
+            Ultimo aggiornamento: {date !== undefined
               ? new Date(date).toLocaleString('it-IT', { hour12: false })
               : '--/--/----, --:--:--'}
           </Typography>
@@ -155,7 +155,6 @@ const Stock = (props) => {
               justifyContent: 'space-between',
               alignItems: 'center',
               marginY: 5,
-              paddingX:2
             }}
           >
             <TextField

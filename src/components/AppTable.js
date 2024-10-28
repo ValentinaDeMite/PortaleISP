@@ -93,10 +93,11 @@ const AppTable = ({ columns, rows = [], useChips, onRowDoubleClick, showActions 
         chipColor = 'primary';
         label = 'New';
         break;
-      case 'PEN':
+      case 'REQ':
         chipColor = 'secondary';
         label = 'Pending';
         break;
+      
       default:
         chipColor = 'default';
     }

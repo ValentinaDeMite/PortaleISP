@@ -765,7 +765,7 @@ const Dashboard = (props) => {
               },
             }}
           >
-            Last update: {date !== undefined
+            Ultimo aggiornamento: {date !== undefined
               ? new Date(date).toLocaleString('it-IT', { hour12: false })
               : '--/--/----, --:--:--'}
           </Typography>

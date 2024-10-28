@@ -1,0 +1,139 @@
+{
+    "code": 200,
+    "values": [],
+    "text": "OK",
+    "fields": [
+        {
+            "0": {
+                "important": false,
+                "exportable": true,
+                "editable": false,
+                "name": "ID Progetto",
+                "show": false,
+                "description": "ID Item",
+                "type": "N",
+                "forcount": 0
+            }
+        },
+        {
+            "1": {
+                "important": false,
+                "exportable": true,
+                "editable": false,
+                "name": "ID Item",
+                "show": false,
+                "description": "Identificativo riga progetto",
+                "type": "N",
+                "forcount": 1
+            }
+        },
+        {
+            "2": {
+                "important": true,
+                "exportable": true,
+                "editable": false,
+                "name": "Stato Richiesta",
+                "show": true,
+                "description": "Stato singola richiesta",
+                "type": "T",
+                "forcount": 2
+            }
+        },
+        {
+            "3": {
+                "important": false,
+                "exportable": true,
+                "editable": false,
+                "name": "Update",
+                "show": true,
+                "description": "Data ultimo aggiornamento richiesta",
+                "type": "D",
+                "forcount": 3
+            }
+        },
+        {
+            "4": {
+                "important": false,
+                "exportable": true,
+                "editable": false,
+                "name": "Utente",
+                "show": true,
+                "description": "Utente ultimo aggiornamento richiesta",
+                "type": "T",
+                "forcount": 4
+            }
+        },
+        {
+            "5": {
+                "important": false,
+                "exportable": false,
+                "editable": false,
+                "name": "Progetto",
+                "show": true,
+                "description": "Progetto di riferimento",
+                "type": "T",
+                "forcount": 5
+            }
+        },
+        {
+            "6": {
+                "important": true,
+                "exportable": true,
+                "editable": false,
+                "name": "Part Number",
+                "show": true,
+                "description": "Part number secondario Cliente",
+                "type": "T",
+                "forcount": 6
+            }
+        },
+        {
+            "7": {
+                "important": false,
+                "exportable": true,
+                "editable": false,
+                "name": "Descrizione",
+                "show": true,
+                "description": "Descrizione Part number",
+                "type": "T",
+                "forcount": 7
+            }
+        },
+        {
+            "8": {
+                "important": false,
+                "exportable": true,
+                "editable": false,
+                "name": "Categoria",
+                "show": true,
+                "description": "Categoria Cliente",
+                "type": "T",
+                "forcount": 8
+            }
+        },
+        {
+            "9": {
+                "important": true,
+                "exportable": true,
+                "editable": false,
+                "name": "Tipo Richiesta",
+                "show": true,
+                "description": "Tipo Richiesta",
+                "type": "T",
+                "forcount": 9
+            }
+        },
+        {
+            "10": {
+                "important": false,
+                "exportable": true,
+                "editable": false,
+                "name": "Descrizione Richiesta",
+                "show": true,
+                "description": "Descrizione Richiesta",
+                "type": "T",
+                "forcount": 10
+            }
+        }
+    ]
+}

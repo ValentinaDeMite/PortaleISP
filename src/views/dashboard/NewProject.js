@@ -71,7 +71,9 @@ const NewProject = () => {
           md: '0.8rem !important',  
           lg: '0.9rem !important',   
           xl: '1rem !important',  
-        }
+        },
+        fontFamily: 'Poppins !important',
+
       },
       '& .MuiInputLabel-root ':{
         fontSize:{
@@ -80,7 +82,8 @@ const NewProject = () => {
           md: '0.8rem !important',  
           lg: '0.9rem !important',   
           xl: '1rem !important',  
-        }
+        },
+        fontFamily: 'Poppins !important',
       }
     }}>
       <Box sx={{ width: '100%', height: '10%' }}>
@@ -90,7 +93,10 @@ const NewProject = () => {
           md: '1rem',
           lg: '1.2rem',
           xl: '1.5rem',
-        } }}>
+          },
+          fontFamily: 'Poppins !important',
+
+        }}>
           Nuovo progetto
         </Typography>
       </Box>
@@ -129,7 +135,8 @@ const NewProject = () => {
                 md: '0.8rem',  
                 lg: '0.9rem',   
                 xl: '1rem',     
-              }
+              },
+              fontFamily: 'Poppins !important',
             }}>
               Carica un nuovo progetto:
             </Typography>
@@ -200,20 +207,25 @@ const NewProject = () => {
                       sm: '0.7rem',   
                       md: '0.8rem',  
                       lg: '0.9rem',   
-                      xl: '1rem ' }}}
+                      xl: '1rem ' },
+                    }}
                   >
                     <MenuItem value="OPN" sx={{fontSize: {
                     xs: '0.5rem',  
                     sm: '0.7rem',   
                     md: '0.8rem',  
                     lg: '0.9rem',   
-                    xl: '1rem ' }}}>Open</MenuItem>
+                    xl: '1rem ' },
+                    fontFamily: 'Poppins !important',
+                    }}>Open</MenuItem>
                     <MenuItem value="CLO" disabled  sx={{fontSize: {
                     xs: '0.5rem',  
                     sm: '0.7rem',   
                     md: '0.8rem',  
                     lg: '0.9rem',   
-                    xl: '1rem ' }}}>
+                    xl: '1rem ' },
+                    fontFamily: 'Poppins !important',
+                    }}>
                       Closed
                     </MenuItem>
                   </Select>
@@ -230,9 +242,15 @@ const NewProject = () => {
                     fullWidth
                     required
                   >
-                    <MenuItem value="PM1">Manager 1</MenuItem>
-                    <MenuItem value="PM2">Manager 2</MenuItem>
-                    <MenuItem value="PM3">Manager 3</MenuItem>
+                    <MenuItem value="PM1" sx={{
+                       fontFamily: 'Poppins !important',
+                    }}>Manager 1</MenuItem>
+                    <MenuItem value="PM2"sx={{
+                       fontFamily: 'Poppins !important',
+                    }}>Manager 2</MenuItem>
+                    <MenuItem value="PM3" sx={{
+                       fontFamily: 'Poppins !important',
+                    }}>Manager 3</MenuItem>
                   </Select>
                 </FormControl>
 
