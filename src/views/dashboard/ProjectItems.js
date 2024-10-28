@@ -246,6 +246,9 @@ const ProjectItems = () => {
           onRowDoubleClick={handleRowDoubleClick}  
           action={false}
           useChips={true}
+          isProjectItems={true} 
+          showActions={true}
+         
         />
       </Box>
 
