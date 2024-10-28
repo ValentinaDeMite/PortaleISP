@@ -53,7 +53,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
   const handleQuantityChange = (id, value) => {
     setQuantities(prev => ({
       ...prev,
-      [id]: Math.max(0, value) // Assicura che il valore non sia negativo
+      [id]: Math.max(0, value)
     }));
   };
 
@@ -61,15 +61,15 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
     const quantity = quantities[id] || 0;
     if (quantity > 0) {
       onAdd(id, quantity);
-      setQuantities(prev => ({ ...prev, [id]: 0 })); // Resetta la quantità dopo l'aggiunta
+      setQuantities(prev => ({ ...prev, [id]: 0 }));
     } else {
       alert("Inserisci una quantità valida!");
     }
   };
 
   const renderAllocateColumn = (params) => {
-    const quantity = quantities[params.row[0]] || 0; // Utilizza l'ID per recuperare la quantità
-    const availableQuantity = params.row[9]; // Totale articoli disponibili
+    const quantity = quantities[params.row[0]] || 0;
+    const availableQuantity = params.row[9];
 
     return (
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', justifyContent: 'space-evenly' }}>
@@ -85,7 +85,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
               step: 1,
               onKeyDown: (event) => {
                 if (quantity >= availableQuantity && event.key === "ArrowUp") {
-                  event.preventDefault(); // Blocca il tasto freccia su se al massimo
+                  event.preventDefault(); 
                 }
               }
             }
@@ -233,7 +233,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
           columns={updatedColumns}
           pageSize={pageSize}
           onRowDoubleClick={(params) => console.log(params.row)}
-          getRowId={(row) => row[0]} // Usare il primo elemento come ID univoco
+          getRowId={(row) => row[0]} 
           pagination
           paginationMode="client"
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}

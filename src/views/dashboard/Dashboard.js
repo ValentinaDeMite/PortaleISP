@@ -853,7 +853,7 @@ const Dashboard = (props) => {
             rows={filteredProjects || []}
             useChips={true}
             onRowDoubleClick={handleRowDoubleClick}
-            
+            allowDoubleClick={true} 
           />
         )}
       </Box>

@@ -33,7 +33,7 @@ const ProjectItems = () => {
     console.log('Modifiche salvate nel mock JSON:', project);
     alert('Modifiche salvate con successo!');
   };
-
+  const customBackgroundColor = '#D8D8D8'; 
   const fieldsToShow = projectItems.fields.filter(field => {
     const fieldKey = Object.keys(field)[0];
     return field[fieldKey].show && field[fieldKey].forcount !== 19 && field[fieldKey].forcount !== 20; 
@@ -69,6 +69,8 @@ const ProjectItems = () => {
       }));
   };
 
+  
+
   return (
     <Box
       sx={{
@@ -103,6 +105,8 @@ const ProjectItems = () => {
               lg: '1.3rem',
               xl: '1.8rem',
             },
+            fontFamily:'Poppins!important'
+
           }}
         >
           {project[8]} 
@@ -124,6 +128,7 @@ const ProjectItems = () => {
                 lg: '0.8rem',
                 xl: '0.9rem',
               },
+              fontFamily:'Poppins!important'
             },
           }}
         >
@@ -142,6 +147,9 @@ const ProjectItems = () => {
             lg: '0.9rem',
             xl: '1rem',
           },
+          fontFamily:'Poppins!important'
+
+
         }, }}>
         <Box
           sx={{
@@ -171,6 +179,8 @@ const ProjectItems = () => {
                   lg: '1.1rem',
                   xl: '1.2rem',
                 },
+                fontFamily:'Poppins!important'
+
               }}
             >
               Nome progetto
@@ -184,30 +194,50 @@ const ProjectItems = () => {
                 value={project[0]} 
                 InputProps={{ readOnly: true }} 
                 fullWidth
+                sx={{
+                  backgroundColor: customBackgroundColor,
+                  borderRadius: '8px',
+                }}
               />
               <TextField 
                 label="Stato" 
                 value={project[3]} 
                 InputProps={{ readOnly: true }} 
                 fullWidth
+                sx={{
+                  backgroundColor: customBackgroundColor,
+                  borderRadius: '8px',
+                }}
               />
               <TextField 
                 label="Elaborazione" 
                 value={project[2]} 
                 InputProps={{ readOnly: true }} 
                 fullWidth
+                sx={{
+                  backgroundColor: customBackgroundColor,
+                  borderRadius: '8px',
+                }}
               />
               <TextField 
                 label="Errore" 
                 value={project[10]} 
                 InputProps={{ readOnly: true }} 
                 fullWidth
+                sx={{
+                  backgroundColor: customBackgroundColor,
+                  borderRadius: '8px',
+                }}
               />
               <TextField 
                 label="Installati" 
                 value={project[16]} 
                 InputProps={{ readOnly: true }} 
                 fullWidth
+                sx={{
+                  backgroundColor: customBackgroundColor,
+                  borderRadius: '8px',
+                }}
               />
             </Stack>
 
@@ -218,6 +248,9 @@ const ProjectItems = () => {
                 value={editableData.projectName} 
                 onChange={handleInputChange} 
                 fullWidth
+                sx={{
+                  borderRadius: '8px',
+                }}
               />
               <TextField 
                 label="Descrizione Progetto" 
@@ -225,6 +258,9 @@ const ProjectItems = () => {
                 value={editableData.projectDescription} 
                 onChange={handleInputChange} 
                 fullWidth
+                sx={{
+                  borderRadius: '8px',
+                }}
               />
               <TextField 
                 label="Note Progetto" 
@@ -232,6 +268,9 @@ const ProjectItems = () => {
                 value={editableData.projectNotes} 
                 onChange={handleInputChange} 
                 fullWidth
+                sx={{
+                  borderRadius: '8px',
+                }}
               />
             </Stack>
 
@@ -241,12 +280,20 @@ const ProjectItems = () => {
                 value={project[12]} 
                 InputProps={{ readOnly: true }} 
                 fullWidth
+                sx={{
+                  backgroundColor: customBackgroundColor,
+                  borderRadius: '8px',
+                }}
               />
               <TextField 
                 label="Ultimo File Caricato" 
                 value={project[12]} 
                 InputProps={{ readOnly: true }} 
                 fullWidth
+                sx={{
+                  backgroundColor: customBackgroundColor,
+                  borderRadius: '8px',
+                }}
               />
             </Stack>
 
@@ -266,6 +313,8 @@ const ProjectItems = () => {
                     lg: '0.9rem',
                     xl: '1rem',
                   },
+                  fontFamily:'Poppins!important',
+
                   '&:hover': {
                     backgroundColor: '#FF9F1A',
                   },
@@ -300,6 +349,8 @@ const ProjectItems = () => {
               md: '1rem',
               lg: '1.3rem',
             },
+            fontFamily:'Poppins!important'
+
           }}
         >
           Dettagli Progetto:
@@ -337,7 +388,7 @@ const ProjectItems = () => {
         />
       </Box>
 
-      {/* Modale per Aggiungere Item */}
+      {/* Modale */}
       <Modal
         open={openModal}
         onClose={handleCloseModal}
@@ -363,7 +414,9 @@ const ProjectItems = () => {
                 md: '1rem',
                 lg: '1.2rem',
                 xl: '1.5rem',
-              }, }}>
+              },
+              fontFamily:'Poppins!important'
+            }}>
             Stock Item
           </Typography>
           <AppModalTable 
@@ -381,7 +434,9 @@ const ProjectItems = () => {
                 md: '0.8rem',
                 lg: '0.8rem',
                 xl: '0.9rem',
-              }
+              },
+              fontFamily:'Poppins!important'
+
             }}> 
                 Chiudi
               </Typography>
