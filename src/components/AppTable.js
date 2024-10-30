@@ -56,15 +56,13 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
   const [rowGroupingModel, setRowGroupingModel] = useState([]);
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const tableRef = useRef(null); 
-  // Gestisci la selezione della riga
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
     setRowSelectionModel(newRowSelectionModel);
   };
 
-  // Gestisci il clic fuori dalla tabella
   const handleClickOutside = (event) => {
     if (tableRef.current && !tableRef.current.contains(event.target)) {
-      setRowSelectionModel([]); // Deseleziona le righe
+      setRowSelectionModel([]); 
     }
   };
 
@@ -84,7 +82,7 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
         chipColor = 'success';
         label = 'Open';
         break;
-      case 'CLS':
+      case 'CLO':
         chipColor = 'error';
         label = 'Closed';
         break;
@@ -205,7 +203,7 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
     </Box>
   );
 
-  const filteredColumns = columns.filter((col) => col.headerName !== 'Cancella item');
+  const filteredColumns = columns.filter((col) => col.headerName !== 'Cancella item'&& col.headerName !== 'Modifica item');
 
   const updatedColumns = filteredColumns.map((col) => {
     if (col.headerName === 'Stato' || col.headerName === 'Stato singolo Item ') {
@@ -233,7 +231,6 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
     };
   });
 
-  // Aggiungi la colonna 'Action' solo se showActions è true
   if (showActions) {
     updatedColumns.push({
       field: 'action',
