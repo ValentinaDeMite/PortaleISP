@@ -936,6 +936,7 @@ const ProjectItems = () => {
     projectManager: project[16],
     startDate: project[17].split(' ')[0],
     endDate: project[18].split(' ')[0],
+    request: project[15]
   });
 
   const [pendingRequests, setPendingRequests] = useState([]);
@@ -1090,11 +1091,11 @@ const ProjectItems = () => {
             <Stack spacing={2} direction="row">
               <TextField
                 label="Richiesta Pending"
-                value={pendingRequests.join('\n')}
+                value={pendingRequests.length > 0 ? pendingRequests.join('\n') : "Nessuna richiesta in attesa"}
                 InputProps={{ readOnly: true }}
                 fullWidth
                 multiline
-                rows={pendingRequests.length || 1}
+                rows={pendingRequests.length > 0 ? pendingRequests.length : 1}
                 sx={{ borderRadius: '8px', width: '50%' }}
               />
             </Stack>
