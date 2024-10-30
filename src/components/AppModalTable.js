@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Box, TextField } from '@mui/material';
+import { Box, TextField, Button, Typography } from '@mui/material';
 import { DataGridPremium, useGridApiRef } from '@mui/x-data-grid-premium';
 import { alpha, styled } from '@mui/material/styles';
 import Chip from '@mui/material/Chip';
-import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 
 const ODD_COLOR = 'rgba(217, 217, 217, 0.7)';
 const EVEN_COLOR = 'rgba(255, 255, 255, 1)';
@@ -72,7 +71,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
     const availableQuantity = params.row[9];
 
     return (
-      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', justifyContent: 'space-evenly' }}>
+      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', justifyContent: 'center' }}>
         <TextField
           size="small"
           type="number"
@@ -108,20 +107,6 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
                 xl: '0.8rem',
               },
             },
-          }}
-        />
-        <AddCircleOutlineRoundedIcon
-          color="primary"
-          onClick={() => handleAddClick(params.row[0])}
-          sx={{
-            padding: {
-              xs: '4px',
-              sm: '5px',
-              md: '6px',
-              lg: '7px',
-            },
-            color: 'orange',
-            cursor: 'pointer',
           }}
         />
       </Box>
@@ -233,7 +218,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
           columns={updatedColumns}
           pageSize={pageSize}
           onRowDoubleClick={(params) => console.log(params.row)}
-          getRowId={(row) => row[0]} 
+          getRowId={(row) => row[0]} // Usare il primo elemento come ID univoco
           pagination
           paginationMode="client"
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
@@ -245,6 +230,35 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
           pageSizeOptions={[10, 25, 50]}
           sortingOrder={['asc', 'desc']}
         />
+      </Box>
+      {/* Pulsante Aggiungi */}
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            const totalQuantity = Object.values(quantities).reduce((a, b) => a + b, 0);
+            if (totalQuantity > 0) {
+              onAdd(quantities);
+              setQuantities(rows.reduce((acc, row) => ({ ...acc, [row[0]]: 0 }), {})); // Reset quantities
+            } else {
+              alert("Inserisci almeno una quantità valida!");
+            }
+          }}
+        >
+          <Typography sx={{
+            fontSize: {
+              xs: '0.6rem',
+              sm: '0.7rem',
+              md: '0.8rem',
+              lg: '0.8rem',
+              xl: '0.9rem',
+            },
+            fontFamily: 'Poppins!important',
+          }}>
+            Aggiungi
+          </Typography>
+        </Button>
       </Box>
     </Box>
   );

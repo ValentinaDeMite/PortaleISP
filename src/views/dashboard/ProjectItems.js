@@ -6,6 +6,7 @@ import AppModalTable from '../../components/AppModalTable';
 import projectItems from '../../service-API/data-projects-items.json'; 
 import AddIcon from '@mui/icons-material/Add';
 import StockData from '../../service-API/stock.json';
+import CloseIcon from '@mui/icons-material/Close';
 
 const ProjectItems = () => {
   const ref = useRef(); 
@@ -19,12 +20,30 @@ const ProjectItems = () => {
     projectNotes: '',
   });
 
+  const [pendingRequests, setPendingRequests] = useState([]); // Array per le richieste pending
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditableData({
       ...editableData,
       [name]: value,
     });
+
+    // Aggiornare il messaggio di richiesta pending
+    let newRequests = [...pendingRequests];
+
+    if (name === 'projectName') {
+      newRequests = newRequests.filter(req => !req.startsWith('Nome progetto aggiornato:')); // Rimuovere eventuali precedenti modifiche sul nome
+      newRequests.push(`Nome progetto aggiornato: ${value}`);
+    } else if (name === 'projectDescription') {
+      newRequests = newRequests.filter(req => !req.startsWith('Descrizione progetto aggiornata:')); // Rimuovere eventuali precedenti modifiche sulla descrizione
+      newRequests.push(`Descrizione progetto aggiornata: ${value}`);
+    } else if (name === 'projectNotes') {
+      newRequests = newRequests.filter(req => !req.startsWith('Note progetto aggiornate:')); // Rimuovere eventuali precedenti modifiche sulle note
+      newRequests.push(`Note progetto aggiornate: ${value}`);
+    }
+
+    setPendingRequests(newRequests);
   };
 
   const handleModify = () => {
@@ -32,7 +51,9 @@ const ProjectItems = () => {
     project[14] = editableData.projectDescription;
     console.log('Modifiche salvate nel mock JSON:', project);
     alert('Modifiche salvate con successo!');
+    setPendingRequests([]); // Resetta le richieste pending dopo il salvataggio
   };
+
   const customBackgroundColor = '#D8D8D8'; 
   const fieldsToShow = projectItems.fields.filter(field => {
     const fieldKey = Object.keys(field)[0];
@@ -69,8 +90,6 @@ const ProjectItems = () => {
       }));
   };
 
-  
-
   return (
     <Box
       sx={{
@@ -106,7 +125,6 @@ const ProjectItems = () => {
               xl: '1.8rem',
             },
             fontFamily:'Poppins!important'
-
           }}
         >
           {project[8]} 
@@ -148,8 +166,6 @@ const ProjectItems = () => {
             xl: '1rem',
           },
           fontFamily:'Poppins!important'
-
-
         }, }}>
         <Box
           sx={{
@@ -180,7 +196,6 @@ const ProjectItems = () => {
                   xl: '1.2rem',
                 },
                 fontFamily:'Poppins!important'
-
               }}
             >
               Nome progetto
@@ -201,16 +216,6 @@ const ProjectItems = () => {
               />
               <TextField 
                 label="Stato" 
-                value={project[3]} 
-                InputProps={{ readOnly: true }} 
-                fullWidth
-                sx={{
-                  backgroundColor: customBackgroundColor,
-                  borderRadius: '8px',
-                }}
-              />
-              <TextField 
-                label="Elaborazione" 
                 value={project[2]} 
                 InputProps={{ readOnly: true }} 
                 fullWidth
@@ -220,8 +225,8 @@ const ProjectItems = () => {
                 }}
               />
               <TextField 
-                label="Errore" 
-                value={project[10]} 
+                label="Allocato" 
+                value={project[12]} 
                 InputProps={{ readOnly: true }} 
                 fullWidth
                 sx={{
@@ -230,8 +235,18 @@ const ProjectItems = () => {
                 }}
               />
               <TextField 
-                label="Installati" 
+                label="Evaso" 
                 value={project[16]} 
+                InputProps={{ readOnly: true }} 
+                fullWidth
+                sx={{
+                  backgroundColor: customBackgroundColor,
+                  borderRadius: '8px',
+                }}
+              />
+              <TextField 
+                label="Residuo" 
+                value={project[1]} 
                 InputProps={{ readOnly: true }} 
                 fullWidth
                 sx={{
@@ -276,24 +291,16 @@ const ProjectItems = () => {
 
             <Stack spacing={2} direction="row">
               <TextField 
-                label="Riferimento Ordine" 
-                value={project[12]} 
+                label="Richiesta Pending" 
+                value={pendingRequests.join('\n')} 
                 InputProps={{ readOnly: true }} 
                 fullWidth
                 sx={{
-                  backgroundColor: customBackgroundColor,
                   borderRadius: '8px',
+                  width:'50%'
                 }}
-              />
-              <TextField 
-                label="Ultimo File Caricato" 
-                value={project[12]} 
-                InputProps={{ readOnly: true }} 
-                fullWidth
-                sx={{
-                  backgroundColor: customBackgroundColor,
-                  borderRadius: '8px',
-                }}
+                multiline 
+                rows={pendingRequests.length || 1} 
               />
             </Stack>
 
@@ -307,11 +314,11 @@ const ProjectItems = () => {
                   borderRadius: '8px',
                   boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
                   fontSize: {
-                    xs: '0.6rem',
-                    sm: '0.7rem',
-                    md: '0.8rem',
-                    lg: '0.9rem',
-                    xl: '1rem',
+                    xs: '0.5rem',
+                    sm: '0.6rem',
+                    md: '0.7rem',
+                    lg: '0.8rem',
+                    xl: '0.9rem',
                   },
                   fontFamily:'Poppins!important',
 
@@ -328,13 +335,14 @@ const ProjectItems = () => {
         </Box>
       </Box>
 
+      {/* Sezione Dettagli Progetto con Icona "+" */}
       <Box
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           width: '98%',
-          marginTop: '2rem', 
+          marginTop: '2rem',
           padding: '1rem 0',
         }}
       >
@@ -350,7 +358,6 @@ const ProjectItems = () => {
               lg: '1.3rem',
             },
             fontFamily:'Poppins!important'
-
           }}
         >
           Dettagli Progetto:
@@ -384,7 +391,6 @@ const ProjectItems = () => {
           isProjectItems={true} 
           showActions={true}
           disableCheckboxSelection={true} 
-         
         />
       </Box>
 
@@ -406,44 +412,46 @@ const ProjectItems = () => {
             width: '80%',
             maxHeight: '80vh',
             overflowY: 'auto',
+            position: 'relative', // Aggiunto per posizionare l'icona
           }}
         >
-          <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold',fontSize: {
+          <IconButton
+            onClick={handleCloseModal}
+            sx={{
+              position: 'absolute',
+              top: 16,
+              right: 16,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Typography
+            variant="h6"
+            sx={{
+              mb: 2,
+              fontWeight: 'bold',
+              fontSize: {
                 xs: '0.5rem',
                 sm: '0.8rem',
                 md: '1rem',
                 lg: '1.2rem',
                 xl: '1.5rem',
               },
-              fontFamily:'Poppins!important'
-            }}>
+              fontFamily: 'Poppins!important'
+            }}
+          >
             Stock Item
           </Typography>
-          <AppModalTable 
-            columns={getModalColumnDefs()} 
-            rows={StockData.values} 
-            onAdd={handleAddItem} 
-            modalMode={true} 
+          <AppModalTable
+            columns={getModalColumnDefs()}
+            rows={StockData.values}
+            onAdd={handleAddItem}
+            modalMode={true}
           />
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
-            <Button variant="contained" color="primary" onClick={handleCloseModal}>
-              <Typography sx={{
-              fontSize: {
-                xs: '0.6rem',
-                sm: '0.7rem',
-                md: '0.8rem',
-                lg: '0.8rem',
-                xl: '0.9rem',
-              },
-              fontFamily:'Poppins!important'
-
-            }}> 
-                Chiudi
-              </Typography>
-            </Button>
-          </Box>
+          
         </Box>
       </Modal>
+
     </Box>
   );
 };

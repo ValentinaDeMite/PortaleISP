@@ -49,14 +49,13 @@ const StripedDataGrid = styled(DataGridPremium)(({ theme }) => ({
   },
 }));
 
-const AppTable = ({ columns, rows = [], useChips, onRowDoubleClick, showActions = false, disableCheckboxSelection }) => {
+const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, disableCheckboxSelection }) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const apiRef = useGridApiRef();
   const [rowGroupingModel, setRowGroupingModel] = useState([]);
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
-  const tableRef = useRef(null); // Riferimento per la tabella
-
+  const tableRef = useRef(null); 
   // Gestisci la selezione della riga
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
     setRowSelectionModel(newRowSelectionModel);
@@ -213,6 +212,7 @@ const AppTable = ({ columns, rows = [], useChips, onRowDoubleClick, showActions 
       return {
         ...col,
         headerAlign: 'center',
+        flex: 1,
         renderCell: (params) => renderStatusChip(params),
       };
     }
@@ -299,7 +299,7 @@ const AppTable = ({ columns, rows = [], useChips, onRowDoubleClick, showActions 
   };
 
   return (
-    <Box sx={{ height: '100%', width: '100%' }} ref={tableRef}> {/* Aggiunto ref per la tabella */}
+    <Box sx={{ height: '100%', width: '100%' }} ref={tableRef}> 
       <Box sx={{ height: 'auto', width: '100%' }}>
         <StripedDataGrid
           apiRef={apiRef}
