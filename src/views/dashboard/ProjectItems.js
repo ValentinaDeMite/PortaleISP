@@ -1780,7 +1780,10 @@ const ProjectItems = () => {
                 <Button 
                   variant="contained" 
                   sx={{ 
-                    backgroundColor: '#FF8C00', 
+                    backgroundColor: '#FF8C00',
+                    '&:hover': {
+                      backgroundColor: '#323232',
+                    }, 
                     color: 'white', 
                     padding: '8px 16px', 
                     borderRadius: '8px', 
@@ -1800,6 +1803,9 @@ const ProjectItems = () => {
                   variant="contained" 
                   sx={{ 
                     backgroundColor: '#108CCB', 
+                    '&:hover': {
+                      backgroundColor: '#323232',
+                    },
                     color: 'white', 
                     padding: '8px 16px', 
                     borderRadius: '8px',
@@ -1810,6 +1816,7 @@ const ProjectItems = () => {
                       lg: '0.8rem',   
                       xl: '0.9rem',     
                     },
+
                   }} 
                   onClick={() => setPendingRequests([])}>
                   Elimina

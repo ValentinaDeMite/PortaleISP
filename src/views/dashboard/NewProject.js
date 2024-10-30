@@ -303,7 +303,7 @@ const NewProject = () => {
                     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
                     textTransform: 'none',
                     '&:hover': {
-                      backgroundColor: '#FF9F1A',
+                      backgroundColor: '#323232',
                     },
                     fontSize: {
                       xs: '0.5rem',  

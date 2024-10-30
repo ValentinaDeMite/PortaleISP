@@ -503,7 +503,14 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
         <Button
           variant="contained"
-          color="primary"
+          sx={{
+            backgroundColor:"#FF8700",
+            '&:hover': {
+            backgroundColor: '#323232',
+          }
+          
+          }}
+          
           onClick={() => {
             const totalQuantity = Object.values(quantities).reduce((a, b) => a + b, 0);
             if (totalQuantity > 0) {
