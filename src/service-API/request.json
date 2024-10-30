@@ -1,6 +1,20 @@
 {
     "code": 200,
-    "values": [],
+    "values": [
+        {
+            "0": "34",
+            "1": "404",
+            "2": "REQ",
+            "3": "2024-10-29 12:17:24.0",
+            "4": "ISP PM TEST",
+            "5": "Revamping 2024",
+            "6": "90.C0026.001",
+            "7": "MOUSE OTTICO",
+            "8": "ACCESSORIO",
+            "9": "MOD",
+            "10": "Modifica articolo [90.C0026.001] 40 -> 42"
+        }
+    ],
     "text": "OK",
     "fields": [
         {

@@ -206,7 +206,7 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
   const filteredColumns = columns.filter((col) => col.headerName !== 'Cancella item'&& col.headerName !== 'Modifica item');
 
   const updatedColumns = filteredColumns.map((col) => {
-    if (col.headerName === 'Stato' || col.headerName === 'Stato singolo Item ') {
+    if (col.headerName === 'Stato' || col.headerName === 'Stato singolo Item ' || col.headerName === "Stato Richiesta") {
       return {
         ...col,
         headerAlign: 'center',

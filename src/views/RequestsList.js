@@ -7,6 +7,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import DownloadForOfflineRoundedIcon from '@mui/icons-material/DownloadForOfflineRounded';
 import * as XLSX from 'xlsx';
 import RequestsData from '../service-API/request.json';
+import { useNavigate } from 'react-router-dom'
+
 
 const RequestList = (props) => {
   const [columnDefs, setColumnDefs] = useState([]);
@@ -17,6 +19,14 @@ const RequestList = (props) => {
   const token = useSelector((state) => state.request);
   const dispatch = useDispatch();
   const ref = useRef();
+  const navigate = useNavigate();
+
+
+  const handleRowDoubleClick = (row) => {
+    const projectId = row['0'];
+    navigate(`/richieste/projectitems/${projectId}`);
+  };
+  //     navigate(`/richieste/projectitems/${projectId}`);
 
   const filteredRequests = Array.isArray(stock)
     ? stock.filter((item) =>
@@ -40,7 +50,7 @@ const RequestList = (props) => {
       case 'N':
         return 'number';
       case 'D':
-        return 'date';
+        return 'text';
       case 'B':
         return 'button';
       default:
@@ -230,8 +240,10 @@ const RequestList = (props) => {
             ref={ref}
             columns={columnDefs}
             rows={filteredRequests || []} 
-            useChips={false}
+            useChips={true}
             showAddItem={true}
+            onRowDoubleClick={handleRowDoubleClick}
+            allowDoubleClick={true} 
           />
         )}
       </Box>
