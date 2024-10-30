@@ -26,7 +26,11 @@ const routes = [
     name: 'Project Items',
     component: ProjectItems,
   },
-  //{
+  { path: '/richieste/projectitems', 
+    exact: true, 
+    name: 'Project Items', 
+    component: ProjectItems 
+  },
   //  path: '/dashboard/projectitems:id/projectdetails:id',
     //exact: true,
     //name: 'Project Details',

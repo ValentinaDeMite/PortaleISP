@@ -873,7 +873,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import DownloadForOfflineRoundedIcon from '@mui/icons-material/DownloadForOfflineRounded';
 import * as XLSX from 'xlsx';
 import projectsData from '../../service-API/projects.json';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
 
 const Dashboard = (props) => {
   const [columnDefs, setColumnDefs] = useState([]);
@@ -886,8 +886,9 @@ const Dashboard = (props) => {
   const ref = useRef();
   const navigate = useNavigate();
   
-  const handleRowDoubleClick = (rowData) => {
-    navigate(`/dashboard/projectitems/${rowData['0']}`);
+  const handleRowDoubleClick = (row) => {
+    const projectId = row['0'];
+    navigate(`/dashboard/projectitems/${projectId}`);
   };
   
   const filteredProjects = Array.isArray(projects)
