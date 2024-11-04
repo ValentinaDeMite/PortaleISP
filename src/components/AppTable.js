@@ -203,10 +203,10 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
     </Box>
   );
 
-  const filteredColumns = columns.filter((col) => col.headerName !== 'Cancella item'&& col.headerName !== 'Modifica item');
+  const filteredColumns = columns.filter((col) => col.headerName !== 'Delete row'&& col.headerName !== 'Edit');
 
   const updatedColumns = filteredColumns.map((col) => {
-    if (col.headerName === 'Stato' || col.headerName === 'Stato singolo Item ' || col.headerName === "Stato Richiesta") {
+    if (col.headerName === 'Stato' || col.headerName === 'Stato Item' || col.headerName === "Stato Richiesta") {
       return {
         ...col,
         headerAlign: 'center',

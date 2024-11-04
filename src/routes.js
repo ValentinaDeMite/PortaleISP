@@ -21,7 +21,7 @@ const routes = [
   { path: '/richieste', exact: true, name: 'RequestList', component: RequestList },
   { path: '/stock', name: 'Stock', component: Stock },
   {
-    path: '/dashboard/projectitems',
+    path: '/dashboard/projectitems/:id',
     exact: true,
     name: 'Project Items',
     component: ProjectItems,
@@ -29,8 +29,7 @@ const routes = [
   { path: '/richieste/projectitems', 
     exact: true, 
     name: 'Project Items', 
-    component: ProjectItems 
-  },
+    component: ProjectItems },
   //  path: '/dashboard/projectitems:id/projectdetails:id',
     //exact: true,
     //name: 'Project Details',

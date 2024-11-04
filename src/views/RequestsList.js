@@ -164,7 +164,6 @@ const RequestList = (props) => {
               justifyContent: 'space-between',
               alignItems: 'center',
               marginY: 5,
-              paddingX:2
             }}
           >
             <TextField

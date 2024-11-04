@@ -887,8 +887,13 @@ const Dashboard = (props) => {
   const navigate = useNavigate();
   
   const handleRowDoubleClick = (row) => {
-    const projectId = row['0'];
-    navigate(`/dashboard/projectitems/${projectId}`);
+    const projectId = row.row[0];
+    const projectDetails = row.row;
+    console.log(row);
+    console.log(projectId);
+    
+    
+    navigate(`/dashboard/projectitems/${projectId}`, {state:{projectDetails}});
   };
   
   const filteredProjects = Array.isArray(projects)
