@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, Stack, TextField, Select, MenuItem, InputLabel, FormControl, Typography, Container } from '@mui/material';
+import { Box, Button, Stack, TextField, Select, MenuItem, InputLabel, FormControl, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ApiRest from '../../service-API/ApiRest';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,7 +16,6 @@ const NewProject = () => {
 
   const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
-  const api = new ApiRest();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -31,6 +30,9 @@ const NewProject = () => {
       alert('La data di fine deve essere successiva alla data di inizio.');
       return;
     }
+
+    // Creazione dell'istanza di ApiRest all'interno di handleSubmit
+    const api = new ApiRest();
 
     try {
       const response = await api.iuProject(token, {
@@ -73,7 +75,6 @@ const NewProject = () => {
           xl: '1rem !important',  
         },
         fontFamily: 'Poppins !important',
-
       },
       '& .MuiInputLabel-root ':{
         fontSize:{
@@ -95,7 +96,6 @@ const NewProject = () => {
           xl: '1.5rem',
           },
           fontFamily: 'Poppins !important',
-
         }}>
           Nuovo progetto
         </Typography>
@@ -103,7 +103,6 @@ const NewProject = () => {
       <Box sx={{
         width: '100%',
         height:'80%',
-
       }}>
         <Box
           sx={{
@@ -128,16 +127,17 @@ const NewProject = () => {
             }}
           >
             <Typography variant="h6" color="white" align="left" 
-            sx={{
-               fontSize: {
-                xs: '0.5rem',  
-                sm: '0.7rem',   
-                md: '0.8rem',  
-                lg: '0.9rem',   
-                xl: '1rem',     
-              },
-              fontFamily: 'Poppins !important',
-            }}>
+              sx={{
+                fontSize: {
+                  xs: '0.5rem',  
+                  sm: '0.7rem',   
+                  md: '0.8rem',  
+                  lg: '0.9rem',   
+                  xl: '1rem',     
+                },
+                fontFamily: 'Poppins !important',
+              }}
+            >
               Carica un nuovo progetto:
             </Typography>
           </Box>
@@ -152,7 +152,7 @@ const NewProject = () => {
                 lg: '1.5rem',   
                 xl: '2rem',     
               },
-              heigth:'70%'
+              height:'70%',
             }}
           >
             <form onSubmit={handleSubmit}>
@@ -194,7 +194,7 @@ const NewProject = () => {
                   multiline
                   sx={{ borderColor: '#999', '& .MuiOutlinedInput-root': { borderRadius: '8px' }}}
                 />
-                <FormControl sx={{ width: '30%',  '& .MuiOutlinedInput-root': { borderRadius: '8px' }, ' input ':{ width: '30%',  '& .MuiOutlinedInput-root': { borderRadius: '8px'}} }}> 
+                <FormControl sx={{ width: '30%', '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}> 
                   <InputLabel>Stato:</InputLabel>
                   <Select
                     label="Stato:"
@@ -202,7 +202,7 @@ const NewProject = () => {
                     onChange={(e) => setStatus(e.target.value)}
                     fullWidth
                     required
-                    sx={{fontSize: {
+                    sx={{ fontSize: {
                       xs: '0.5rem',  
                       sm: '0.7rem',   
                       md: '0.8rem',  
@@ -210,24 +210,8 @@ const NewProject = () => {
                       xl: '1rem ' },
                     }}
                   >
-                    <MenuItem value="OPN" sx={{fontSize: {
-                    xs: '0.5rem',  
-                    sm: '0.7rem',   
-                    md: '0.8rem',  
-                    lg: '0.9rem',   
-                    xl: '1rem ' },
-                    fontFamily: 'Poppins !important',
-                    }}>Open</MenuItem>
-                    <MenuItem value="CLO" disabled  sx={{fontSize: {
-                    xs: '0.5rem',  
-                    sm: '0.7rem',   
-                    md: '0.8rem',  
-                    lg: '0.9rem',   
-                    xl: '1rem ' },
-                    fontFamily: 'Poppins !important',
-                    }}>
-                      Closed
-                    </MenuItem>
+                    <MenuItem value="OPN">Open</MenuItem>
+                    <MenuItem value="CLO" disabled>Closed</MenuItem>
                   </Select>
                 </FormControl>
               </Stack>
@@ -242,15 +226,9 @@ const NewProject = () => {
                     fullWidth
                     required
                   >
-                    <MenuItem value="PM1" sx={{
-                       fontFamily: 'Poppins !important',
-                    }}>Manager 1</MenuItem>
-                    <MenuItem value="PM2"sx={{
-                       fontFamily: 'Poppins !important',
-                    }}>Manager 2</MenuItem>
-                    <MenuItem value="PM3" sx={{
-                       fontFamily: 'Poppins !important',
-                    }}>Manager 3</MenuItem>
+                    <MenuItem value="PM1">Manager 1</MenuItem>
+                    <MenuItem value="PM2">Manager 2</MenuItem>
+                    <MenuItem value="PM3">Manager 3</MenuItem>
                   </Select>
                 </FormControl>
 
@@ -264,7 +242,7 @@ const NewProject = () => {
                   value={startDate}
                   fullWidth
                   required
-                  />
+                />
 
                 <TextField
                   type="date"
@@ -276,7 +254,6 @@ const NewProject = () => {
                   value={endDate}
                   fullWidth
                   required
-                  
                 /> 
               </Stack>
 

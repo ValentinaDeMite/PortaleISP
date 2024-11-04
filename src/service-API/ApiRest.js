@@ -2,24 +2,32 @@ import axios from 'axios'
 
 class ApiRest {
   constructor() {
-    //this.url = import.meta.env.VITE_DOMINO_URL || 'err'
-    this.url = 'http://localhost:5000/backend/intesa'  || 'err'
-
+    this.env = import.meta.env.VITE_ENV || 'err'
+    if (this.env === 'err') {
+      console.error('Environment variable VITE_ENV is not defined');
+    }
+    
+    this.url = this.env === 'LOCAL' 
+      ? (import.meta.env.VITE_DOMINO_URL_LOCAL || 'err') 
+      : (import.meta.env.VITE_DOMINO_URL_DEV || 'err');
+    
+    if (this.url === 'err') {
+      console.error('URL for environment is not defined');
+    }
   }
 
   //login method
   async login(username, password) {
-    //const url = `${this.url}/auth/login`
-    const url = `${this.url}/login`
-    console.log(url)
+    const url = this.env === 'LOCAL' ? `${this.url}/login` : `${this.url}/auth/login`;
+    console.log("Login URL:", url);
     try {
       const response = await axios.post(
         url,
         {
-           data: {
-             username,
-             password,
-           },
+          data: {
+            username,
+            password,
+          },
         },
         {
           auth: {
@@ -38,13 +46,10 @@ class ApiRest {
   }
 
   //fetch user info
-  // async getInfo() {
   async getInfo(token) {
-    const url = `${this.url}/getInfo`
-    // const url = `${this.url}/extapp/ispprj/getInfo`
+    const url = this.env === 'LOCAL' ? `${this.url}/getInfo` : `${this.url}/extapp/ispprj/getInfo`
     console.log(url)
     try {
-      // const response = await axios.post(url)
       const response = await axios.post(url, { data: { token } })
       const { data } = response
       // console.log('login response: ' + data)
@@ -56,13 +61,11 @@ class ApiRest {
   }
 
   //fetch dashboard data to display in table
-   async getDashboard(token) {
-  //async getDashboard() {
-    const url = `${this.url}/getProjects`
-    //const url = `${this.url}/extapp/ispprj/getProjects`
+  async getProjects(token) {
+    const url =
+      this.env === 'LOCAL' ? `${this.url}/getProjects` : `${this.url}/extapp/ispprj/getProjects`
     console.log(url)
     try {
-      //const response = await axios.get(url)
       const response = await axios.post(url, { data: { token } })
       const { data } = response
       // console.log('getProjects response: ' + JSON.stringify(data))
@@ -74,12 +77,18 @@ class ApiRest {
   }
 
   //fetch a project item to display in table
-  async getItems(id) {
-    const url = `${this.url}/extapp/hpprj/getProjectItems`
+  async getItems(token, id) {
+    const url =
+      this.env === 'LOCAL'
+        ? `${this.url}/getProjectItems`
+        : `${this.url}/extapp/ispprj/getProjectItems?projectid=${id}`
     console.log(url)
     try {
       const response = await axios.post(url, {
-        projectid: id,
+        data: {
+          id,
+          token,
+        },
       })
       const { data } = response
       // console.log('getProjectItems response: ' + JSON.stringify(data))
@@ -107,15 +116,16 @@ class ApiRest {
   }
 
   //create new project
-  // async iuProject(project) {
-  async iuProject(token, project) {
-    // const url = `${this.url}/extapp/hpprj/iuProject`
-    const url = `${this.url}/iuProject`
-    const body = project.state
-    console.log(body)
+  async iuProject(token, payload) {
+    const url =
+      this.env === 'LOCAL' ? `${this.url}/iuProject` : `${this.url}/extapp/ispprj/iuProject`
+    // const body = payload
+    console.log(payload)
     try {
-      // const response = await axios.post(url, body)
-      const response = await axios.post(url, { data: { token, item: body } })
+      const response = await axios.post(
+        url,
+        this.env === 'LOCAL' ? { data: { token, item: payload } } : payload,
+      )
       const { data } = response
       console.log('iuProject response: ' + JSON.stringify(data))
       return data
@@ -146,13 +156,10 @@ class ApiRest {
   }
 
   //fetch data from lambda for stock view
-  //async getStock() {
-    async getStock(token) {
-    //const url = `${this.url}/extapp/ispprj/getStock`
-    const url = `${this.url}/getStock`
+  async getStock(token) {
+    const url = this.env === 'LOCAL' ? `${this.url}/getStock` : `${this.url}/extapp/ispprj/getStock`
     console.log(url)
     try {
-      //const response = await axios.get(url)
       const response = await axios.post(url, { data: { token } })
       const { data } = response
       // console.log('getProjects response: ' + JSON.stringify(data))
@@ -162,11 +169,26 @@ class ApiRest {
       throw error
     }
   }
-  
 
+  //fetch requests
+  async getRequests(token) {
+    const url =
+      this.env === 'LOCAL' ? `${this.url}/getRequests` : `${this.url}/extapp/ispprj/getRequests`
+    console.log(url)
+    try {
+      const response = await axios.post(url, { data: { token } })
+      const { data } = response
+      // console.log('getProjects response: ' + JSON.stringify(data))
+      return data
+    } catch (error) {
+      console.log('getRequests error: ' + error)
+      throw error
+    }
+  }
+  
   //logout
   async logout() {
-    const url = `/appl/wsr.nsf?logout`
+    const url = `${this.url}/appl/wsr.nsf?logout`
     console.log(url)
     try {
       await axios.get(url)

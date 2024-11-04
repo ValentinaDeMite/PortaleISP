@@ -1,7 +1,6 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { CircularProgress, Box } from '@mui/material';
-import { Navigate, Route, Routes } from 'react-router-dom';
-import routes from '../routes'; 
+import { Outlet } from 'react-router-dom';
 
 const AppContent = () => {
   return (
@@ -12,26 +11,10 @@ const AppContent = () => {
       sx={{ 
         width: '100%', 
         height: '100%', 
-        flexGrow: 1 ,
+        flexGrow: 1,
       }}
     >
-      <Suspense fallback={<CircularProgress color="primary" />}>
-        <Routes>
-          {routes.map((route, idx) => (
-            route.component && (
-              <Route
-                key={route.path || idx} 
-                path={route.path}
-                element={<Box sx={{ width: '100%', height: '100%' }}>
-                           <route.component />
-                         </Box>} 
-              />
-            )
-          ))}
-          {/* Reindirizza dalla root a /homepage */}
-          <Route path="/" element={<Navigate to="/homepage" replace />} />
-        </Routes>
-      </Suspense>
+      <Outlet />
     </Box>
   );
 };
