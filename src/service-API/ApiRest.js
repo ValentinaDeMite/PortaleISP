@@ -2,24 +2,18 @@ import axios from 'axios'
 
 class ApiRest {
   constructor() {
-    this.env = import.meta.env.VITE_ENV || 'err'
-    if (this.env === 'err') {
-      console.error('Environment variable VITE_ENV is not defined');
-    }
-    
-    this.url = this.env === 'LOCAL' 
-      ? (import.meta.env.VITE_DOMINO_URL_LOCAL || 'err') 
-      : (import.meta.env.VITE_DOMINO_URL_DEV || 'err');
-    
-    if (this.url === 'err') {
-      console.error('URL for environment is not defined');
-    }
+    this.env = process.env.REACT_APP_ENV || 'err';
+    this.url =
+      this.env === 'LOCAL'
+        ? process.env.REACT_APP_DOMINO_URL_LOCAL || 'err'
+        : process.env.REACT_APP_DOMINO_URL_DEV || 'err';
   }
+  
 
   //login method
   async login(username, password) {
-    const url = this.env === 'LOCAL' ? `${this.url}/login` : `${this.url}/auth/login`;
-    console.log("Login URL:", url);
+    const url = this.env === 'LOCAL' ? `${this.url}/login` : `${this.url}/auth/login`
+    console.log(url)
     try {
       const response = await axios.post(
         url,
@@ -185,7 +179,7 @@ class ApiRest {
       throw error
     }
   }
-  
+
   //logout
   async logout() {
     const url = `${this.url}/appl/wsr.nsf?logout`
