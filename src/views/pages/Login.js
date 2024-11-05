@@ -162,7 +162,7 @@ const Login = () => {
 
 export default Login;
 */
-
+// password visibile
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Card, CardContent, CircularProgress, InputAdornment } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
@@ -181,7 +181,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // Stato per gestire la visibilità della password
+  const [showPassword, setShowPassword] = useState(false); 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -272,7 +272,7 @@ const Login = () => {
             variant="outlined"
             margin="normal"
             label="Password"
-            type={showPassword ? 'text' : 'password'} // Cambia il tipo in base allo stato di visibilità
+            type={showPassword ? 'text' : 'password'} 
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -282,7 +282,7 @@ const Login = () => {
               endAdornment: (
                 <InputAdornment position="end">
                   <Button onClick={() => setShowPassword(!showPassword)} color="inherit">
-                    {showPassword ? <VisibilityOff /> : <Visibility />} {/* Icona per il toggle della visibilità */}
+                    {showPassword ? <VisibilityOff /> : <Visibility />} 
                   </Button>
                 </InputAdornment>
               ),
@@ -318,7 +318,6 @@ const Login = () => {
         </CardContent>
       </Card>
 
-      {/* Footer */}
       <Typography variant="body2" align="center" color="textSecondary" sx={{ position: 'absolute', bottom: '1rem', fontFamily: 'Poppins' }}>
         MVS Italy © 2024
       </Typography>

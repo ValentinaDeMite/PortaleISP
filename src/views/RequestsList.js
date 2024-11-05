@@ -6,7 +6,7 @@ import { Box, Typography, CircularProgress, TextField, InputAdornment, Tooltip }
 import SearchIcon from '@mui/icons-material/Search';
 import DownloadForOfflineRoundedIcon from '@mui/icons-material/DownloadForOfflineRounded';
 import * as XLSX from 'xlsx';
-import RequestsData from '../service-API/request.json';
+//import RequestsData from '../service-API/request.json';
 import { useNavigate } from 'react-router-dom'
 
 
@@ -15,7 +15,7 @@ const RequestList = (props) => {
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
   const date = useSelector((state) => state.date);
-  const stock = useSelector((state) => state.request || RequestsData.values);
+  const requests = useSelector((state) => state.request );
   const token = useSelector((state) => state.request);
   const dispatch = useDispatch();
   const ref = useRef();
@@ -28,8 +28,8 @@ const RequestList = (props) => {
   };
   //     navigate(`/richieste/projectitems/${projectId}`);
 
-  const filteredRequests = Array.isArray(stock)
-    ? stock.filter((item) =>
+  const filteredRequests = Array.isArray(requests)
+    ? requests.filter((item) =>
         Object.values(item).some((value) =>
           String(value).toLowerCase().includes(searchText.toLowerCase())
         )
@@ -76,15 +76,15 @@ const RequestList = (props) => {
       try {
         const api = new ApiRest();
         const data = await api.getRequests(token);
-        dispatch({ type: 'set', payload: { date: new Date().getTime(), stock: data.values } });
+        dispatch({ type: 'set',requests: data.values  });
         const columns = setColumns(data.fields);
         setColumnDefs(columns);
-        dispatch({ type: 'set', payload: { fieldsStock: columns } });
+        dispatch({ type: 'set', payload: { fieldsRequests: columns } });
       } catch (error) {
         console.error("API error, using mocked data", error);
-        const columns = setColumns(RequestsData.fields.map(field => Object.values(field)[0]));
-        setColumnDefs(columns);
-        dispatch({ type: 'set', payload: { stock: RequestsData.values, fieldsRequests: columns } });
+        //const columns = setColumns(RequestsData.fields.map(field => Object.values(field)[0]));
+        //setColumnDefs(columns);
+       // dispatch({ type: 'set', payload: { requests: RequestsData.values, fieldsRequests: columns } });
       } finally {
         setLoading(false);
       }

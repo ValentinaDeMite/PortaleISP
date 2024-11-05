@@ -398,7 +398,7 @@ const Dashboard = (props) => {
           >
             Dashboard - Lista di tutti i progetti
           </Typography>
-          <Typography
+        {/*  <Typography
             variant="subtitle1"
             align="start"
             color="textSecondary"
@@ -416,7 +416,7 @@ const Dashboard = (props) => {
             Ultimo aggiornamento: {date !== undefined
               ? new Date(date).toLocaleString('it-IT', { hour12: false })
               : '--/--/----, --:--:--'}
-          </Typography>
+          </Typography>*/}
           
           <Box
             sx={{
