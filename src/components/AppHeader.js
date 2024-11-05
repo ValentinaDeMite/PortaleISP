@@ -220,9 +220,7 @@ function AppHeader() {
   };
 
   const handleLogout = () => {
-    // Rimuovi il token e altre informazioni di autenticazione
     Cookies.remove('LtpaToken', { path: '', domain: '.mvsitaly.com' });
-    // Reindirizza alla pagina di login
     navigate('/login');
   };
 
@@ -245,8 +243,8 @@ function AppHeader() {
             underline="hover"
             color="inherit"
             component={RouterLink}
-            to="/"
-            onClick={(event) => handleBreadcrumbClick(event, '/')}>
+            to="/homepage"
+            onClick={(event) => handleBreadcrumbClick(event, '/homepage')}>
             Home
           </Link>
 
