@@ -272,10 +272,10 @@ const Dashboard = (props) => {
   const [searchText, setSearchText] = useState('');
   const date = useSelector((state) => state.date);
   const projects = useSelector((state) => {
-    console.log("Dati attualmente salvati in Redux:", state.projects);
-    return state.projects || projectsData.values;
-  });
-  
+  console.log("Dati attualmente salvati in Redux:", state.projects);
+  return state.projects || projectsData.values;
+});
+
   const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
   const ref = useRef();
