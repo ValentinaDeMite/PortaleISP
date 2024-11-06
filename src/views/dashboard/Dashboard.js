@@ -271,17 +271,31 @@ const Dashboard = (props) => {
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
   const date = useSelector((state) => state.date);
-  const projects = useSelector((state) => state.projects|| projectsData.values);
+  const projects = useSelector((state) => {
+    console.log("Dati attualmente salvati in Redux:", state.projects);
+    return state.projects || projectsData.values;
+  });
+  
   const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
   const ref = useRef();
   const navigate = useNavigate();
 
+  
   const handleRowDoubleClick = (row) => {
-    const projectId = row.row[0];
     const projectDetails = row.row;
-    navigate(`/dashboard/projectitems/${projectId}`, { state: { projectDetails } });
+    console.log("Dettagli progetto selezionato:", projectDetails); 
+  
+    dispatch({
+      type: 'setSelectedProject',
+      projectDetails
+    });
+  
+    navigate(`/dashboard/projectitems/${projectDetails[0]}`);
   };
+  
+  
+
 
   const filteredProjects = Array.isArray(projects)
     ? projects.filter((item) =>
@@ -336,22 +350,25 @@ const Dashboard = (props) => {
       try {
         const api = new ApiRest();
         const data = await api.getProjects(token);
-        dispatch({ type: 'set', projects: data.values});
+  
+        // Log dell'array dei valori per controllare gli ID
+        console.log("Risposta API - Dati dei progetti:", data.values);
+  
+        // Se l'ID non parte da 34, verificare il contenuto dei dati di `data.values` e controllare che sia corretto.
+        dispatch({ type: 'set', projects: data.values });
         const columns = setColumns(data.fields);
         setColumnDefs(columns);
         dispatch({ type: 'set', payload: { fieldsProject: columns } });
       } catch (error) {
-        console.error("API error, using mocked data", error);
-        // const columns = setColumns(projectsData.fields);
-        //setColumnDefs(columns);
-        //dispatch({ type: 'set', payload: { projects: projectsData.values, fieldsProject: columns } });
+        console.error("Errore API, utilizzo dati mockati", error);
       } finally {
         setLoading(false);
       }
     };
-
+  
     getDashboard();
   }, [dispatch, token]);
+  
 
   return (
     <Box

@@ -186,7 +186,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import ApiRest from '../service-API/ApiRest';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid2';
@@ -239,7 +239,7 @@ const Homepage = () => {
         <Item>
           <Box>
             {loading ? (
-              <Typography>Loading...</Typography>
+              <CircularProgress />
             ) : (
               <>
                 <Typography
@@ -265,8 +265,8 @@ const Homepage = () => {
                   lineHeight="1.2"
                   marginTop={'1rem'}
                 >
-                  Role: {role || 'Loading...'} <br />
-                  Ultimo accesso: {lastAccess || 'Loading...'}
+                  Role: {role } <br />
+                  Ultimo accesso: {lastAccess}
                 </Typography>
               </>
             )}
