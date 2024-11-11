@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, IconButton, Tooltip, Chip } from '@mui/material';
+import { Box, IconButton, Tooltip, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 import { DataGridPremium, useGridApiRef } from '@mui/x-data-grid-premium';
 import { alpha, styled } from '@mui/material/styles';
 import EditIcon from '@mui/icons-material/Edit';
@@ -49,13 +49,16 @@ const StripedDataGrid = styled(DataGridPremium)(({ theme }) => ({
   },
 }));
 
-const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, disableCheckboxSelection }) => {
+const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, disableCheckboxSelection, onDeleteRow }) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const apiRef = useGridApiRef();
   const [rowGroupingModel, setRowGroupingModel] = useState([]);
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
   const tableRef = useRef(null); 
+
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
     setRowSelectionModel(newRowSelectionModel);
   };
@@ -72,6 +75,24 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
+
+  const handleDeleteClick = (params) => {
+    setSelectedRow(params.row);
+    setOpenDialog(true);
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+    setSelectedRow(null);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (onDeleteRow) {
+      onDeleteRow(selectedRow);
+    }
+    setOpenDialog(false);
+    setSelectedRow(null);
+  };
 
   const renderStatusChip = (params) => {
     let chipColor;
@@ -185,7 +206,7 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
             justifyContent: 'center',
           }}
           aria-label="delete"
-          onClick={() => console.log("Elimina riga con ID:", params.id)}
+          onClick={() => handleDeleteClick(params)}
         >
           <DeleteIcon
             sx={{
@@ -203,7 +224,7 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
     </Box>
   );
 
-  const filteredColumns = columns.filter((col) => col.headerName !== 'Delete row'&& col.headerName !== 'Edit');
+  const filteredColumns = columns.filter((col) => col.headerName !== 'Delete row' && col.headerName !== 'Edit');
 
   const updatedColumns = filteredColumns.map((col) => {
     if (col.headerName === 'Stato' || col.headerName === 'Stato Item' || col.headerName === "Stato Richiesta") {
@@ -399,9 +420,29 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
           }
         />
       </Box>
+      <Dialog
+        open={openDialog}
+        onClose={handleDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Conferma Eliminazione"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Sei sicuro di voler eliminare la riga con valore: {selectedRow ? Object.values(selectedRow)[9] : ''}?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            Annulla
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error" autoFocus>
+            Elimina
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
 
 export default AppTable;
-

@@ -3816,6 +3816,18 @@ const ProjectItems = () => {
   const [columnDefs, setColumnDefs] = useState([]);
   const [stockData, setStockData] = useState([]);
 
+
+  const [deletedRows, setDeletedRows] = useState([]);
+
+  const handleDeleteRow = (deletedRow) => {
+    // Salva il dato della riga eliminata nello stato
+    setDeletedRows((prevDeletedRows) => [...prevDeletedRows, deletedRow]);
+    console.log('Riga eliminata:', deletedRow);
+
+    setPendingRequests((prevRequests) => [...prevRequests, `Articolo da eliminare: Part Number ${deletedRow[9]}`]);
+  };
+
+
   const fetchStockData = async () => {
     try {
       const response = await api.getStock(token);
@@ -4126,7 +4138,11 @@ const ProjectItems = () => {
       </Box>
 
       <Box sx={{ width: '99%', mt: '2rem' }}>
-        <AppTable ref={ref} columns={columnDefs} rows={projectItemsData || []} showActions={true} disableCheckboxSelection={true} onRowDoubleClick={() => {}} />
+        <AppTable ref={ref} columns={columnDefs} rows={projectItemsData || []}  
+        onDeleteRow={handleDeleteRow} 
+        showActions={true} 
+        disableCheckboxSelection={true} 
+        onRowDoubleClick={() => {}} />
       </Box>
 
       <Modal open={openModal} onClose={handleCloseModal} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
