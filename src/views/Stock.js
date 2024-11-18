@@ -12,7 +12,6 @@ const Stock = (props) => {
   const [columnDefs, setColumnDefs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
-  const [selectedRows, setSelectedRows] = useState([]); // Stato per tenere traccia delle righe selezionate
   const date = useSelector((state) => state.date);
   const stock = useSelector((state) => state.stock || StockData.values);
   const token = useSelector((state) => state.token);
@@ -27,18 +26,12 @@ const Stock = (props) => {
       )
     : [];
 
-    const handleSelectionModelChange = (rows) => {
-      setSelectedRows(rows);
-    };
-    
-    // Modifica la funzione di esportazione per esportare solo i dati selezionati
-    const exportToExcel = () => {
-      const dataToExport = selectedRows.length > 0 ? selectedRows : filteredStock; // Esporta solo quelli selezionati, altrimenti tutti
-      const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Stock');
-      XLSX.writeFile(workbook, 'lista_stock.xlsx');
-    };
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(filteredStock);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Stock');
+    XLSX.writeFile(workbook, 'lista_stock.xlsx');
+  };
 
   const convertTypeColumn = (type) => {
     switch (type) {
@@ -57,7 +50,7 @@ const Stock = (props) => {
 
   const setColumns = (fields) => {
     return fields
-      .filter(field => Object.values(field)[0].show)
+      .filter(field => Object.values(field)[0].show) 
       .map((field) => {
         const fieldData = Object.values(field)[0];
         return {
@@ -76,11 +69,11 @@ const Stock = (props) => {
       setLoading(true);
       try {
         const api = new ApiRest();
-        const data = await api.getStock(token);
+        const data = await api.getStock(token); 
         dispatch({ type: 'set', stock: data.values });
         const columns = setColumns(data.fields);
         setColumnDefs(columns);
-        dispatch({ type: 'set', fieldsStock: columns });
+        dispatch({ type: 'set',fieldsStock: columns  });
       } catch (error) {
         console.error("API error, using mocked data", error);
         const columns = setColumns(StockData.fields);
@@ -125,7 +118,7 @@ const Stock = (props) => {
           <Typography variant="subtitle1" align="start" color="textSecondary" gutterBottom>
             Ultimo aggiornamento: {date !== undefined ? new Date(date).toLocaleString('it-IT', { hour12: false }) : '--/--/----, --:--:--'}
           </Typography>
-
+          
           <Box
             sx={{
               display: 'flex',
@@ -189,7 +182,7 @@ const Stock = (props) => {
                     transform: 'scale(1.2)',
                   },
                 }}
-                onClick={exportToExcel}
+                onClick={exportToExcel}  
               />
             </Tooltip>
           </Box>
@@ -204,7 +197,6 @@ const Stock = (props) => {
             rows={filteredStock || []}
             useChips={false}
             showAddItem={true}
-            onSelectionModelChange={(selectedRows) => setSelectedRows(selectedRows.map(id => filteredStock.find(row => row.id === id)))}
           />
         )}
       </Box>

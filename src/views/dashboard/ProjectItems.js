@@ -4175,6 +4175,7 @@ const ProjectItems = () => {
         <AppTable ref={ref} columns={columnDefs} rows={projectItemsData || []}  
         onDeleteRow={handleDeleteRow} 
         onEditRow={handleEditRow}
+        useChips={true}
         showActions={true} 
         disableCheckboxSelection={true} 
         onRowDoubleClick={() => {}} />
