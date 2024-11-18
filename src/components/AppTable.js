@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, IconButton, Tooltip, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
+import { Box, IconButton, Tooltip, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField } from '@mui/material';
 import { DataGridPremium, useGridApiRef } from '@mui/x-data-grid-premium';
 import { alpha, styled } from '@mui/material/styles';
 import EditIcon from '@mui/icons-material/Edit';
@@ -49,7 +49,8 @@ const StripedDataGrid = styled(DataGridPremium)(({ theme }) => ({
   },
 }));
 
-const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, disableCheckboxSelection, onDeleteRow }) => {
+
+const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, disableCheckboxSelection, onDeleteRow, onEditRow }) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const apiRef = useGridApiRef();
@@ -57,7 +58,10 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [editedRow, setEditedRow] = useState(null);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
   const tableRef = useRef(null); 
+ 
 
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
     setRowSelectionModel(newRowSelectionModel);
@@ -75,6 +79,54 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
+
+  {/*Edit */}
+  const handleEditConfirm = (params) =>{
+    if (onEditRow) {
+      const updatedRow = { ...editedRow };
+      updatedRow[12] = editedRow.allocato;
+      onEditRow(updatedRow);
+    }
+    setOpenEditDialog(false);
+    setSelectedRow(null);
+  
+  }
+
+  const handleEditClick = (params) => {
+    setSelectedRow(params.row);
+    setEditedRow({
+      ...params.row,
+      allocato: params.row['allocato'] || Object.values(params.row)[12],
+      residuo: params.row['residuo'] || Object.values(params.row)[17],
+    });
+    setOpenEditDialog(true);
+  };
+
+
+  const handleEditDialogClose = () => {
+    setOpenEditDialog(false);
+    setSelectedRow(null);
+  };
+
+  const handleEditFieldChange = (field, value) => {
+    setEditedRow((prev) => {
+      const updatedRow = {
+        ...prev,
+        [field]: value,
+      };
+
+      if (field === 'allocato') {
+        updatedRow.residuo = parseInt(prev.residuo) + parseInt(value) - parseInt(prev.allocato);
+        updatedRow['allocato'] = value;
+        updatedRow[12] = value; // Update column 12 with allocato value
+      }
+
+      return updatedRow;
+    });
+  };
+
+
+  {/*Delete */}
 
   const handleDeleteClick = (params) => {
     setSelectedRow(params.row);
@@ -173,7 +225,7 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
             justifyContent: 'center',
           }}
           aria-label="edit"
-          onClick={() => console.log("Modifica riga con ID:", params.id)}
+          onClick={() => handleEditClick(params)}
         >
           <EditIcon
             sx={{
@@ -441,6 +493,73 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
           </Button>
         </DialogActions>
       </Dialog>
+       {/* Modifica */}
+       <Dialog
+        open={openEditDialog}
+        onClose={handleEditDialogClose}
+        aria-labelledby="edit-dialog-title"
+      >
+        <DialogTitle id="edit-dialog-title">Modifica Riga</DialogTitle>
+        <DialogContent>
+          {editedRow && (
+            <Box>
+              <TextField
+                label="Stato"
+                fullWidth
+                margin="normal"
+                value={selectedRow ? Object.values(selectedRow)[2] : ''}
+                  InputProps={{ readOnly: true }}
+              />
+              <TextField
+                label="Nome Prodotto"
+                fullWidth
+                margin="normal"
+                value={selectedRow ? Object.values(selectedRow)[10] : ''}
+                InputProps={{ readOnly: true }}
+              />
+              <TextField
+                label="Descrizione"
+                fullWidth
+                margin="normal"
+                value={selectedRow ? Object.values(selectedRow)[11] : ''}
+                InputProps={{ readOnly: true }}
+              />
+              <TextField
+                label="Evaso"
+                fullWidth
+                margin="normal"
+                value={selectedRow ? Object.values(selectedRow)[16] : ''}
+                InputProps={{ readOnly: true }}
+              />
+              <TextField
+                label="Residuo"
+                fullWidth
+                margin="normal"
+                value={editedRow.residuo}
+                onChange={(e) => handleEditFieldChange('residuo', e.target.value)}
+                InputProps={{ readOnly: true }}
+              />
+              <TextField
+                label="Allocato"
+                type="number"
+                fullWidth
+                margin="normal"
+                value={editedRow.allocato}
+                onChange={(e) => handleEditFieldChange('allocato', e.target.value)}
+              />
+            </Box>
+          )}
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleEditDialogClose} color="red">
+                  Annulla
+                </Button>
+                <Button onClick={handleEditConfirm} color="primary">
+                  Salva
+                </Button>
+              </DialogActions>
+            </Dialog>
+
     </Box>
   );
 };

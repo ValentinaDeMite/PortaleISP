@@ -56,6 +56,9 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
         '& .pro-inner-item.active': {
           backgroundColor: 'rgba(255, 255, 255, 0.8)',
         },
+        '& .css-1vzr61b-MuiTypography-root':{
+          height:'auto !important'
+        }
       }}
     >
       <ProSidebar collapsed={isCollapsed}>

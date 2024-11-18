@@ -3816,7 +3816,7 @@ const ProjectItems = () => {
   const [columnDefs, setColumnDefs] = useState([]);
   const [stockData, setStockData] = useState([]);
 
-
+  const [editedRows, setEditedRows] = useState([]);
   const [deletedRows, setDeletedRows] = useState([]);
 
   const handleDeleteRow = (deletedRow) => {
@@ -3824,9 +3824,16 @@ const ProjectItems = () => {
     setDeletedRows((prevDeletedRows) => [...prevDeletedRows, deletedRow]);
     console.log('Riga eliminata:', deletedRow);
 
-    setPendingRequests((prevRequests) => [...prevRequests, `Articolo da eliminare: Part Number ${deletedRow[9]}`]);
+    setPendingRequests((prevRequests) => [...prevRequests, `Articolo da eliminare => Part Number ${deletedRow[9]}`]);
   };
 
+  const handleEditRow = (editedRow) => {
+    // Salva il dato della riga eliminata nello stato
+    setEditedRows((prevEditedRows) => [...prevEditedRows, editedRow]);
+    console.log('Riga eliminata:', editedRow);
+
+    setPendingRequests((prevRequests) => [...prevRequests, `Modifica => Part Number:  ${editedRow[9]} Allocato: ${editedRow[12]}`]);
+  };
 
   const fetchStockData = async () => {
     try {
@@ -4140,6 +4147,7 @@ const ProjectItems = () => {
       <Box sx={{ width: '99%', mt: '2rem' }}>
         <AppTable ref={ref} columns={columnDefs} rows={projectItemsData || []}  
         onDeleteRow={handleDeleteRow} 
+        onEditRow={handleEditRow}
         showActions={true} 
         disableCheckboxSelection={true} 
         onRowDoubleClick={() => {}} />
