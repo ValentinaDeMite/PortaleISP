@@ -9,15 +9,15 @@ import { combineReducers } from 'redux';
 // Stato iniziale
 const initialState = {
   sidebarShow: true,
-  projects: [],  // Assicurati che questo stato esista se ti serve per caricare i progetti
-  selectedProject: null // Inizializza a null
+  projects: [],  
+  selectedProject: null
 };
 
 // Reducer
 const changeState = (state = initialState, { type, ...rest }) => {
   switch (type) {
     case 'set':
-      return { ...state, ...rest }; // Assicurati che `rest` contenga `projects: data.values`
+      return { ...state, ...rest };
     case 'setSelectedProject':
       return { ...state, selectedProject: rest.projectDetails };
     default:
@@ -33,7 +33,6 @@ const persistConfig = {
   storage, 
 };
 
-// Configura il rootReducer se usi `combineReducers`
 const rootReducer = combineReducers({
   app: changeState
 });
@@ -43,5 +42,4 @@ const store = createStore(persistedReducer, applyMiddleware(thunk));
 
 const persistor = persistStore(store);
 
-// Esporta sia lo store che il persistor
 export { store, persistor };
