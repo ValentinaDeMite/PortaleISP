@@ -3795,6 +3795,32 @@ import ApiRest from '../../service-API/ApiRest';
 
 const api = new ApiRest();
 
+const createNewRowObject = (item, project, isSupervisor, projectItemsDataLength) => {
+  return {
+    0: project[0],
+    1: projectItemsDataLength + 1,
+    2: 'PEN',
+    3: '',
+    4: '',
+    6: '',
+    7: '0',
+    8: project[8],
+    9: item.material['1'],
+    10: item.material['2'],
+    11: item.material['3'],
+    12: isSupervisor ? item.quantity : 0,
+    13: isSupervisor ? 0 : item.quantity,
+    14: 0,
+    15: 0,
+    16: 0,
+    17: isSupervisor ? item.quantity : 0,
+    18: '',
+    19: '',
+    20: 'No Edit',
+    21: 'No Delete',
+  };
+};
+
 const ProjectItems = () => {
   const ref = useRef();
   const project = useSelector((state) => state.selectedProject);
@@ -4057,6 +4083,7 @@ const ProjectItems = () => {
               <TextField label="Evaso" value={project[13]} InputProps={{ readOnly: true }} fullWidth sx={{ backgroundColor: '#D8D8D8', borderRadius: '8px' }} />
               <TextField label="Residuo" value={project[14]} InputProps={{ readOnly: true }} fullWidth sx={{ backgroundColor: '#D8D8D8', borderRadius: '8px' }} />
             </Stack>
+
 
             <Stack spacing={2} direction="row">
               {['projectName', 'projectDescription', 'projectNotes', 'projectManager', 'startDate', 'endDate'].map((field, index) => (

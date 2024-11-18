@@ -6,17 +6,16 @@ import { Box, Typography, CircularProgress, TextField, InputAdornment, Tooltip }
 import SearchIcon from '@mui/icons-material/Search';
 import DownloadForOfflineRoundedIcon from '@mui/icons-material/DownloadForOfflineRounded';
 import * as XLSX from 'xlsx';
-//import RequestsData from '../service-API/request.json';
+import RequestsData from '../service-API/request.json';
 import { useNavigate } from 'react-router-dom'
-
 
 const RequestList = (props) => {
   const [columnDefs, setColumnDefs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
   const date = useSelector((state) => state.date);
-  const requests = useSelector((state) => state.request );
-  const token = useSelector((state) => state.request);
+  const requests = useSelector((state) => state.requests || RequestsData.values);
+  const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
   const ref = useRef();
   const navigate = useNavigate();
@@ -26,8 +25,6 @@ const RequestList = (props) => {
     const projectId = row['0'];
     navigate(`/richieste/projectitems/${projectId}`);
   };
-  //     navigate(`/richieste/projectitems/${projectId}`);
-
   const filteredRequests = Array.isArray(requests)
     ? requests.filter((item) =>
         Object.values(item).some((value) =>
@@ -37,7 +34,7 @@ const RequestList = (props) => {
     : [];
 
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(filteredRequests); 
+    const worksheet = XLSX.utils.json_to_sheet(filteredRequests);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Requests');
     XLSX.writeFile(workbook, 'lista_richieste.xlsx');
@@ -50,7 +47,7 @@ const RequestList = (props) => {
       case 'N':
         return 'number';
       case 'D':
-        return 'text';
+        return 'date';
       case 'B':
         return 'button';
       default:
@@ -60,14 +57,18 @@ const RequestList = (props) => {
 
   const setColumns = (fields) => {
     return fields
-      .filter(field => field.show)
-      .map((field) => ({
-        field: field.forcount.toString(),
-        headerName: field.name,
-        width: field.type === 'N' ? 60 : props.isModal ? 200 : 250,
-        type: convertTypeColumn(field.type),
-        editable: field.editable,
-      }));
+      .filter(field => Object.values(field)[0].show)
+      .map((field) => {
+        const fieldData = Object.values(field)[0];
+        return {
+          field: fieldData.forcount.toString(),
+          headerName: fieldData.name,
+          width: fieldData.type === 'N' ? 60 : props.isModal ? 200 : 250,
+          hide: !fieldData.show,
+          type: convertTypeColumn(fieldData.type),
+          editable: fieldData.editable,
+        };
+      });
   };
 
   useEffect(() => {
@@ -76,15 +77,15 @@ const RequestList = (props) => {
       try {
         const api = new ApiRest();
         const data = await api.getRequests(token);
-        dispatch({ type: 'set',requests: data.values  });
+        dispatch({ type: 'set', requests: data.values });
         const columns = setColumns(data.fields);
         setColumnDefs(columns);
-        dispatch({ type: 'set', payload: { fieldsRequests: columns } });
+        dispatch({ type: 'set', fieldsRequests: columns });
       } catch (error) {
         console.error("API error, using mocked data", error);
-        //const columns = setColumns(RequestsData.fields.map(field => Object.values(field)[0]));
-        //setColumnDefs(columns);
-       // dispatch({ type: 'set', payload: { requests: RequestsData.values, fieldsRequests: columns } });
+        const columns = setColumns(RequestsData.fields);
+        setColumnDefs(columns);
+        dispatch({ type: 'set', payload: { requests: RequestsData.values, fieldsStock: columns } });
       } finally {
         setLoading(false);
       }
@@ -117,47 +118,14 @@ const RequestList = (props) => {
       )}
 
       {!loading && (
-        <Box
-          sx={{
-            flexShrink: 0,
-          }}
-        >
-          <Typography
-            variant="h5"
-            align="start"
-            gutterBottom
-            sx={{
-              fontSize: {
-                xs: '0.5rem',
-                sm: '0.8rem',
-                md: '1rem',
-                lg: '1.2rem',
-                xl: '1.5rem',
-              },
-            }}
-          >
+        <Box sx={{ flexShrink: 0 }}>
+          <Typography variant="h5" align="start" gutterBottom>
             Lista Richieste
           </Typography>
-          <Typography
-            variant="subtitle1"
-            align="start"
-            color="textSecondary"
-            gutterBottom
-            sx={{
-              fontSize: {
-                xs: '0.4rem',
-                sm: '0.5rem',
-                md: '0.7rem',
-                lg: '0.8rem',
-                xl: '0.9rem',
-              },
-            }}
-          >
-            Ultimo aggiornamento: {date !== undefined
-              ? new Date(date).toLocaleString('it-IT', { hour12: false })
-              : '--/--/----, --:--:--'}
+          <Typography variant="subtitle1" align="start" color="textSecondary" gutterBottom>
+            Ultimo aggiornamento: {date !== undefined ? new Date(date).toLocaleString('it-IT', { hour12: false }) : '--/--/----, --:--:--'}
           </Typography>
-          
+
           <Box
             sx={{
               display: 'flex',
@@ -228,25 +196,34 @@ const RequestList = (props) => {
         </Box>
       )}
 
-      <Box
-        sx={{
-          flexGrow: 1,
-          overflowY: 'auto',
-        }}
-      >
+      <Box sx={{ flexGrow: 1, overflowY: 'auto' }}>
         {!loading && (
-          <AppTable
-            ref={ref}
-            columns={columnDefs}
-            rows={filteredRequests || []} 
-            useChips={true}
-            showAddItem={true}
-            onRowDoubleClick={handleRowDoubleClick}
-            allowDoubleClick={true} 
-          />
+          filteredRequests.length > 0 ? (
+            <AppTable
+              ref={ref}
+              columns={columnDefs}
+              rows={filteredRequests}
+              useChips={false}
+              showAddItem={true}
+            />
+          ) : (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '60%',
+              }}
+            >
+              <Typography variant="h6" color="textSecondary">
+                Non ci sono richieste da visualizzare
+              </Typography>
+            </Box>
+          )
         )}
       </Box>
     </Box>
   );
 };
+
 export default RequestList;
