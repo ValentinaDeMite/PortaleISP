@@ -389,7 +389,6 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
             "& .MuiDataGrid-columnHeaders": {
               position: "sticky"
             },
-            
             '& .MuiDataGrid-columnHeaderTitleContainerContent': {
               color: 'white',
             },
