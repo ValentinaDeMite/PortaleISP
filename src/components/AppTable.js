@@ -118,7 +118,7 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
       if (field === 'allocato') {
         updatedRow.residuo = parseInt(prev.residuo) + parseInt(value) - parseInt(prev.allocato);
         updatedRow['allocato'] = value;
-        updatedRow[12] = value; // Update column 12 with allocato value
+        updatedRow[12] = value; 
       }
 
       return updatedRow;
@@ -389,10 +389,7 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
             "& .MuiDataGrid-columnHeaders": {
               position: "sticky"
             },
-            '& .MuiDataGrid-columnHeaderRow': {
-              textAlign: 'center',
-              color: 'white !important',
-            },
+            
             '& .MuiDataGrid-columnHeaderTitleContainerContent': {
               color: 'white',
             },
@@ -499,7 +496,7 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
         onClose={handleEditDialogClose}
         aria-labelledby="edit-dialog-title"
       >
-        <DialogTitle id="edit-dialog-title">Modifica Riga</DialogTitle>
+        <DialogTitle id="edit-dialog-title">Modifica Articolo: {selectedRow ? Object.values(selectedRow)[9] : ''}</DialogTitle>
         <DialogContent>
           {editedRow && (
             <Box>
@@ -508,7 +505,9 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
                 fullWidth
                 margin="normal"
                 value={selectedRow ? Object.values(selectedRow)[2] : ''}
-                  InputProps={{ readOnly: true }}
+                InputProps={{ readOnly: true }}
+                sx={{ backgroundColor: '#D8D8D8', borderRadius: '8px' }}
+
               />
               <TextField
                 label="Nome Prodotto"
@@ -516,6 +515,7 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
                 margin="normal"
                 value={selectedRow ? Object.values(selectedRow)[10] : ''}
                 InputProps={{ readOnly: true }}
+                sx={{ backgroundColor: '#D8D8D8', borderRadius: '8px' }}
               />
               <TextField
                 label="Descrizione"
@@ -523,6 +523,8 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
                 margin="normal"
                 value={selectedRow ? Object.values(selectedRow)[11] : ''}
                 InputProps={{ readOnly: true }}
+                sx={{ backgroundColor: '#D8D8D8', borderRadius: '8px' }}
+
               />
               <TextField
                 label="Evaso"
@@ -530,6 +532,8 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
                 margin="normal"
                 value={selectedRow ? Object.values(selectedRow)[16] : ''}
                 InputProps={{ readOnly: true }}
+                sx={{ backgroundColor: '#D8D8D8', borderRadius: '8px' }}
+
               />
               <TextField
                 label="Residuo"
@@ -538,6 +542,8 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
                 value={editedRow.residuo}
                 onChange={(e) => handleEditFieldChange('residuo', e.target.value)}
                 InputProps={{ readOnly: true }}
+                sx={{ backgroundColor: '#D8D8D8', borderRadius: '8px' }}
+
               />
               <TextField
                 label="Allocato"
@@ -551,7 +557,7 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
           )}
               </DialogContent>
               <DialogActions>
-                <Button onClick={handleEditDialogClose} color="red">
+                <Button onClick={handleEditDialogClose} color="error">
                   Annulla
                 </Button>
                 <Button onClick={handleEditConfirm} color="primary">
