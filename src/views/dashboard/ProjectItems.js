@@ -456,10 +456,17 @@ try {
 
 
             <Stack spacing={2} direction="row">
-              {['projectName', 'projectDescription', 'projectNotes', 'projectManager', 'startDate', 'endDate'].map((field, index) => (
+              {['projectName' , 'projectDescription', 'projectNotes', 'projectManager', 'startDate', 'endDate'].map((field, index) => (
                 <TextField
                   key={index}
-                  label={field === 'startDate' ? 'Data Inizio' : field === 'endDate' ? 'Data Fine' : `Nome ${field.replace('project', '').toUpperCase()}`}
+                  label={ 
+                    field === 'projectName'? 'Nome Progetto': 
+                    field === 'projectDescription'? 'Descrizione Progetto':
+                    field === 'projectNotes'? 'Note Progetto':
+                    field === 'projectManager'? 'Project Manager':
+                    field === 'startDate' ? 'Data Inizio' :
+                    field === 'endDate' ? 'Data Fine' :
+                    `Nome ${field.replace('project', '').toUpperCase()}`}
                   name={field}
                   value={editableData[field]}
                   onChange={handleInputChange}
