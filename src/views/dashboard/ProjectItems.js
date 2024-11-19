@@ -45,13 +45,29 @@ const ProjectItems = () => {
   const [projectItemsData, setProjectItemsData] = useState([]);
   const [columnDefs, setColumnDefs] = useState([]);
   const [stockData, setStockData] = useState([]);
+  const [modalStockData, setModalStockData] = useState([]); // Dati per la modale
+  const [modalColumnDefs, setModalColumnDefs] = useState([]); // Colonne per la modale
+
 
   const [editedRows, setEditedRows] = useState([]);
   const [deletedRows, setDeletedRows] = useState([]);
+ 
+  const [payloadObj, setPayloadObj] = useState({});
 
+  const info = useSelector((state) => state.info)
+  let isSupervisor = info.ruolo === 'Supervisor'
+ 
   const handleDeleteRow = (deletedRow) => {
     setDeletedRows((prevDeletedRows) => [...prevDeletedRows, deletedRow]);
     console.log('Riga eliminata:', deletedRow);
+
+    setPayloadObj((prevPayload) => ({
+      ...prevPayload, // Mantieni le altre proprietà di payloadObj
+      edits: {
+          ...(prevPayload.edits || {}), // Mantieni le chiavi-valore esistenti in edits o inizializzalo vuoto
+          [deletedRow[9]]: "DELETED" // Aggiungi la nuova chiave-valore
+      }
+  }));
 
     setPendingRequests((prevRequests) => [...prevRequests, `Articolo da eliminare => Part Number ${deletedRow[9]}`]);
   };
@@ -60,28 +76,86 @@ const ProjectItems = () => {
     setEditedRows((prevEditedRows) => [...prevEditedRows, editedRow]);
     console.log('Riga eliminata:', editedRow);
 
+  setPayloadObj((prevPayload) => ({
+    ...prevPayload, // Mantieni le altre proprietà di payloadObj
+    edits: {
+        ...(prevPayload.edits ), // Mantieni le chiavi-valore esistenti in edits o inizializzalo vuoto
+        [editedRow[9]]: Number(editedRow[12]) // Aggiungi la nuova chiave-valore
+    }
+}));
+
     setPendingRequests((prevRequests) => [...prevRequests, `Modifica => Part Number:  ${editedRow[9]} Allocato: ${editedRow[12]}`]);
   };
 
-  const fetchStockData = async () => {
+  const fetchStockDataForModal = async () => {
     try {
       const response = await api.getStock(token);
-      setStockData(response.values.slice(0, 10)); 
-
+  
+      // Imposta i dati della modale
+      setModalStockData(response.values.slice(0, 10));
+  
+      // Genera colonne specifiche per la modale
+      const modalColumns = response.fields
+        .filter((field) => Object.values(field)[0].show)
+        .map((field) => {
+          const fieldData = Object.values(field)[0];
+          return {
+            field: fieldData.forcount.toString(),
+            headerName: fieldData.name,
+            width: fieldData.type === 'N' ? 60 : 200,
+            hide: !fieldData.show,
+            type: fieldData.type === 'N' ? 'number' : 'string',
+            editable: fieldData.editable,
+          };
+        });
+  
+      setModalColumnDefs(modalColumns);
+  
+      // Aggiorna i dati completi della modale dopo un breve ritardo
       setTimeout(() => {
-        setStockData(response.values);
+        setModalStockData(response.values);
       }, 0);
     } catch (error) {
-      console.error('Errore nel recuperare i dati di stock:', error);
+      console.error('Errore nel recuperare i dati di stock per la modale:', error);
     }
   };
-
+  
+  
+  // Funzione per generare colonne della tabella della modale
+  const getModalColumnDefs = () => {
+    return columnDefs.map((column) => ({
+      ...column,
+      width: column.width || 150,
+      sortable: true,
+    }));
+  };
+  
+  // Funzione per aggiungere un nuovo elemento dalla modale
+  const handleAddStockItemFromModal = (newRow) => {
+    setStockData((prevStockData) => [...prevStockData, newRow]);
+    setPayloadObj((prevPayload) => ({
+      ...prevPayload,
+      new: {
+        ...(prevPayload.new || {}),
+        [newRow[9]]: Number(newRow[12]),
+      },
+    }));
+    setPendingRequests((prevRequests) => [
+      ...prevRequests,
+      `Aggiunto nuovo articolo: Part Number ${newRow[9]}`,
+    ]);
+  };
+  
+  // Apri la modale e recupera i dati dello stock
   const handleOpenModal = () => {
     setOpenModal(true);
-    fetchStockData();
+    fetchStockDataForModal(); // Recupera i dati per la modale
   };
-
+  
+  
+  // Chiudi la modale
   const handleCloseModal = () => setOpenModal(false);
+  
 
   useEffect(() => {
     const fetchProjectItems = async () => {
@@ -112,18 +186,6 @@ const ProjectItems = () => {
     fetchProjectItems();
   }, [token, project]);
 
-  const getModalColumnDefs = () => {
-    return StockData.fields
-      .filter(field => {
-        const fieldKey = Object.keys(field)[0];
-        return field[fieldKey].show;
-      })
-      .map(f => ({
-        field: Object.keys(f)[0],
-        headerName: f[Object.keys(f)[0]].description,
-        flex: 1,
-      }));
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -171,10 +233,59 @@ const ProjectItems = () => {
     }
   };
 
-  const handleConfirm = () => {
-    setPendingRequests([]);
+  const handleConfirm =  () => { 
+    
+    
+    setPayloadObj((prevPayload) => {
+      const updatedPayload = {
+          new: prevPayload.new || {}, // Define as an empty object if undefined
+          edits: prevPayload.edits || {}, // Define as an empty object if undefined
+          project: project, // Add or update the project property
+          cancelRequests: false // Add or update the cancelRequests property
+      };
+  
+// con operatore terniario esempio       isSupoervisor ? cancelRequests: true : cancelRequests: false 
+
+try {
+  // setVisible(true)
+  // setIsLoading(true)
+  const api = new ApiRest()
+  const data =  api.iuProject(token, payloadObj)
+  if (data.code === 200) {
+    // setIsLoading(false)
+    // setErrorTitle('Success')
+    // const text = isSupervisor
+    //   ? `All your  ${editCounter()} request(s) have been correctly registered`
+    //   : `All your ${editCounter()} request(s) have been correctly submitted to your supervisor`
+    // setErrorMessage(text)
+  } else {
+    alert('Something went wrong, please try again submit your request(s)')
+  }
+} catch (error) {
+  // setIsLoading(false)
+  console.log(error.response.data.message)
+  // alert('Something went wrong, please try again submit your request(s)')
+  // setErrorTitle('Error while updating project')
+  // setErrorMessage(error.response.data.message)
+  // setVisible(true)
+}
+
+      return updatedPayload;
+  });
+
+  console.log(project);
+  
+
+
+
     alert('Tutte le richieste sono state accettate!');
+
+ 
   };
+
+  useEffect(() => {
+    console.log("PayloadObj after state update:", payloadObj);
+}, [payloadObj]);
 
   const handleDeleteConfirmOpen = () => setOpenDeleteConfirm(true);
   const handleDeleteConfirmClose = () => setOpenDeleteConfirm(false);
@@ -382,17 +493,37 @@ const ProjectItems = () => {
         onRowDoubleClick={() => {}} />
       </Box>
 
-      <Modal open={openModal} onClose={handleCloseModal} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Box sx={{ backgroundColor: 'white', borderRadius: '8px', padding: '2rem', width: '80%', maxHeight: '80vh', overflowY: 'auto', position: 'relative' }}>
-          <IconButton onClick={handleCloseModal} sx={{ position: 'absolute', top: 16, right: 16 }}>
-            <CloseIcon />
-          </IconButton>
-          <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
-            Stock Item
-          </Typography>
-          <AppModalTable columns={getModalColumnDefs()} rows={stockData} onAdd={() => {}} />
-        </Box>
-      </Modal>
+      <Modal
+  open={openModal}
+  onClose={handleCloseModal}
+  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+>
+  <Box
+    sx={{
+      backgroundColor: 'white',
+      borderRadius: '8px',
+      padding: '2rem',
+      width: '80%',
+      maxHeight: '80vh',
+      overflowY: 'auto',
+      position: 'relative',
+    }}
+  >
+    <IconButton onClick={handleCloseModal} sx={{ position: 'absolute', top: 16, right: 16 }}>
+      <CloseIcon />
+    </IconButton>
+    <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
+      Stock Item
+    </Typography>
+    <AppModalTable
+      columns={modalColumnDefs} // Colonne della modale
+      rows={modalStockData}     // Dati della modale
+      onAdd={handleAddStockItemFromModal} // Funzione per aggiungere un elemento
+    />
+  </Box>
+</Modal>
+
+
     </Box>
   );
 };
