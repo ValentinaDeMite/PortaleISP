@@ -19,6 +19,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import CancelIcon from '@mui/icons-material/Cancel';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import AppTable from '../../components/AppTable';
 import AppModalTable from '../../components/AppModalTable';
 import StockData from '../../service-API/stock.json';
@@ -365,23 +366,54 @@ try {
           marginBottom: '1rem',
         }}
       >
-        <Typography
-          variant="h4"
+        <Box
           sx={{
-            color: '#333',
-            fontWeight: 'bold',
-            fontSize: {
-              xs: '0.5rem',
-              sm: '0.8rem',
-              md: '1rem',
-              lg: '1.2rem',
-              xl: '1.5rem',
-            },
-            fontFamily: 'Poppins!important',
+            display: 'flex',
+            alignItems: 'center',
           }}
         >
-          {project[8]}
-        </Typography>
+          <Typography
+            variant="h4"
+            sx={{
+              color: '#333',
+              fontWeight: 'bold',
+              fontSize: {
+                xs: '0.5rem',
+                sm: '0.8rem',
+                md: '1rem',
+                lg: '1.2rem',
+                xl: '1.5rem',
+              },
+              fontFamily: 'Poppins!important',
+              marginRight: '1rem',
+            }}
+          >
+            {project[8]}
+          </Typography>
+          <Tooltip title="Elimina progetto">
+            <RemoveCircleIcon
+              sx={{
+                color: '#d32f2f',
+                cursor: 'pointer',
+                fontSize: {
+                  xs: '16px',
+                  sm: '18px',
+                  md: '20px',
+                  lg: '22px',
+                  xl: '24px',
+                },
+                '&:hover': {
+                  transform: 'scale(1.2)',
+                  transition: 'transform 0.2s ease-in-out',
+                },
+              }}
+              onClick={() => {
+                // Funzione per gestire la cancellazione
+                console.log('Cliccato su elimina progetto:', project[8]);
+              }}
+            />
+          </Tooltip>
+        </Box>
         <Box
           sx={{
             backgroundColor: '#F5F5F5',
@@ -395,9 +427,9 @@ try {
           <Typography variant="body2">Creato da: {project[4]}</Typography>
           <Typography variant="body2">Ultima Modifica: {project[5]}</Typography>
           <Typography variant="body2">Modificato da: {project[6]}</Typography>
-
         </Box>
       </Box>
+
 
       <Box sx={{ width: '100%', height: 'auto' }}>
         <Box
