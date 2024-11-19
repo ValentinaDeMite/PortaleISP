@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Box, TextField, Button, Typography } from '@mui/material';
-import { DataGridPremium, useGridApiRef } from '@mui/x-data-grid-premium';
-import { alpha, styled } from '@mui/material/styles';
-import Chip from '@mui/material/Chip';
+import React, { useState } from "react";
+import { Box, TextField, Button, Typography } from "@mui/material";
+import { DataGridPremium, useGridApiRef } from "@mui/x-data-grid-premium";
+import { alpha, styled } from "@mui/material/styles";
+import Chip from "@mui/material/Chip";
 
-const ODD_COLOR = 'rgba(217, 217, 217, 0.7)';
-const EVEN_COLOR = 'rgba(255, 255, 255, 1)';
+const ODD_COLOR = "rgba(217, 217, 217, 0.7)";
+const EVEN_COLOR = "rgba(255, 255, 255, 1)";
 
 const StripedDataGrid = styled(DataGridPremium)(({ theme }) => ({
   [`& .MuiDataGrid-row.even`]: {
@@ -19,24 +19,24 @@ const StripedDataGrid = styled(DataGridPremium)(({ theme }) => ({
   },
   [`& .MuiDataGrid-row.Mui-selected`]: {
     backgroundColor: alpha(theme.palette.primary.main, 0.4),
-    '&:hover': {
+    "&:hover": {
       backgroundColor: alpha(theme.palette.primary.main, 0.6),
     },
   },
   [`& .MuiDataGrid-columnHeaderTitle`]: {
-    fontFamily: 'Poppins !important',
-    color: 'white',
+    fontFamily: "Poppins !important",
+    color: "white",
     fontSize: {
-      xs: '0.5rem',
-      sm: '0.6rem',
-      md: '0.7rem',
-      lg: '0.8rem',
-      xl: '0.9rem',
+      xs: "0.5rem",
+      sm: "0.6rem",
+      md: "0.7rem",
+      lg: "0.8rem",
+      xl: "0.9rem",
     },
   },
   [`& .MuiDataGrid-columnHeaderRow`]: {
-    textAlign: 'center',
-    backgroundColor: 'rgb(75, 168, 61, .9) !important',
+    textAlign: "center",
+    backgroundColor: "rgb(75, 168, 61, .9) !important",
   },
 }));
 
@@ -49,68 +49,64 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
     rows.reduce((acc, row) => ({ ...acc, [row[0]]: 0 }), {})
   );
 
-
   const handleAddClick = (id) => {
     const quantity = quantities[id] || 0;
     if (quantity > 0) {
       onAdd(addedItems);
-      setQuantities(prev => ({ ...prev, [id]: 0 }));
+      setQuantities((prev) => ({ ...prev, [id]: 0 }));
     } else {
       alert("Inserisci una quantità valida!");
     }
   };
 
-
-
   const handleEditFieldChange = (id, newQuantity) => {
+    setAddedItems((prev) => ({ ...prev, [id]: newQuantity }));
 
-    setAddedItems(prev => ({ ...prev, [id]: newQuantity }));
-
-console.log(quantities);
-
+    console.log(quantities);
   };
 
-
   const renderAllocateColumn = (params) => {
-
-    
     const quantity = quantities[params.row[0]] || 0;
     const availableQuantity = params.row[9];
 
     console.log(quantities);
 
-
-
-
     return (
-      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', justifyContent: 'center' }}>
-         <TextField
-                size="small"
-                type="number"
-                fullWidth
-                margin="normal"
-                value={quantity}
-                onChange={(e) => handleEditFieldChange(params.row[0], e.target.value)}
-                sx={{
-                  width: {
-                    xs: '40px',
-                    sm: '45px',
-                    md: '50px',
-                    lg: '55px',
-                    xl: '60px',
-                  },
-                  '& input': {
-                    textAlign: 'center',
-                    fontSize: {
-                      xs: '0.6rem',
-                      sm: '0.65rem',
-                      md: '0.7rem',
-                      lg: '0.75rem',
-                      xl: '0.8rem',
-                    },
-                  },
-                }}
-              />
+      <Box
+        sx={{
+          display: "flex",
+          gap: 1,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <TextField
+          size="small"
+          type="number"
+          fullWidth
+          margin="normal"
+          value={quantity}
+          onChange={(e) => handleEditFieldChange(params.row[0], e.target.value)}
+          sx={{
+            width: {
+              xs: "40px",
+              sm: "45px",
+              md: "50px",
+              lg: "55px",
+              xl: "60px",
+            },
+            "& input": {
+              textAlign: "center",
+              fontSize: {
+                xs: "0.6rem",
+                sm: "0.65rem",
+                md: "0.7rem",
+                lg: "0.75rem",
+                xl: "0.8rem",
+              },
+            },
+          }}
+        />
         {/* <TextField
           size="small"
           type="number"
@@ -136,111 +132,114 @@ console.log(quantities);
   };
 
   const updatedColumns = columns.map((col) => {
-    if (col.headerName === 'Stato' || col.headerName === "Stato singolo Item ") {
+    if (
+      col.headerName === "Stato" ||
+      col.headerName === "Stato singolo Item "
+    ) {
       return {
         ...col,
-        headerAlign: 'center',
+        headerAlign: "center",
         renderCell: (params) => <Chip label={params.value} color="success" />,
       };
     }
 
     return {
       ...col,
-      headerAlign: 'center',
+      headerAlign: "center",
       flex: 1,
     };
   });
 
   updatedColumns.push({
-    field: 'allocate',
-    headerName: 'Allocare',
+    field: "allocate",
+    headerName: "Allocare",
     flex: 1,
-    headerAlign: 'center',
+    headerAlign: "center",
     renderCell: (params) => renderAllocateColumn(params),
     sortable: false,
     filterable: false,
-    align: 'center',
+    align: "center",
   });
 
   return (
-    <Box sx={{ height: '100%', width: '100%' }}>
-      <Box sx={{ height: 'auto', width: '100%' }}>
+    <Box sx={{ height: "100%", width: "100%" }}>
+      <Box sx={{ height: "auto", width: "100%" }}>
         <StripedDataGrid
           apiRef={apiRef}
           rowHeight={40}
           sx={{
             boxShadow: 2,
-            '& .MuiDataGrid-columnHeaderTitle': {
-              fontFamily: 'Poppins !important',
+            "& .MuiDataGrid-columnHeaderTitle": {
+              fontFamily: "Poppins !important",
               fontSize: {
-                xs: '0.5rem',
-                sm: '0.6rem',
-                md: '0.7rem',
-                lg: '0.8rem',
-                xl: '0.9rem',
+                xs: "0.5rem",
+                sm: "0.6rem",
+                md: "0.7rem",
+                lg: "0.8rem",
+                xl: "0.9rem",
               },
             },
-            '& .MuiDataGrid-columnHeaderRow': {
-              textAlign: 'center',
-              color: 'white !important',
+            "& .MuiDataGrid-columnHeaderRow": {
+              textAlign: "center",
+              color: "white !important",
             },
-            '& .MuiDataGrid-columnHeaderTitleContainerContent': {
-              color: 'white',
+            "& .MuiDataGrid-columnHeaderTitleContainerContent": {
+              color: "white",
             },
-            '& .MuiDataGrid-columnHeaderRow>.MuiButtonBase-root': {
-              color: 'white',
+            "& .MuiDataGrid-columnHeaderRow>.MuiButtonBase-root": {
+              color: "white",
             },
-            '& .MuiDataGrid-container--top [role=row]': {
-              backgroundColor: 'rgb(75, 168, 61, .9) !important',
+            "& .MuiDataGrid-container--top [role=row]": {
+              backgroundColor: "rgb(75, 168, 61, .9) !important",
             },
-            '& .MuiDataGrid-withBorderColor': {
-              backgroundColor: 'rgb(75, 168, 61, .9) !important',
+            "& .MuiDataGrid-withBorderColor": {
+              backgroundColor: "rgb(75, 168, 61, .9) !important",
             },
-            '& .MuiTablePagination-root': {
-              color: 'white',
-              fontFamily: 'Poppins !important',
+            "& .MuiTablePagination-root": {
+              color: "white",
+              fontFamily: "Poppins !important",
               fontSize: {
-                xs: '0.5rem',
-                sm: '0.6rem',
-                md: '0.7rem',
-                lg: '0.8rem',
-                xl: '0.9rem',
+                xs: "0.5rem",
+                sm: "0.6rem",
+                md: "0.7rem",
+                lg: "0.8rem",
+                xl: "0.9rem",
               },
             },
-            '& .MuiTablePagination-selectIcon ': {
-              color: 'white !important',
+            "& .MuiTablePagination-selectIcon ": {
+              color: "white !important",
             },
-            '& .MuiDataGrid-cell': {
-              textAlign: 'center',
-              fontFamily: 'Poppins !important',
+            "& .MuiDataGrid-cell": {
+              textAlign: "center",
+              fontFamily: "Poppins !important",
               fontSize: {
-                xs: '0.4rem',
-                sm: '0.5rem',
-                md: '0.6rem',
-                lg: '0.8rem',
-                xl: '0.9rem',
+                xs: "0.4rem",
+                sm: "0.5rem",
+                md: "0.6rem",
+                lg: "0.8rem",
+                xl: "0.9rem",
               },
             },
-            '& .MuiDataGrid-sortIcon': {
-              color: 'white',
-              opacity: '.9 !important',
+            "& .MuiDataGrid-sortIcon": {
+              color: "white",
+              opacity: ".9 !important",
             },
-            '& .MuiDataGrid-menuIconButton': {
-              color: 'white',
-              opacity: '.9 !important',
+            "& .MuiDataGrid-menuIconButton": {
+              color: "white",
+              opacity: ".9 !important",
             },
-            '& .MuiDataGrid-topContainer ': {
-              textAlign: 'center !important',
+            "& .MuiDataGrid-topContainer ": {
+              textAlign: "center !important",
             },
-            '&.MuiDataGrid-virtualScrollerContent': {
-              height: '100%',
+            "&.MuiDataGrid-virtualScrollerContent": {
+              height: "100%",
             },
           }}
           rows={rows}
           columns={updatedColumns}
           pageSize={pageSize}
           onRowDoubleClick={(params) => console.log(params.row)}
-          getRowId={(row) => row[0]} 
+          getRowId={(row) => row[0]}
           pagination
           paginationMode="client"
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
@@ -250,40 +249,47 @@ console.log(quantities);
             pagination: { paginationModel: { pageSize: 10 } },
           }}
           pageSizeOptions={[10, 25, 50]}
-          sortingOrder={['asc', 'desc']}
+          sortingOrder={["asc", "desc"]}
         />
       </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
+      <Box
+        sx={{ display: "flex", justifyContent: "flex-end", marginTop: "1rem" }}
+      >
         <Button
           variant="contained"
           sx={{
-            backgroundColor:"#FF8700",
-            '&:hover': {
-            backgroundColor: '#323232',
-          }
-          
+            backgroundColor: "#FF8700",
+            "&:hover": {
+              backgroundColor: "#323232",
+            },
           }}
-          
           onClick={() => {
-            const totalQuantity = Object.values(quantities).reduce((a, b) => a + b, 0);
+            const totalQuantity = Object.values(quantities).reduce(
+              (a, b) => a + b,
+              0
+            );
             if (totalQuantity > 0) {
               onAdd(quantities);
-              setQuantities(rows.reduce((acc, row) => ({ ...acc, [row[0]]: 0 }), {})); 
+              setQuantities(
+                rows.reduce((acc, row) => ({ ...acc, [row[0]]: 0 }), {})
+              );
             } else {
               alert("Inserisci almeno una quantità valida!");
             }
           }}
         >
-          <Typography sx={{
-            fontSize: {
-              xs: '0.6rem',
-              sm: '0.7rem',
-              md: '0.8rem',
-              lg: '0.8rem',
-              xl: '0.9rem',
-            },
-            fontFamily: 'Poppins!important',
-          }}>
+          <Typography
+            sx={{
+              fontSize: {
+                xs: "0.6rem",
+                sm: "0.7rem",
+                md: "0.8rem",
+                lg: "0.8rem",
+                xl: "0.9rem",
+              },
+              fontFamily: "Poppins!important",
+            }}
+          >
             Aggiungi
           </Typography>
         </Button>
