@@ -60,6 +60,16 @@ const Stock = (props) => {
           hide: !fieldData.show,
           type: convertTypeColumn(fieldData.type),
           editable: fieldData.editable,
+          renderCell: (params) => {
+            if (fieldData.type === 'N' && (typeof params.value === 'number' && params.value < 0 || String(params.value).includes('-'))) {
+              return (
+                <Box sx={{ color: 'red', fontWeight: 'bold' }}>
+                  {params.value}
+                </Box>
+              );
+            }
+            return params.value;
+          },
         };
       });
   };

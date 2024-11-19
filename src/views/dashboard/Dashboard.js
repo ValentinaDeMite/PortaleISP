@@ -72,7 +72,7 @@ const Dashboard = (props) => {
 
   const setColumns = (fields) => {
     return fields
-      .filter(field => Object.values(field)[0].show) 
+      .filter(field => Object.values(field)[0].show)
       .map((field) => {
         const fieldData = Object.values(field)[0];
         return {
@@ -82,6 +82,17 @@ const Dashboard = (props) => {
           hide: !fieldData.show,
           type: convertTypeColumn(fieldData.type),
           editable: fieldData.editable,
+          renderCell: (params) => {
+            if (fieldData.type === 'N' && (typeof params.value === 'number' && params.value < 0 || String(params.value).includes('-'))) {
+              return (
+                <Box sx={{ color: 'red', fontWeight: 'bold' }}>
+                  {params.value}
+                </Box>
+              );
+            }
+            
+            return params.value;
+          },
         };
       });
   };

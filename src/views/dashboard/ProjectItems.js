@@ -106,6 +106,16 @@ const ProjectItems = () => {
             hide: !fieldData.show,
             type: fieldData.type === 'N' ? 'number' : 'string',
             editable: fieldData.editable,
+            renderCell: (params) => {
+              if (fieldData.type === 'N' && (typeof params.value === 'number' && params.value < 0 || String(params.value).includes('-'))) {
+                return (
+                  <Box sx={{ color: 'red', fontWeight: 'bold' }}>
+                    {params.value}
+                  </Box>
+                );
+              }
+              return params.value;
+            },
           };
         });
   
@@ -162,7 +172,7 @@ const ProjectItems = () => {
       try {
         const items = await api.getItems(token, project[0]);
         setProjectItemsData(items.values);
-
+  
         const columns = items.fields
           .filter(field => {
             const fieldKey = Object.keys(field)[0];
@@ -170,21 +180,37 @@ const ProjectItems = () => {
           })
           .map(field => {
             const fieldKey = Object.keys(field)[0];
+            const fieldData = field[fieldKey];
+  
             return {
               field: fieldKey,
-              headerName: field[fieldKey].name,
+              headerName: fieldData.name,
               flex: 1,
+              renderCell: (params) => {
+                if (
+                  fieldData.type === 'N' && 
+                  (typeof params.value === 'number' && params.value < 0 || String(params.value).includes('-'))
+                ) {
+                  return (
+                    <Box sx={{ color: 'red', fontWeight: 'bold' }}>
+                      {params.value}
+                    </Box>
+                  );
+                }
+                return params.value;
+              },
             };
           });
-
+  
         setColumnDefs(columns);
       } catch (error) {
         console.error('Errore nel recuperare i project items:', error);
       }
     };
-
+  
     fetchProjectItems();
   }, [token, project]);
+  
 
 
   const handleInputChange = (e) => {
@@ -494,34 +520,34 @@ try {
       </Box>
 
       <Modal
-  open={openModal}
-  onClose={handleCloseModal}
-  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
->
-  <Box
-    sx={{
-      backgroundColor: 'white',
-      borderRadius: '8px',
-      padding: '2rem',
-      width: '80%',
-      maxHeight: '80vh',
-      overflowY: 'auto',
-      position: 'relative',
-    }}
-  >
-    <IconButton onClick={handleCloseModal} sx={{ position: 'absolute', top: 16, right: 16 }}>
-      <CloseIcon />
-    </IconButton>
-    <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
-      Stock Item
-    </Typography>
-    <AppModalTable
-      columns={modalColumnDefs} // Colonne della modale
-      rows={modalStockData}     // Dati della modale
-      onAdd={handleAddStockItemFromModal} // Funzione per aggiungere un elemento
-    />
-  </Box>
-</Modal>
+        open={openModal}
+        onClose={handleCloseModal}
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      >
+        <Box
+          sx={{
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            padding: '2rem',
+            width: '80%',
+            maxHeight: '80vh',
+            overflowY: 'auto',
+            position: 'relative',
+          }}
+        >
+          <IconButton onClick={handleCloseModal} sx={{ position: 'absolute', top: 16, right: 16 }}>
+            <CloseIcon />
+          </IconButton>
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
+            Stock Item
+          </Typography>
+          <AppModalTable
+            columns={modalColumnDefs} // Colonne della modale
+            rows={modalStockData}     // Dati della modale
+            onAdd={handleAddStockItemFromModal} // Funzione per aggiungere un elemento
+          />
+        </Box>
+      </Modal>
 
 
     </Box>

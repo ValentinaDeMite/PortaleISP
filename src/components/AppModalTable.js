@@ -45,50 +45,65 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
   const [page, setPage] = useState(0);
   const apiRef = useGridApiRef();
 
+  // Stato per gestire le quantità
   const [quantities, setQuantities] = useState(
     rows.reduce((acc, row) => ({ ...acc, [row[0]]: 0 }), {})
   );
 
+  // Funzione per gestire le modifiche delle quantità
   const handleQuantityChange = (id, value, availableQuantity) => {
     const newValue = Math.min(Math.max(0, value), availableQuantity);
-    setQuantities(prev => ({
+    setQuantities((prev) => ({
       ...prev,
       [id]: newValue,
     }));
   };
 
-  const handleAddClick = (id) => {
-    const quantity = quantities[id] || 0;
-    if (quantity > 0) {
-      onAdd(id, quantity);
-      setQuantities(prev => ({ ...prev, [id]: 0 }));
+  // Funzione per aggiungere gli articoli
+  const handleAddClick = () => {
+    const totalQuantity = Object.values(quantities).reduce((a, b) => a + b, 0);
+    if (totalQuantity > 0) {
+      onAdd(quantities); // Passa le quantità al metodo `onAdd`
+      setQuantities(
+        rows.reduce((acc, row) => ({ ...acc, [row[0]]: 0 }), {})
+      ); // Resetta le quantità
     } else {
-      alert("Inserisci una quantità valida!");
+      alert('Inserisci almeno una quantità valida!');
     }
   };
 
+  // Colonna personalizzata per "Allocare"
   const renderAllocateColumn = (params) => {
     const quantity = quantities[params.row[0]] || 0;
-    const availableQuantity = params.row[9];
+    const availableQuantity = params.row[9]; // Quantità disponibile
 
     return (
-      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
         <TextField
           size="small"
           type="number"
           value={quantity}
-          onChange={(e) => handleQuantityChange(params.row[0], parseInt(e.target.value) || 0, availableQuantity)}
+          onChange={(e) =>
+            handleQuantityChange(params.row[0], parseInt(e.target.value) || 0, availableQuantity)
+          }
           InputProps={{
             inputProps: {
               min: 0,
               max: availableQuantity,
               step: 1,
               onKeyDown: (event) => {
-                if (quantity >= availableQuantity && event.key === "ArrowUp") {
-                  event.preventDefault(); 
+                if (quantity >= availableQuantity && event.key === 'ArrowUp') {
+                  event.preventDefault();
                 }
-              }
-            }
+              },
+            },
           }}
           sx={{
             width: {
@@ -114,8 +129,9 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
     );
   };
 
+  // Aggiorna le colonne per includere "Allocare"
   const updatedColumns = columns.map((col) => {
-    if (col.headerName === 'Stato' || col.headerName === "Stato singolo Item ") {
+    if (col.headerName === 'Stato' || col.headerName === 'Stato singolo Item ') {
       return {
         ...col,
         headerAlign: 'center',
@@ -214,12 +230,10 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
             '&.MuiDataGrid-virtualScrollerContent': {
               height: '100%',
             },
-          }}
-          rows={rows}
+          }}          rows={rows}
           columns={updatedColumns}
           pageSize={pageSize}
-          onRowDoubleClick={(params) => console.log(params.row)}
-          getRowId={(row) => row[0]} 
+          getRowId={(row) => row[0]} // Usa la prima colonna come ID
           pagination
           paginationMode="client"
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
@@ -236,33 +250,25 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
         <Button
           variant="contained"
           sx={{
-            backgroundColor:"#FF8700",
+            backgroundColor: '#FF8700',
             '&:hover': {
-            backgroundColor: '#323232',
-          }
-          
-          }}
-          
-          onClick={() => {
-            const totalQuantity = Object.values(quantities).reduce((a, b) => a + b, 0);
-            if (totalQuantity > 0) {
-              onAdd(quantities);
-              setQuantities(rows.reduce((acc, row) => ({ ...acc, [row[0]]: 0 }), {})); 
-            } else {
-              alert("Inserisci almeno una quantità valida!");
-            }
-          }}
-        >
-          <Typography sx={{
-            fontSize: {
-              xs: '0.6rem',
-              sm: '0.7rem',
-              md: '0.8rem',
-              lg: '0.8rem',
-              xl: '0.9rem',
+              backgroundColor: '#323232',
             },
-            fontFamily: 'Poppins!important',
-          }}>
+          }}
+          onClick={handleAddClick} // Gestione dell'aggiunta
+        >
+          <Typography
+            sx={{
+              fontSize: {
+                xs: '0.6rem',
+                sm: '0.7rem',
+                md: '0.8rem',
+                lg: '0.8rem',
+                xl: '0.9rem',
+              },
+              fontFamily: 'Poppins!important',
+            }}
+          >
             Aggiungi
           </Typography>
         </Button>
