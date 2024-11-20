@@ -173,15 +173,14 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
               fontFamily: "Poppins !important",
               fontSize: {
                 xs: "0.5rem",
-                sm: "0.6rem",
-                md: "0.7rem",
-                lg: "0.8rem",
-                xl: "0.9rem",
+                sm: "0.5rem",
+                md: "0.6rem",
+                lg: "0.7rem",
+                xl: "0.8rem",
               },
             },
-            "& .MuiDataGrid-columnHeaderRow": {
-              textAlign: "center",
-              color: "white !important",
+            "& .MuiDataGrid-columnHeaders": {
+              position: "sticky",
             },
             "& .MuiDataGrid-columnHeaderTitleContainerContent": {
               color: "white",
@@ -200,10 +199,30 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
               fontFamily: "Poppins !important",
               fontSize: {
                 xs: "0.5rem",
-                sm: "0.6rem",
-                md: "0.7rem",
-                lg: "0.8rem",
-                xl: "0.9rem",
+                sm: "0.5rem",
+                md: "0.6rem",
+                lg: "0.7rem",
+                xl: "0.8rem",
+              },
+            },
+            "& .MuiTablePagination-displayedRows": {
+              fontFamily: "Poppins !important",
+              fontSize: {
+                xs: "0.5rem",
+                sm: "0.5rem",
+                md: "0.6rem",
+                lg: "0.7rem",
+                xl: "0.8rem",
+              },
+            },
+            "& .MuiTablePagination-selectLabel": {
+              fontFamily: "Poppins !important",
+              fontSize: {
+                xs: "0.5rem",
+                sm: "0.5rem",
+                md: "0.6rem",
+                lg: "0.7rem",
+                xl: "0.8rem",
               },
             },
             "& .MuiTablePagination-selectIcon ": {
@@ -213,11 +232,11 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
               textAlign: "center",
               fontFamily: "Poppins !important",
               fontSize: {
-                xs: "0.4rem",
+                xs: "0.5rem",
                 sm: "0.5rem",
                 md: "0.6rem",
-                lg: "0.8rem",
-                xl: "0.9rem",
+                lg: "0.7rem",
+                xl: "0.8rem",
               },
             },
             "& .MuiDataGrid-sortIcon": {

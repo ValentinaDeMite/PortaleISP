@@ -1,14 +1,27 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Box, IconButton, Tooltip, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField } from '@mui/material';
-import { DataGridPremium, useGridApiRef } from '@mui/x-data-grid-premium';
-import { alpha, styled } from '@mui/material/styles';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
-import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Box,
+  IconButton,
+  Tooltip,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+  TextField,
+} from "@mui/material";
+import { DataGridPremium, useGridApiRef } from "@mui/x-data-grid-premium";
+import { alpha, styled } from "@mui/material/styles";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
+import NotificationsOffIcon from "@mui/icons-material/NotificationsOff";
+import { useMediaQuery } from "@mui/material";
 
-const ODD_COLOR = 'rgba(217, 217, 217, 0.7)';
-const EVEN_COLOR = 'rgba(255, 255, 255, 1)';
+const ODD_COLOR = "rgba(217, 217, 217, 0.7)";
+const EVEN_COLOR = "rgba(255, 255, 255, 1)";
 
 const StripedDataGrid = styled(DataGridPremium)(({ theme }) => ({
   [`& .MuiDataGrid-row.even`]: {
@@ -22,35 +35,42 @@ const StripedDataGrid = styled(DataGridPremium)(({ theme }) => ({
   },
   [`& .MuiDataGrid-row.Mui-selected`]: {
     backgroundColor: alpha(theme.palette.primary.main, 0.4),
-    '&:hover': {
+    "&:hover": {
       backgroundColor: alpha(theme.palette.primary.main, 0.6),
     },
   },
   [`& .MuiDataGrid-columnHeader`]: {
-    position: 'sticky',
+    position: "sticky",
     top: 0,
     zIndex: 2,
-    backgroundColor: 'rgb(75, 168, 61, .9) !important',
+    backgroundColor: "rgb(75, 168, 61, .9) !important",
   },
   [`& .MuiDataGrid-columnHeaderTitle`]: {
-    fontFamily: 'Poppins !important',
-    color: 'white',
+    fontFamily: "Poppins !important",
+    color: "white",
     fontSize: {
-      xs: '0.5rem',
-      sm: '0.6rem',
-      md: '0.7rem',
-      lg: '0.8rem',
-      xl: '0.9rem',
+      xs: "0.5rem",
+      sm: "0.5rem",
+      md: "0.6rem",
+      lg: "0.7rem",
+      xl: "0.8rem",
     },
   },
   [`& .MuiDataGrid-columnHeaderRow`]: {
-    textAlign: 'center',
-    backgroundColor: 'rgb(75, 168, 61, .9) !important',
+    textAlign: "center",
+    backgroundColor: "rgb(75, 168, 61, .9) !important",
   },
 }));
 
-
-const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, disableCheckboxSelection, onDeleteRow, onEditRow }) => {
+const AppTable = ({
+  columns,
+  rows = [],
+  onRowDoubleClick,
+  showActions = false,
+  disableCheckboxSelection,
+  onDeleteRow,
+  onEditRow,
+}) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const apiRef = useGridApiRef();
@@ -60,28 +80,29 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
   const [selectedRow, setSelectedRow] = useState(null);
   const [editedRow, setEditedRow] = useState(null);
   const [openEditDialog, setOpenEditDialog] = useState(false);
-  const tableRef = useRef(null); 
- 
-
+  const tableRef = useRef(null);
+  const isSmallScreen = useMediaQuery("(max-width: 1600px)");
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
     setRowSelectionModel(newRowSelectionModel);
   };
 
   const handleClickOutside = (event) => {
     if (tableRef.current && !tableRef.current.contains(event.target)) {
-      setRowSelectionModel([]); 
+      setRowSelectionModel([]);
     }
   };
 
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
-  {/*Edit */}
-  const handleEditConfirm = (params) =>{
+  {
+    /*Edit */
+  }
+  const handleEditConfirm = (params) => {
     if (onEditRow) {
       const updatedRow = { ...editedRow };
       updatedRow[12] = editedRow.allocato;
@@ -89,19 +110,17 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
     }
     setOpenEditDialog(false);
     setSelectedRow(null);
-  
-  }
+  };
 
   const handleEditClick = (params) => {
     setSelectedRow(params.row);
     setEditedRow({
       ...params.row,
-      allocato: params.row['allocato'] || Object.values(params.row)[12],
-      residuo: params.row['residuo'] || Object.values(params.row)[17],
+      allocato: params.row["allocato"] || Object.values(params.row)[12],
+      residuo: params.row["residuo"] || Object.values(params.row)[17],
     });
     setOpenEditDialog(true);
   };
-
 
   const handleEditDialogClose = () => {
     setOpenEditDialog(false);
@@ -115,18 +134,20 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
         [field]: value,
       };
 
-      if (field === 'allocato') {
-        updatedRow.residuo = parseInt(prev.residuo) + parseInt(value) - parseInt(prev.allocato);
-        updatedRow['allocato'] = value;
-        updatedRow[12] = value; 
+      if (field === "allocato") {
+        updatedRow.residuo =
+          parseInt(prev.residuo) + parseInt(value) - parseInt(prev.allocato);
+        updatedRow["allocato"] = value;
+        updatedRow[12] = value;
       }
 
       return updatedRow;
     });
   };
 
-
-  {/*Delete */}
+  {
+    /*Delete */
+  }
 
   const handleDeleteClick = (params) => {
     setSelectedRow(params.row);
@@ -151,34 +172,34 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
     let label;
 
     switch (params.value) {
-      case 'OPN':
-        chipColor = 'success';
-        label = 'Open';
+      case "OPN":
+        chipColor = "success";
+        label = "Open";
         break;
-      case 'CLO':
-        chipColor = 'error';
-        label = 'Closed';
+      case "CLO":
+        chipColor = "error";
+        label = "Closed";
         break;
-      case 'NEW':
-        chipColor = 'primary';
-        label = 'New';
+      case "NEW":
+        chipColor = "primary";
+        label = "New";
         break;
-      case 'REQ':
-        chipColor = 'secondary';
-        label = 'Pending';
+      case "REQ":
+        chipColor = "secondary";
+        label = "Pending";
         break;
-      
+
       default:
-        chipColor = 'default';
+        chipColor = "default";
     }
 
     return (
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100%',
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
         }}
       >
         <Chip
@@ -186,11 +207,11 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
           color={chipColor}
           sx={{
             fontSize: {
-              xs: '0.4rem',
-              sm: '0.5rem',
-              md: '0.6rem',
-              lg: '0.7rem',
-              xl: '0.8rem',
+              xs: "0.4rem",
+              sm: "0.5rem",
+              md: "0.6rem",
+              lg: "0.6rem",
+              xl: "0.7rem",
             },
           }}
         />
@@ -201,28 +222,28 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
   const renderActionButtons = (params) => (
     <Box
       sx={{
-        display: 'flex',
-        justifyContent: 'space-evenly',
-        alignItems: 'center',
-        height: '100%',
+        display: "flex",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+        height: "100%",
       }}
     >
       <Tooltip title="Modifica">
         <IconButton
           sx={{
-            backgroundColor: '#108CCB',
-            color: 'white',
-            '&:hover': { backgroundColor: '#6CACFF' },
+            backgroundColor: "#108CCB",
+            color: "white",
+            "&:hover": { backgroundColor: "#6CACFF" },
             padding: {
-              xs: '2px',
-              sm: '3px',
-              md: '4px',
-              lg: '5px',
-              xl: '6px',
+              xs: "2px",
+              sm: "3px",
+              md: "4px",
+              lg: "5px",
+              xl: "6px",
             },
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
           aria-label="edit"
           onClick={() => handleEditClick(params)}
@@ -230,11 +251,11 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
           <EditIcon
             sx={{
               fontSize: {
-                xs: '12px',
-                sm: '14px',
-                md: '16px',
-                lg: '18px',
-                xl: '20px',
+                xs: "12px",
+                sm: "14px",
+                md: "14px",
+                lg: "15px",
+                xl: "18px",
               },
             }}
           />
@@ -243,19 +264,19 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
       <Tooltip title="Elimina">
         <IconButton
           sx={{
-            backgroundColor: 'red',
-            color: 'white',
-            '&:hover': { backgroundColor: 'rgba(244, 67, 54, .7)' },
+            backgroundColor: "red",
+            color: "white",
+            "&:hover": { backgroundColor: "rgba(244, 67, 54, .7)" },
             padding: {
-              xs: '2px',
-              sm: '3px',
-              md: '4px',
-              lg: '5px',
-              xl: '6px',
+              xs: "2px",
+              sm: "3px",
+              md: "4px",
+              lg: "5px",
+              xl: "6px",
             },
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
           aria-label="delete"
           onClick={() => handleDeleteClick(params)}
@@ -263,11 +284,11 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
           <DeleteIcon
             sx={{
               fontSize: {
-                xs: '12px',
-                sm: '14px',
-                md: '16px',
-                lg: '18px',
-                xl: '20px',
+                xs: "12px",
+                sm: "14px",
+                md: "14px",
+                lg: "15px",
+                xl: "18px",
               },
             }}
           />
@@ -276,22 +297,28 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
     </Box>
   );
 
-  const filteredColumns = columns.filter((col) => col.headerName !== 'Delete row' && col.headerName !== 'Edit');
+  const filteredColumns = columns.filter(
+    (col) => col.headerName !== "Delete row" && col.headerName !== "Edit"
+  );
 
   const updatedColumns = filteredColumns.map((col) => {
-    if (col.headerName === 'Stato' || col.headerName === 'Stato Item' || col.headerName === "Stato Richiesta") {
+    if (
+      col.headerName === "Stato" ||
+      col.headerName === "Stato Item" ||
+      col.headerName === "Stato Richiesta"
+    ) {
       return {
         ...col,
-        headerAlign: 'center',
+        headerAlign: "center",
         flex: 1,
         renderCell: (params) => renderStatusChip(params),
       };
     }
 
-    if (col.headerName === 'Richieste Pending') {
+    if (col.headerName === "Richieste Pending") {
       return {
         ...col,
-        headerAlign: 'center',
+        headerAlign: "center",
         flex: 1,
         renderCell: (params) => renderRichiestePendingIcon(params),
       };
@@ -299,21 +326,21 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
 
     return {
       ...col,
-      headerAlign: 'center',
+      headerAlign: "center",
       flex: 1,
     };
   });
 
   if (showActions) {
     updatedColumns.push({
-      field: 'action',
-      headerName: 'Azioni',
+      field: "action",
+      headerName: "Azioni",
       flex: 1,
-      headerAlign: 'center',
+      headerAlign: "center",
       renderCell: (params) => renderActionButtons(params),
       sortable: false,
       filterable: false,
-      align: 'center',
+      align: "center",
     });
   }
 
@@ -323,20 +350,26 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
         <Tooltip title={`Richieste Pending: ${params.value}`}>
           <Box
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '100%',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
             }}
           >
             <NotificationImportantIcon
               sx={{
-                color: '#d32f2f',
-                fontSize: '25px',
-                cursor: 'pointer',
-                transition: 'transform 0.3s ease-in-out',
-                '&:hover': {
-                  transform: 'scale(1.2)',
+                color: "#d32f2f",
+                fontSize: {
+                  xs: "16px",
+                  sm: "18px",
+                  md: "20px",
+                  lg: "22px",
+                  xl: "24px",
+                },
+                cursor: "pointer",
+                transition: "transform 0.3s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.2)",
                 },
               }}
               onClick={() => alert(`Richieste Pending ID: ${params.row.id}`)}
@@ -349,17 +382,23 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
         <Tooltip title="Nessuna richiesta pendente">
           <Box
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '100%',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
             }}
           >
             <NotificationsOffIcon
               sx={{
-                color: '#108CCB',
-                fontSize: '25px',
-                cursor: 'pointer',
+                color: "#108CCB",
+                fontSize: {
+                  xs: "16px",
+                  sm: "18px",
+                  md: "20px",
+                  lg: "22px",
+                  xl: "24px",
+                },
+                cursor: "pointer",
               }}
             />
           </Box>
@@ -369,76 +408,107 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
   };
 
   return (
-    <Box sx={{ height: '100%', width: '100%' }} ref={tableRef}> 
-      <Box sx={{ height: 'auto', width: '100%' }}>
+    <Box sx={{ height: "100%", width: "100%" }} ref={tableRef}>
+      <Box sx={{ height: "auto", width: "100%" }}>
         <StripedDataGrid
           apiRef={apiRef}
-          rowHeight={40}
+          rowHeight={isSmallScreen ? 35 : 40}
           sx={{
             boxShadow: 2,
-            '& .MuiDataGrid-columnHeaderTitle': {
-              fontFamily: 'Poppins !important',
+            "& .MuiDataGrid-columnHeaderTitle": {
+              fontFamily: "Poppins !important",
               fontSize: {
-                xs: '0.5rem',
-                sm: '0.6rem',
-                md: '0.7rem',
-                lg: '0.8rem',
-                xl: '0.9rem',
+                xs: "0.5rem",
+                sm: "0.5rem",
+                md: "0.6rem",
+                lg: "0.7rem",
+                xl: "0.9rem",
               },
             },
             "& .MuiDataGrid-columnHeaders": {
-              position: "sticky"
+              position: "sticky",
             },
-            '& .MuiDataGrid-columnHeaderTitleContainerContent': {
-              color: 'white',
+            "& .MuiDataGrid-columnHeaderTitleContainerContent": {
+              color: "white",
             },
-            '& .MuiDataGrid-columnHeaderRow>.MuiButtonBase-root': {
-              color: 'white',
+            "& .MuiDataGrid-columnHeaderRow>.MuiButtonBase-root": {
+              color: "white",
             },
-            '& .MuiDataGrid-container--top [role=row]': {
-              backgroundColor: 'rgb(75, 168, 61, .9) !important',
+            "& .MuiDataGrid-container--top [role=row]": {
+              backgroundColor: "rgb(75, 168, 61, .9) !important",
             },
-            '& .MuiDataGrid-withBorderColor': {
-              backgroundColor: 'rgb(75, 168, 61, .9) !important',
+            "& .MuiDataGrid-withBorderColor": {
+              backgroundColor: "rgb(75, 168, 61, .9) !important",
             },
-            '& .MuiTablePagination-root': {
-              color: 'white',
-              fontFamily: 'Poppins !important',
+            "& .MuiTablePagination-root": {
+              color: "white",
+              fontFamily: "Poppins !important",
               fontSize: {
-                xs: '0.5rem',
-                sm: '0.6rem',
-                md: '0.7rem',
-                lg: '0.8rem',
-                xl: '0.9rem',
+                xs: "0.5rem",
+                sm: "0.5rem",
+                md: "0.6rem",
+                lg: "0.7rem",
+                xl: "0.9rem",
               },
             },
-            '& .MuiTablePagination-selectIcon ': {
-              color: 'white !important',
-            },
-            '& .MuiDataGrid-cell': {
-              textAlign: 'center',
-              fontFamily: 'Poppins !important',
+            "& .MuiTablePagination-displayedRows": {
+              fontFamily: "Poppins !important",
               fontSize: {
-                xs: '0.4rem',
-                sm: '0.5rem',
-                md: '0.6rem',
-                lg: '0.8rem',
-                xl: '0.9rem',
+                xs: "0.5rem",
+                sm: "0.5rem",
+                md: "0.6rem",
+                lg: "0.7rem",
+                xl: "0.8rem",
               },
             },
-            '& .MuiDataGrid-sortIcon': {
-              color: 'white',
-              opacity: '.9 !important',
+            "& .MuiTablePagination-selectLabel": {
+              fontFamily: "Poppins !important",
+              fontSize: {
+                xs: "0.5rem",
+                sm: "0.5rem",
+                md: "0.6rem",
+                lg: "0.7rem",
+                xl: "0.8rem",
+              },
             },
-            '& .MuiDataGrid-menuIconButton': {
-              color: 'white',
-              opacity: '.9 !important',
+            "& .MuiTablePagination-selectIcon ": {
+              color: "white !important",
             },
-            '& .MuiDataGrid-topContainer ': {
-              textAlign: 'center !important',
+            "& .MuiDataGrid-cell": {
+              textAlign: "center",
+              fontFamily: "Poppins !important",
+              fontSize: {
+                xs: "0.5rem",
+                sm: "0.5rem",
+                md: "0.6rem",
+                lg: "0.7rem",
+                xl: "0.85rem",
+              },
             },
-            '&.MuiDataGrid-virtualScrollerContent': {
-              height: '100%',
+            "& .MuiTablePagination-actions": {
+              textAlign: "center",
+              fontFamily: "Poppins !important",
+              fontSize: {
+                xs: "0.5rem",
+                sm: "0.5rem",
+                md: "0.6rem",
+                lg: "0.7rem",
+                xl: "0.9rem",
+              },
+            },
+            "& .MuiDataGrid-sortIcon": {
+              color: "white",
+              opacity: ".9 !important",
+            },
+            "& .MuiDataGrid-menuIconButton": {
+              color: "white",
+              opacity: ".9 !important",
+            },
+            "& .MuiDataGrid-topContainer ": {
+              textAlign: "center !important",
+            },
+            "&.MuiDataGrid-virtualScrollerContent": {
+              height: "100%",
             },
           }}
           rows={rows}
@@ -456,15 +526,15 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
             rowGrouping: { model: rowGroupingModel },
           }}
           pageSizeOptions={[10, 25, 50]}
-          sortingOrder={['asc', 'desc']}
-          checkboxSelection={!disableCheckboxSelection} 
+          sortingOrder={["asc", "desc"]}
+          checkboxSelection={!disableCheckboxSelection}
           onRowSelectionModelChange={handleRowSelectionModelChange}
           rowSelectionModel={rowSelectionModel}
           groupRowsByColumn="status"
           rowGroupingModel={rowGroupingModel}
           onRowGroupingModelChange={setRowGroupingModel}
           getRowClassName={(params) =>
-            params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+            params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
           }
         />
       </Box>
@@ -474,10 +544,13 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Conferma Eliminazione"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {"Conferma Eliminazione"}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Sei sicuro di voler eliminare la riga con valore: {selectedRow ? Object.values(selectedRow)[9] : ''}?
+            Sei sicuro di voler eliminare la riga con valore:{" "}
+            {selectedRow ? Object.values(selectedRow)[9] : ""}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -489,13 +562,15 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
           </Button>
         </DialogActions>
       </Dialog>
-       {/* Modifica */}
-       <Dialog
+      {/* Modifica */}
+      <Dialog
         open={openEditDialog}
         onClose={handleEditDialogClose}
         aria-labelledby="edit-dialog-title"
       >
-        <DialogTitle id="edit-dialog-title">Modifica Articolo: {selectedRow ? Object.values(selectedRow)[9] : ''}</DialogTitle>
+        <DialogTitle id="edit-dialog-title">
+          Modifica Articolo: {selectedRow ? Object.values(selectedRow)[9] : ""}
+        </DialogTitle>
         <DialogContent>
           {editedRow && (
             <Box>
@@ -503,46 +578,44 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
                 label="Stato"
                 fullWidth
                 margin="normal"
-                value={selectedRow ? Object.values(selectedRow)[2] : ''}
+                value={selectedRow ? Object.values(selectedRow)[2] : ""}
                 InputProps={{ readOnly: true }}
-                sx={{ backgroundColor: '#D8D8D8', borderRadius: '8px' }}
-
+                sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
               <TextField
                 label="Nome Prodotto"
                 fullWidth
                 margin="normal"
-                value={selectedRow ? Object.values(selectedRow)[10] : ''}
+                value={selectedRow ? Object.values(selectedRow)[10] : ""}
                 InputProps={{ readOnly: true }}
-                sx={{ backgroundColor: '#D8D8D8', borderRadius: '8px' }}
+                sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
               <TextField
                 label="Descrizione"
                 fullWidth
                 margin="normal"
-                value={selectedRow ? Object.values(selectedRow)[11] : ''}
+                value={selectedRow ? Object.values(selectedRow)[11] : ""}
                 InputProps={{ readOnly: true }}
-                sx={{ backgroundColor: '#D8D8D8', borderRadius: '8px' }}
-
+                sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
               <TextField
                 label="Evaso"
                 fullWidth
                 margin="normal"
-                value={selectedRow ? Object.values(selectedRow)[16] : ''}
+                value={selectedRow ? Object.values(selectedRow)[16] : ""}
                 InputProps={{ readOnly: true }}
-                sx={{ backgroundColor: '#D8D8D8', borderRadius: '8px' }}
-
+                sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
               <TextField
                 label="Residuo"
                 fullWidth
                 margin="normal"
                 value={editedRow.residuo}
-                onChange={(e) => handleEditFieldChange('residuo', e.target.value)}
+                onChange={(e) =>
+                  handleEditFieldChange("residuo", e.target.value)
+                }
                 InputProps={{ readOnly: true }}
-                sx={{ backgroundColor: '#D8D8D8', borderRadius: '8px' }}
-
+                sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
               <TextField
                 label="Allocato"
@@ -550,21 +623,22 @@ const AppTable = ({ columns, rows = [], onRowDoubleClick, showActions = false, d
                 fullWidth
                 margin="normal"
                 value={editedRow.allocato}
-                onChange={(e) => handleEditFieldChange('allocato', e.target.value)}
+                onChange={(e) =>
+                  handleEditFieldChange("allocato", e.target.value)
+                }
               />
             </Box>
           )}
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleEditDialogClose} color="error">
-                  Annulla
-                </Button>
-                <Button onClick={handleEditConfirm} color="primary">
-                  Salva
-                </Button>
-              </DialogActions>
-            </Dialog>
-
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleEditDialogClose} color="error">
+            Annulla
+          </Button>
+          <Button onClick={handleEditConfirm} color="primary">
+            Salva
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
