@@ -5,6 +5,7 @@ import {
   Typography,
   TextField,
   Stack,
+  CircularProgress,
   Button,
   IconButton,
   Tooltip,
@@ -48,7 +49,7 @@ const ProjectItems = () => {
   const [stockData, setStockData] = useState([]);
   const [modalStockData, setModalStockData] = useState([]); // Dati per la modale
   const [modalColumnDefs, setModalColumnDefs] = useState([]); // Colonne per la modale
-
+  const [isLoadingModal, setIsLoadingModal] = useState(false);
   const [editedRows, setEditedRows] = useState([]);
   const [deletedRows, setDeletedRows] = useState([]);
 
@@ -95,6 +96,7 @@ const ProjectItems = () => {
 
   const fetchStockDataForModal = async () => {
     try {
+      setIsLoadingModal(true); // Inizia il caricamento
       const response = await api.getStock(token);
 
       // Imposta i dati della modale
@@ -134,12 +136,14 @@ const ProjectItems = () => {
       // Aggiorna i dati completi della modale dopo un breve ritardo
       setTimeout(() => {
         setModalStockData(response.values);
-      }, 0);
+        setIsLoadingModal(false); // Termina il caricamento
+      }, 500);
     } catch (error) {
       console.error(
         "Errore nel recuperare i dati di stock per la modale:",
         error
       );
+      setIsLoadingModal(false); // Termina il caricamento in caso di errore
     }
   };
 
@@ -830,11 +834,24 @@ const ProjectItems = () => {
           >
             Stock Item
           </Typography>
-          <AppModalTable
-            columns={modalColumnDefs} // Colonne della modale
-            rows={modalStockData} // Dati della modale
-            onAdd={handleAddStockItemFromModal} // Funzione per aggiungere un elemento
-          />
+          {isLoadingModal ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "50vh", // Spazio per il caricamento
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          ) : (
+            <AppModalTable
+              columns={modalColumnDefs} // Colonne della modale
+              rows={modalStockData} // Dati della modale
+              onAdd={handleAddStockItemFromModal} // Funzione per aggiungere un elemento
+            />
+          )}
         </Box>
       </Modal>
     </Box>

@@ -66,7 +66,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
   };
 
   const renderAllocateColumn = (params) => {
-    const quantity = quantities[params.row[0]] || 0;
+    const quantity = quantities[params.row[0]];
     const availableQuantity = params.row[9];
 
     console.log(quantities);
@@ -75,58 +75,44 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
       <Box
         sx={{
           display: "flex",
-          gap: 1,
-          alignItems: "center",
-          justifyContent: "center",
+          alignItems: "center", // Centra verticalmente
+          justifyContent: "center", // Centra orizzontalmente
+          height: "100%", // Si adatta all'altezza della cella
         }}
       >
         <TextField
           size="small"
           type="number"
-          fullWidth
-          margin="normal"
           value={quantity}
           onChange={(e) => handleEditFieldChange(params.row[0], e.target.value)}
           sx={{
-            width: {
-              xs: "40px",
-              sm: "45px",
-              md: "50px",
-              lg: "55px",
-              xl: "60px",
-            },
+            width: "50%", // Input più largo
             "& input": {
-              textAlign: "center",
+              textAlign: "center", // Testo centrato nell'input
               fontSize: {
-                xs: "0.6rem",
-                sm: "0.65rem",
-                md: "0.7rem",
-                lg: "0.75rem",
-                xl: "0.8rem",
+                xs: "0.5rem",
+                sm: "0.5rem",
+                md: "0.6rem",
+                lg: "0.7rem",
+                xl: "0.9rem",
               },
+              padding: "8px 0", // Aggiungi spazio interno per maggiore leggibilità
+            },
+            "& .MuiOutlinedInput-root": {
+              height: "35px", // Altezza dell'input più grande
+              borderRadius: "4px", // Rendi gli angoli arrotondati
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             },
           }}
-        />
-        {/* <TextField
-          size="small"
-          type="number"
-          value={quantity}
-          //onChange={(e) => handleQuantityChange(params.row[0], parseInt(e.target.value) || 0, availableQuantity)}
-          onChange={handleChange}
           InputProps={{
             inputProps: {
               min: 0,
-              max: availableQuantity,
-              step: 1,
-              onKeyDown: (event) => {
-                if (quantity >= availableQuantity && event.key === "ArrowUp") {
-                  event.preventDefault(); 
-                }
-              }
-            }
+              step: 1, // Incremento di un valore
+            },
           }}
-         
-        /> */}
+        />
       </Box>
     );
   };
