@@ -49,14 +49,22 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
     rows.reduce((acc, row) => ({ ...acc, [row[0]]: 0 }), {})
   );
 
-  const handleAddClick = (id) => {
-    const quantity = quantities[id] || 0;
-    if (quantity > 0) {
-      onAdd(addedItems);
-      setQuantities((prev) => ({ ...prev, [id]: 0 }));
-    } else {
-      alert("Inserisci una quantità valida!");
+  const handleAddClick = () => {
+    const totalQuantity = Object.values(quantities).reduce(
+      (total, b) => total + b,
+      0
+    );
+    if (!totalQuantity ) {
+      alert("Inserisci almeno una quantità valida!");
+      return;
     }
+    setQuantities(
+      //rows.reduce((acc, row) => ({ ...acc, [row[0]]: 0 }), {})
+      rows.filter((row) => Boolean(row[row[0]]))
+    );
+
+    onAdd(quantities);
+      
   };
 
   const handleEditFieldChange = (id, newQuantity) => {
@@ -268,20 +276,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
               backgroundColor: "#323232",
             },
           }}
-          onClick={() => {
-            const totalQuantity = Object.values(quantities).reduce(
-              (a, b) => a + b,
-              0
-            );
-            if (totalQuantity > 0) {
-              onAdd(quantities);
-              setQuantities(
-                rows.reduce((acc, row) => ({ ...acc, [row[0]]: 0 }), {})
-              );
-            } else {
-              alert("Inserisci almeno una quantità valida!");
-            }
-          }}
+          onClick={handleAddClick}
         >
           <Typography
             sx={{
