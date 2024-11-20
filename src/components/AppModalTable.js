@@ -60,7 +60,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
   };
 
   const handleEditFieldChange = (id, newQuantity) => {
-    setAddedItems((prev) => ({ ...prev, [id]: newQuantity }));
+    setQuantities((prev) => ({ ...prev, [id]: newQuantity }));
 
     console.log(quantities);
   };
@@ -239,7 +239,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
           columns={updatedColumns}
           pageSize={pageSize}
           onRowDoubleClick={(params) => console.log(params.row)}
-          getRowId={(row) => row[0]}
+          getRowId={(row) => row["0"]}
           pagination
           paginationMode="client"
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
