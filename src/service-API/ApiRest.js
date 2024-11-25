@@ -116,7 +116,6 @@ class ApiRest {
 
   //create new project
   async iuProject(token, payload) {
-    return;
     const url =
       this.env === "LOCAL"
         ? `${this.url}/iuProject`
