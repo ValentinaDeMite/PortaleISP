@@ -549,7 +549,7 @@ const AppTable = ({
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Sei sicuro di voler eliminare la riga con valore:{" "}
+            Sei sicuro di voler eliminare l'articolo{" "}
             {selectedRow ? Object.values(selectedRow)[9] : ""}?
           </DialogContentText>
         </DialogContent>

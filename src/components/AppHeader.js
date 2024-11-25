@@ -70,6 +70,7 @@ function AppHeader() {
               lg: "0.9rem",
               xl: "1rem",
             },
+            fontFamily: "Poppins!important",
           }}
         >
           <Link
@@ -177,7 +178,12 @@ function AppHeader() {
             },
           }}
         >
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          <MenuItem
+            onClick={handleLogout}
+            sx={{ fontFamily: "Poppins!important" }}
+          >
+            Logout
+          </MenuItem>
         </Menu>
       </Box>
     </Box>

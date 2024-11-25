@@ -118,7 +118,7 @@ const RequestList = (props) => {
   const handleRowClick = (params) => {
     const projectId = params.row.projectId; // Sostituire `projectId` con il nome effettivo del campo.
     if (projectId) {
-      navigate(`/projectitems/${projectId}`);
+      navigate(`richieste/projectitems/${projectId}`);
     }
   };
 
@@ -152,6 +152,7 @@ const RequestList = (props) => {
             align="start"
             gutterBottom
             sx={{
+              fontWeight: "600",
               fontSize: {
                 xs: "0.5rem",
                 sm: "0.8rem",
@@ -159,6 +160,7 @@ const RequestList = (props) => {
                 lg: "1.1rem",
                 xl: "1.5rem",
               },
+              fontFamily: "Poppins!important",
             }}
           >
             Lista Richieste

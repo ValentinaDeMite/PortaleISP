@@ -15,6 +15,10 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   InputAdornment,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -436,13 +440,13 @@ const ProjectItems = () => {
             variant="h4"
             sx={{
               color: "#333",
-              fontWeight: "bold",
+              fontWeight: "600",
               fontSize: {
                 xs: "0.5rem",
-                sm: "0.8rem",
-                md: "1rem",
-                lg: "1.2rem",
-                xl: "1.5rem",
+                sm: "1rem",
+                md: "1.2rem",
+                lg: "1.5rem",
+                xl: "1.7rem",
               },
               fontFamily: "Poppins!important",
               marginRight: "1rem",
@@ -493,6 +497,7 @@ const ProjectItems = () => {
                 lg: "0.7rem",
                 xl: "0.8rem",
               },
+              fontFamily: "Poppins!important",
             }}
           >
             Creato il: {project[3]}
@@ -507,6 +512,7 @@ const ProjectItems = () => {
                 lg: "0.7rem",
                 xl: "0.8rem",
               },
+              fontFamily: "Poppins!important",
             }}
           >
             Creato da: {project[4]}
@@ -521,6 +527,7 @@ const ProjectItems = () => {
                 lg: "0.7rem",
                 xl: "0.8rem",
               },
+              fontFamily: "Poppins!important",
             }}
           >
             Ultima Modifica: {project[5]}
@@ -535,6 +542,7 @@ const ProjectItems = () => {
                 lg: "0.7rem",
                 xl: "0.8rem",
               },
+              fontFamily: "Poppins!important",
             }}
           >
             Modificato da: {project[6]}
@@ -570,6 +578,7 @@ const ProjectItems = () => {
               Dettagli progetto:
             </Typography>
           </Box>
+
           <Box
             sx={{
               padding: "1rem",
@@ -579,61 +588,26 @@ const ProjectItems = () => {
             }}
           >
             <Stack spacing={2} direction="row">
-              <TextField
-                label="ID Progetto"
-                value={project[0]}
-                InputProps={{ readOnly: true }}
-                fullWidth
-                sx={{
-                  fontSize: {
-                    xs: "0.5rem",
-                    sm: "0.5rem",
-                    md: "0.6rem",
-                    lg: "0.7rem",
-                    xl: "0.8rem",
-                  },
-                  backgroundColor: "#D8D8D8",
-                  borderRadius: "8px",
-                }}
-              />
-              <TextField
-                label="Stato"
-                value={project[1]}
-                InputProps={{ readOnly: true }}
-                fullWidth
-                sx={{
-                  fontSize: {
-                    xs: "0.5rem",
-                    sm: "0.5rem",
-                    md: "0.6rem",
-                    lg: "0.6rem",
-                    xl: "0.8rem",
-                  },
-                  backgroundColor: "#D8D8D8",
-                  borderRadius: "8px",
-                }}
-              />
-              <TextField
-                label="Allocato"
-                value={project[12]}
-                InputProps={{ readOnly: true }}
-                fullWidth
-                sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
-              />
-              <TextField
-                label="Evaso"
-                value={project[13]}
-                InputProps={{ readOnly: true }}
-                fullWidth
-                sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
-              />
-              <TextField
-                label="Residuo"
-                value={project[14]}
-                InputProps={{ readOnly: true }}
-                fullWidth
-                sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
-              />
+              {[
+                { label: "ID Progetto", value: project[0] },
+                { label: "Stato", value: project[1] },
+                { label: "Allocato", value: project[12] },
+                { label: "Evaso", value: project[13] },
+                { label: "Residuo", value: project[14] },
+              ].map((item, index) => (
+                <TextField
+                  key={index}
+                  label={item.label}
+                  value={item.value}
+                  InputProps={{ readOnly: true }}
+                  fullWidth
+                  sx={{
+                    backgroundColor: "#D8D8D8",
+                    borderRadius: "8px",
+                    fontFamily: "Poppins!important",
+                  }}
+                />
+              ))}
             </Stack>
 
             <Stack spacing={2} direction="row">
@@ -641,74 +615,86 @@ const ProjectItems = () => {
                 "projectName",
                 "projectDescription",
                 "projectNotes",
-                "projectManager",
                 "startDate",
                 "endDate",
-              ].map((field, index) => (
-                <TextField
-                  key={index}
-                  label={
-                    field === "projectName"
-                      ? "Nome Progetto"
-                      : field === "projectDescription"
-                      ? "Descrizione Progetto"
-                      : field === "projectNotes"
-                      ? "Note Progetto"
-                      : field === "projectManager"
-                      ? "Project Manager"
-                      : field === "startDate"
-                      ? "Data Inizio"
-                      : field === "endDate"
-                      ? "Data Fine"
-                      : `Nome ${field.replace("project", "").toUpperCase()}`
-                  }
-                  name={field}
-                  value={editableData[field]}
-                  onChange={handleInputChange}
-                  fullWidth
-                  type={
-                    field === "startDate" || field === "endDate"
-                      ? "date"
-                      : "text"
-                  }
-                  InputLabelProps={{ shrink: true }}
-                  error={field === "endDate" && dateError}
-                  helperText={
-                    field === "endDate" && dateError
-                      ? "La data di fine deve essere successiva a quella di inizio"
-                      : ""
-                  }
-                  sx={{ borderRadius: "8px" }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => handleCancelChange(field)}
-                          edge="end"
-                          size="small"
-                        >
-                          <CancelIcon fontSize="small" />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              ))}
+                "projectManager",
+              ].map((field, index) =>
+                field === "projectManager" ? (
+                  <FormControl key={index} fullWidth>
+                    <InputLabel>Project Manager</InputLabel>
+                    <Select
+                      name={field}
+                      value={editableData[field] || ""}
+                      onChange={(e) => handleInputChange(e, field)}
+                    >
+                      {editableData[field] && (
+                        <MenuItem value={editableData[field]}>
+                          {editableData[field]}
+                        </MenuItem>
+                      )}
+                      {info.pms
+                        .split(";")
+                        .filter((pm) => pm !== editableData[field])
+                        .map((pm, idx) => (
+                          <MenuItem key={idx} value={pm}>
+                            {pm}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  </FormControl>
+                ) : (
+                  <TextField
+                    key={index}
+                    label={
+                      field === "projectName"
+                        ? "Nome Progetto"
+                        : field === "projectDescription"
+                        ? "Descrizione Progetto"
+                        : field === "projectNotes"
+                        ? "Note Progetto"
+                        : field === "startDate"
+                        ? "Data Inizio"
+                        : field === "endDate"
+                        ? "Data Fine"
+                        : `Nome ${field.replace("project", "").toUpperCase()}`
+                    }
+                    name={field}
+                    value={editableData[field] || ""}
+                    onChange={handleInputChange}
+                    fullWidth
+                    type={
+                      field === "startDate" || field === "endDate"
+                        ? "date"
+                        : "text"
+                    }
+                    InputLabelProps={{ shrink: true }}
+                    error={field === "endDate" && dateError}
+                    helperText={
+                      field === "endDate" && dateError
+                        ? "La data di fine deve essere successiva a quella di inizio"
+                        : ""
+                    }
+                    sx={{
+                      borderRadius: "8px",
+                    }}
+                  />
+                )
+              )}
             </Stack>
 
+            {/* Terza Riga: Richiesta Iniziale e Richieste Pendenti */}
             <Stack spacing={2} direction="row" alignItems="flex-start">
               <TextField
                 label="Richiesta Iniziale"
-                value={
-                  pendingRequestsCount > 0
-                    ? project[15]
-                    : "Nessuna richiesta iniziale"
-                }
+                value={project[15] || "Nessuna richiesta iniziale"}
                 InputProps={{ readOnly: true }}
                 fullWidth
                 multiline
-                rows={Math.max(pendingRequests.length, 1)}
-                sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
+                rows={1}
+                sx={{
+                  backgroundColor: "#D8D8D8",
+                  borderRadius: "8px",
+                }}
               />
               <TextField
                 label="Richieste Pendenti"
@@ -716,7 +702,9 @@ const ProjectItems = () => {
                 fullWidth
                 multiline
                 rows={Math.max(pendingRequests.length, 1)}
-                sx={{ borderRadius: "8px" }}
+                sx={{
+                  borderRadius: "8px",
+                }}
               />
             </Stack>
 
@@ -734,6 +722,14 @@ const ProjectItems = () => {
                     backgroundColor: "#FF8C00",
                     color: "white",
                     marginRight: "10px",
+                    fontSize: {
+                      xs: "0.4rem",
+                      sm: "0.4rem",
+                      md: "0.6rem",
+                      lg: "0.8rem",
+                      xl: "0.9rem",
+                    },
+                    fontFamily: "Poppins!important",
                   }}
                   onClick={handleConfirm}
                 >
@@ -741,7 +737,18 @@ const ProjectItems = () => {
                 </Button>
                 <Button
                   variant="contained"
-                  sx={{ backgroundColor: "#108CCB", color: "white" }}
+                  sx={{
+                    backgroundColor: "#108CCB",
+                    color: "white",
+                    fontSize: {
+                      xs: "0.4rem",
+                      sm: "0.4rem",
+                      md: "0.6rem",
+                      lg: "0.8rem",
+                      xl: "0.9rem",
+                    },
+                    fontFamily: "Poppins!important",
+                  }}
                   onClick={handleDeleteConfirmOpen}
                 >
                   Elimina
@@ -791,6 +798,7 @@ const ProjectItems = () => {
               xl: "1.5rem",
             },
             fontFamily: "Poppins!important",
+            fontWeight: "600",
           }}
         >
           Dettagli articoli:

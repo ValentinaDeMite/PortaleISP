@@ -162,6 +162,7 @@ const Dashboard = (props) => {
             align="start"
             gutterBottom
             sx={{
+              fontWeight: "600",
               fontSize: {
                 xs: "0.5rem",
                 sm: "0.8rem",
@@ -169,6 +170,7 @@ const Dashboard = (props) => {
                 lg: "1.2rem",
                 xl: "1.5rem",
               },
+              fontFamily: "Poppins!important",
             }}
           >
             Dashboard - Lista di tutti i progetti

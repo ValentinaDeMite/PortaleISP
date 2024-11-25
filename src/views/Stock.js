@@ -148,6 +148,8 @@ const Stock = (props) => {
                 lg: "1.1rem",
                 xl: "1.5rem",
               },
+              fontFamily: "Poppins!important",
+              fontWeight: "600",
             }}
           >
             Stock - Lista articoli disponibili
