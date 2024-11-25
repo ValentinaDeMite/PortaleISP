@@ -47,8 +47,8 @@ const ProjectItems = () => {
   const [projectItemsData, setProjectItemsData] = useState([]);
   const [columnDefs, setColumnDefs] = useState([]);
   const [stockData, setStockData] = useState([]);
-  const [modalStockData, setModalStockData] = useState([]); // Dati per la modale
-  const [modalColumnDefs, setModalColumnDefs] = useState([]); // Colonne per la modale
+  const [modalStockData, setModalStockData] = useState([]);
+  const [modalColumnDefs, setModalColumnDefs] = useState([]);
   const [isLoadingModal, setIsLoadingModal] = useState(false);
   const [editedRows, setEditedRows] = useState([]);
   const [deletedRows, setDeletedRows] = useState([]);
@@ -58,6 +58,8 @@ const ProjectItems = () => {
   const info = useSelector((state) => state.info);
   let isSupervisor = info.ruolo === "Supervisor";
 
+  // Delete
+
   const handleDeleteRow = (deletedRow) => {
     setDeletedRows((prevDeletedRows) => [...prevDeletedRows, deletedRow]);
     console.log("Riga eliminata:", deletedRow);
@@ -66,15 +68,17 @@ const ProjectItems = () => {
       ...prevPayload, // Mantieni le altre proprietà di payloadObj
       edits: {
         ...(prevPayload.edits || {}), // Mantieni le chiavi-valore esistenti in edits o inizializzalo vuoto
-        [deletedRow[9]]: "DELETED", // Aggiungi la nuova chiave-valore
+        [deletedRow[10]]: "DELETED", // Aggiungi la nuova chiave-valore
       },
     }));
 
     setPendingRequests((prevRequests) => [
       ...prevRequests,
-      `Articolo da eliminare => Part Number ${deletedRow[9]}`,
+      `Articolo da eliminare: ${deletedRow[10]}`,
     ]);
   };
+
+  // Edit
 
   const handleEditRow = (editedRow) => {
     setEditedRows((prevEditedRows) => [...prevEditedRows, editedRow]);
@@ -84,15 +88,17 @@ const ProjectItems = () => {
       ...prevPayload, // Mantieni le altre proprietà di payloadObj
       edits: {
         ...prevPayload.edits, // Mantieni le chiavi-valore esistenti in edits o inizializzalo vuoto
-        [editedRow[9]]: Number(editedRow[12]), // Aggiungi la nuova chiave-valore
+        [editedRow[10]]: editedRow[12], // Aggiungi la nuova chiave-valore
       },
     }));
 
-    setPendingRequests((prevRequests) => [
+    setPendingRequests((prevRequests, prevEditedRows) => [
       ...prevRequests,
-      `Modifica => Part Number:  ${editedRow[9]} Allocato: ${editedRow[12]}`,
+      `Modifica articolo [${editedRow[10]}] nuovo allocato: ${editedRow[12]}`,
     ]);
   };
+
+  // Modale
 
   const fetchStockDataForModal = async () => {
     try {
@@ -133,21 +139,28 @@ const ProjectItems = () => {
 
       setModalColumnDefs(modalColumns);
 
-      // Aggiorna i dati completi della modale dopo un breve ritardo
       setTimeout(() => {
         setModalStockData(response.values);
-        setIsLoadingModal(false); // Termina il caricamento
+        setIsLoadingModal(false);
       }, 500);
     } catch (error) {
       console.error(
         "Errore nel recuperare i dati di stock per la modale:",
         error
       );
-      setIsLoadingModal(false); // Termina il caricamento in caso di errore
+      setIsLoadingModal(false);
     }
   };
 
-  // Funzione per generare colonne della tabella della modale
+  // Apri la modale e recupera i dati dello stock
+  const handleOpenModal = () => {
+    setOpenModal(true);
+    fetchStockDataForModal();
+  };
+
+  // Chiudi la modale
+  const handleCloseModal = () => setOpenModal(false);
+
   const getModalColumnDefs = () => {
     return columnDefs.map((column) => ({
       ...column,
@@ -157,7 +170,8 @@ const ProjectItems = () => {
   };
 
   // Funzione per aggiungere un nuovo elemento dalla modale
-  const handleAddStockItemFromModal = (newRow) => {
+  {
+    /*const handleAddStockItemFromModal = (newRow) => {
     setStockData((prevStockData) => [...prevStockData, newRow]);
     setPayloadObj((prevPayload) => ({
       ...prevPayload,
@@ -170,16 +184,33 @@ const ProjectItems = () => {
       ...prevRequests,
       `Aggiunto nuovo articolo: Part Number ${newRow[9]}`,
     ]);
-  };
+  };*/
+  }
+  const handleAddStockItemFromModal = (filteredQnt) => {
+    setStockData((prevStockData) => [
+      ...prevStockData,
+      ...Object.entries(filteredQnt).map(([key, value]) => ({
+        projectDescription: key,
+        quantity: value,
+      })),
+    ]);
 
-  // Apri la modale e recupera i dati dello stock
-  const handleOpenModal = () => {
-    setOpenModal(true);
-    fetchStockDataForModal(); // Recupera i dati per la modale
-  };
+    setPayloadObj((prevPayload) => ({
+      ...prevPayload,
+      new: {
+        ...(prevPayload.new || {}),
+        ...filteredQnt,
+      },
+    }));
 
-  // Chiudi la modale
-  const handleCloseModal = () => setOpenModal(false);
+    setPendingRequests((prevRequests) => [
+      ...prevRequests,
+      ...Object.entries(filteredQnt).map(
+        ([key, value]) => `Aggiunto articolo [${key}] quantità: ${value}`
+      ),
+    ]);
+    console.log(payloadObj);
+  };
 
   useEffect(() => {
     const fetchProjectItems = async () => {
@@ -225,6 +256,8 @@ const ProjectItems = () => {
 
     fetchProjectItems();
   }, [token, project]);
+
+  // Form
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -277,47 +310,54 @@ const ProjectItems = () => {
   };
 
   const handleConfirm = () => {
-    setPayloadObj((prevPayload) => {
-      const updatedPayload = {
-        new: prevPayload.new || {}, // Define as an empty object if undefined
-        edits: prevPayload.edits || {}, // Define as an empty object if undefined
-        project: project, // Add or update the project property
-        cancelRequests: false, // Add or update the cancelRequests property
-      };
+    // setPayloadObj((prevPayload) => {
 
-      // con operatore terniario esempio       isSupoervisor ? cancelRequests: true : cancelRequests: false
+    // con operatore terniario esempio       isSupoervisor ? cancelRequests: true : cancelRequests: false
+    //  console.log(updatedPayload);
+    //   });
 
-      try {
-        // setVisible(true)
-        // setIsLoading(true)
-        const api = new ApiRest();
-        const data = api.iuProject(token, payloadObj);
-        if (data.code === 200) {
-          // setIsLoading(false)
-          // setErrorTitle('Success')
-          // const text = isSupervisor
-          //   ? `All your  ${editCounter()} request(s) have been correctly registered`
-          //   : `All your ${editCounter()} request(s) have been correctly submitted to your supervisor`
-          // setErrorMessage(text)
-        } else {
-          alert(
-            "Something went wrong, please try again submit your request(s)"
-          );
-        }
-      } catch (error) {
+    project[8] = editableData.projectName;
+    project[9] = editableData.projectDescription;
+    project[10] = editableData.projectNotes;
+    project[16] = editableData.projectManager;
+    project[17] = editableData.startDate;
+    project[18] = editableData.endDate;
+
+    const updatedPayload = {
+      new: payloadObj.new || {},
+      edits: payloadObj.edits || {},
+      project: project,
+      cancelRequests: false,
+    };
+
+    console.log(updatedPayload);
+
+    return;
+    try {
+      // setVisible(true)
+      // setIsLoading(true)
+      const api = new ApiRest();
+      const data = api.iuProject(token, payloadObj);
+      if (data.code === 200) {
         // setIsLoading(false)
-        console.log(error.response.data.message);
-        // alert('Something went wrong, please try again submit your request(s)')
-        // setErrorTitle('Error while updating project')
-        // setErrorMessage(error.response.data.message)
-        // setVisible(true)
+        // setErrorTitle('Success')
+        // const text = isSupervisor
+        //   ? `All your  ${editCounter()} request(s) have been correctly registered`
+        //   : `All your ${editCounter()} request(s) have been correctly submitted to your supervisor`
+        // setErrorMessage(text)
+      } else {
+        alert("Something went wrong, please try again submit your request(s)");
       }
+    } catch (error) {
+      // setIsLoading(false)
+      console.log(error.response.data.message);
+      // alert('Something went wrong, please try again submit your request(s)')
+      // setErrorTitle('Error while updating project')
+      // setErrorMessage(error.response.data.message)
+      // setVisible(true)
+    }
 
-      return updatedPayload;
-    });
-
-    console.log(project);
-
+    return updatedPayload;
     alert("Tutte le richieste sono state accettate!");
   };
 
@@ -840,16 +880,17 @@ const ProjectItems = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                height: "50vh", // Spazio per il caricamento
+                height: "50vh",
               }}
             >
               <CircularProgress />
             </Box>
           ) : (
             <AppModalTable
-              columns={modalColumnDefs} // Colonne della modale
-              rows={modalStockData} // Dati della modale
-              onAdd={handleAddStockItemFromModal} // Funzione per aggiungere un elemento
+              columns={modalColumnDefs}
+              rows={modalStockData}
+              onAdd={handleAddStockItemFromModal}
+              handleCloseModal={handleCloseModal}
             />
           )}
         </Box>

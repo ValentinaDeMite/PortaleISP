@@ -21,8 +21,6 @@ import logo from "../assets/img/mvs_logo.gif";
 import Grid from "@mui/material/Grid2";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
-import DownloadForOfflineRoundedIcon from "@mui/icons-material/DownloadForOfflineRounded";
-import SearchIcon from "@mui/icons-material/Search";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",

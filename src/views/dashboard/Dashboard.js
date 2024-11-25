@@ -33,6 +33,7 @@ const Dashboard = (props) => {
 
   const handleRowDoubleClick = (row) => {
     const projectDetails = row.row;
+    const projectId = projectDetails[0]; // Assumendo che l'ID sia il primo elemento
     console.log("Dettagli progetto selezionato:", projectDetails);
 
     dispatch({
@@ -40,7 +41,7 @@ const Dashboard = (props) => {
       projectDetails,
     });
 
-    navigate(`/dashboard/projectitems/${projectDetails[0]}`);
+    navigate(`/dashboard/projectitems/${projectId}`);
   };
 
   const filteredProjects = Array.isArray(projects)
@@ -165,7 +166,7 @@ const Dashboard = (props) => {
                 xs: "0.5rem",
                 sm: "0.8rem",
                 md: "1rem",
-                lg: "1.1rem",
+                lg: "1.2rem",
                 xl: "1.5rem",
               },
             }}

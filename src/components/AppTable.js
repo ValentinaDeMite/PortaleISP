@@ -345,7 +345,7 @@ const AppTable = ({
   }
 
   const renderRichiestePendingIcon = (params) => {
-    if (params.value > 0) {
+    if (params.value > "0") {
       return (
         <Tooltip title={`Richieste Pending: ${params.value}`}>
           <Box

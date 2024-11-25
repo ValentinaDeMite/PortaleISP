@@ -49,35 +49,44 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
     rows.reduce((acc, row) => ({ ...acc, [row[0]]: 0 }), {})
   );
 
-  const handleAddClick = (id) => {
-    const quantity = quantities[id] || 0;
-    if (quantity > 0) {
-      onAdd(addedItems);
-      setQuantities((prev) => ({ ...prev, [id]: 0 }));
-    } else {
-      alert("Inserisci una quantità valida!");
+  const handleAddClick = () => {
+    // Check if at least one quantity is greater than 0
+    const validQnts = Object.values(quantities)
+      .map((value) => Number(value)) // Ensure all values are numbers
+      .some((value) => value > 0);
+
+    if (!validQnts) {
+      alert("Inserisci almeno una quantità valida");
+      return;
     }
+
+    // Filter the quantities with values greater than 0
+    const filteredQnt = Object.entries(quantities)
+      .filter(([key, value]) => Number(value) > 0)
+      .reduce((acc, [key, value]) => {
+        acc[key] = Number(value);
+        return acc;
+      }, {});
+
+    console.log(filteredQnt);
+    onAdd(filteredQnt);
   };
 
   const handleEditFieldChange = (id, newQuantity) => {
     setQuantities((prev) => ({ ...prev, [id]: newQuantity }));
-
-    console.log(quantities);
   };
 
   const renderAllocateColumn = (params) => {
-    const quantity = quantities[params.row[0]];
-    const availableQuantity = params.row[9];
-
-    console.log(quantities);
+    const quantity = quantities[params.row];
+    const availableQuantity = params.row["9"];
 
     return (
       <Box
         sx={{
           display: "flex",
-          alignItems: "center", // Centra verticalmente
-          justifyContent: "center", // Centra orizzontalmente
-          height: "100%", // Si adatta all'altezza della cella
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100%",
         }}
       >
         <TextField
@@ -86,9 +95,9 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
           value={quantity}
           onChange={(e) => handleEditFieldChange(params.row[0], e.target.value)}
           sx={{
-            width: "50%", // Input più largo
+            width: "50%",
             "& input": {
-              textAlign: "center", // Testo centrato nell'input
+              textAlign: "center",
               fontSize: {
                 xs: "0.5rem",
                 sm: "0.5rem",
@@ -96,11 +105,11 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
                 lg: "0.7rem",
                 xl: "0.9rem",
               },
-              padding: "8px 0", // Aggiungi spazio interno per maggiore leggibilità
+              padding: "8px 0",
             },
             "& .MuiOutlinedInput-root": {
-              height: "35px", // Altezza dell'input più grande
-              borderRadius: "4px", // Rendi gli angoli arrotondati
+              height: "35px",
+              borderRadius: "4px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -109,7 +118,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
           InputProps={{
             inputProps: {
               min: 0,
-              step: 1, // Incremento di un valore
+              step: 1,
             },
           }}
         />
@@ -268,20 +277,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
               backgroundColor: "#323232",
             },
           }}
-          onClick={() => {
-            const totalQuantity = Object.values(quantities).reduce(
-              (a, b) => a + b,
-              0
-            );
-            if (totalQuantity > 0) {
-              onAdd(quantities);
-              setQuantities(
-                rows.reduce((acc, row) => ({ ...acc, [row[0]]: 0 }), {})
-              );
-            } else {
-              alert("Inserisci almeno una quantità valida!");
-            }
-          }}
+          onClick={handleAddClick}
         >
           <Typography
             sx={{
