@@ -512,7 +512,24 @@ const AppTable = ({
             },
           }}
           rows={rows}
-          columns={updatedColumns}
+          columns={updatedColumns.map((col) => ({
+            ...col,
+            renderCell: (params) => (
+              <Tooltip title={params.value || ""} arrow>
+                <span
+                  style={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    display: "block",
+                    width: "100%",
+                  }}
+                >
+                  {col.renderCell ? col.renderCell(params) : params.value}
+                </span>
+              </Tooltip>
+            ),
+          }))}
           pageSize={10}
           onRowDoubleClick={onRowDoubleClick}
           getRowId={(row) => row.id || rows.indexOf(row)}
