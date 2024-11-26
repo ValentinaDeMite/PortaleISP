@@ -226,6 +226,7 @@ const AppTable = ({
         justifyContent: "space-evenly",
         alignItems: "center",
         height: "100%",
+        gap: "0.5rem", // Spazio uniforme tra le icone
       }}
     >
       <Tooltip title="Modifica">
