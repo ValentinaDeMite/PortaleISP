@@ -22,7 +22,6 @@ const Dashboard = (props) => {
   const [searchText, setSearchText] = useState("");
   const date = useSelector((state) => state.date);
   const projects = useSelector((state) => {
-    console.log("Dati attualmente salvati in Redux:", state.projects);
     return state.projects || projectsData.values;
   });
 
@@ -33,7 +32,7 @@ const Dashboard = (props) => {
 
   const handleRowDoubleClick = (row) => {
     const projectDetails = row.row;
-    const projectId = projectDetails[0]; // Assumendo che l'ID sia il primo elemento
+    const projectId = projectDetails[0];
     console.log("Dettagli progetto selezionato:", projectDetails);
 
     dispatch({

@@ -69,16 +69,16 @@ const ProjectItems = () => {
     console.log("Riga eliminata:", deletedRow);
 
     setPayloadObj((prevPayload) => ({
-      ...prevPayload, // Mantieni le altre proprietà di payloadObj
+      ...prevPayload,
       edits: {
-        ...(prevPayload.edits || {}), // Mantieni le chiavi-valore esistenti in edits o inizializzalo vuoto
-        [deletedRow[10]]: "DELETED", // Aggiungi la nuova chiave-valore
+        ...(prevPayload.edits || {}),
+        [deletedRow[9]]: "DELETED",
       },
     }));
 
     setPendingRequests((prevRequests) => [
       ...prevRequests,
-      `Articolo da eliminare: ${deletedRow[10]}`,
+      `Articolo da eliminare: ${deletedRow[9]}`,
     ]);
   };
 
@@ -89,16 +89,16 @@ const ProjectItems = () => {
     console.log("Riga eliminata:", editedRow);
 
     setPayloadObj((prevPayload) => ({
-      ...prevPayload, // Mantieni le altre proprietà di payloadObj
+      ...prevPayload,
       edits: {
-        ...prevPayload.edits, // Mantieni le chiavi-valore esistenti in edits o inizializzalo vuoto
-        [editedRow[10]]: editedRow[12], // Aggiungi la nuova chiave-valore
+        ...prevPayload.edits,
+        [editedRow[9]]: +editedRow[12],
       },
     }));
 
     setPendingRequests((prevRequests, prevEditedRows) => [
       ...prevRequests,
-      `Modifica articolo [${editedRow[10]}] nuovo allocato: ${editedRow[12]}`,
+      `Modifica articolo [${editedRow[9]}] nuovo allocato: ${editedRow[12]}`,
     ]);
   };
 
@@ -106,13 +106,11 @@ const ProjectItems = () => {
 
   const fetchStockDataForModal = async () => {
     try {
-      setIsLoadingModal(true); // Inizia il caricamento
+      setIsLoadingModal(true);
       const response = await api.getStock(token);
 
-      // Imposta i dati della modale
       setModalStockData(response.values.slice(0, 10));
 
-      // Genera colonne specifiche per la modale
       const modalColumns = response.fields
         .filter((field) => Object.values(field)[0].show)
         .map((field) => {
@@ -193,28 +191,34 @@ const ProjectItems = () => {
   const handleAddStockItemFromModal = (filteredQnt) => {
     setStockData((prevStockData) => [
       ...prevStockData,
-      ...Object.entries(filteredQnt).map(([key, value]) => ({
-        projectDescription: key,
-        quantity: value,
-      })),
+      ...Object.entries(filteredQnt).map(([key, value]) => {
+        const description = key.replace(/^\d+/, "").trim();
+        return {
+          projectDescription: description,
+          quantity: value,
+        };
+      }),
     ]);
-
-    //if quantita id gia presente aggiornare la qty del payload e aggiornare la label text,
-    //altrimenti aggiungerli come gia fatto
 
     setPayloadObj((prevPayload) => ({
       ...prevPayload,
       new: {
         ...(prevPayload.new || {}),
-        ...filteredQnt,
+        ...Object.fromEntries(
+          Object.entries(filteredQnt).map(([key, value]) => {
+            const description = key.replace(/^\d+/, "").trim();
+            return [description, value];
+          })
+        ),
       },
     }));
 
     setPendingRequests((prevRequests) => [
       ...prevRequests,
-      ...Object.entries(filteredQnt).map(
-        ([key, value]) => `Aggiunto articolo [${key}] quantità: ${value}`
-      ),
+      ...Object.entries(filteredQnt).map(([key, value]) => {
+        const description = key.replace(/^\d+/, "").trim();
+        return `Aggiunto articolo [${description}] quantità: ${value}`;
+      }),
     ]);
 
     setOpenModal(false);
@@ -276,8 +280,8 @@ const ProjectItems = () => {
     setPayloadObj((prevPayload) => ({
       ...prevPayload,
       project: {
-        ...prevPayload.project, // Mantieni le chiavi esistenti
-        [name]: value, // Aggiorna il campo specifico con il nuovo valore
+        ...prevPayload.project,
+        [name]: value,
       },
     }));
 
@@ -484,7 +488,6 @@ const ProjectItems = () => {
                 },
               }}
               onClick={() => {
-                // Funzione per gestire la cancellazione
                 console.log("Cliccato su elimina progetto:", project[8]);
               }}
             />
@@ -648,8 +651,8 @@ const ProjectItems = () => {
                         .split(";")
                         .filter((pm) => pm !== editableData[field])
                         .map((pm, idx) => (
-                          <MenuItem key={idx} value={pm}>
-                            {pm}
+                          <MenuItem key={idx} value={pm.trim()}>
+                            {pm.trim()}
                           </MenuItem>
                         ))}
                     </Select>
@@ -672,7 +675,7 @@ const ProjectItems = () => {
                     }
                     name={field}
                     value={editableData[field] || ""}
-                    onChange={handleInputChange}
+                    onChange={(e) => handleInputChange(e, field)}
                     fullWidth
                     type={
                       field === "startDate" || field === "endDate"
@@ -686,6 +689,23 @@ const ProjectItems = () => {
                         ? "La data di fine deve essere successiva a quella di inizio"
                         : ""
                     }
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Button
+                            onClick={() => handleCancelChange(field)}
+                            sx={{
+                              padding: 0,
+                              minWidth: "20px",
+                              color: "gray",
+                              "&:hover": { color: "black" },
+                            }}
+                          >
+                            X
+                          </Button>
+                        </InputAdornment>
+                      ),
+                    }}
                     sx={{
                       borderRadius: "8px",
                     }}
@@ -694,7 +714,6 @@ const ProjectItems = () => {
               )}
             </Stack>
 
-            {/* Terza Riga: Richiesta Iniziale e Richieste Pendenti */}
             <Stack spacing={2} direction="row" alignItems="flex-start">
               <TextField
                 label="Richiesta Iniziale"

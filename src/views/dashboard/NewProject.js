@@ -268,7 +268,6 @@ const NewProject = () => {
                 onChange={(e) => handleOnChange(e, "10")}
                 value={state["10"]}
                 fullWidth
-                required
                 sx={{
                   borderColor: "#999",
                   "& .MuiOutlinedInput-root": { borderRadius: "8px" },

@@ -50,9 +50,8 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
   );
 
   const handleAddClick = () => {
-    // Check if at least one quantity is greater than 0
     const validQnts = Object.values(quantities)
-      .map((value) => Number(value)) // Ensure all values are numbers
+      .map((value) => Number(value))
       .some((value) => value > 0);
 
     if (!validQnts) {
@@ -60,7 +59,6 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
       return;
     }
 
-    // Filter the quantities with values greater than 0
     const filteredQnt = Object.entries(quantities)
       .filter(([key, value]) => Number(value) > 0)
       .reduce((acc, [key, value]) => {
