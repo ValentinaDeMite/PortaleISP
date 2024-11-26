@@ -72,13 +72,25 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
     onAdd(filteredQnt);
   };
 
-  const handleEditFieldChange = (id, newQuantity) => {
+  const handleEditFieldChange = (row, newQuantity) => {
+    const id = row[0];
+    const max = row[8];
+    const desc = row[1];
+
+    console.log(newQuantity, max);
+
+    if (newQuantity > max) {
+      alert(
+        `Quantità non disponibile. Disponibilità massima per l'articolo ${desc}: ${max}`
+      );
+      return;
+    }
+
     setQuantities((prev) => ({ ...prev, [id]: newQuantity }));
   };
 
   const renderAllocateColumn = (params) => {
     const quantity = quantities[params.row];
-    const availableQuantity = params.row["9"];
 
     return (
       <Box
@@ -93,7 +105,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
           size="small"
           type="number"
           value={quantity}
-          onChange={(e) => handleEditFieldChange(params.row[0], e.target.value)}
+          onBlur={(e) => handleEditFieldChange(params.row, e.target.value)}
           sx={{
             width: "50%",
             "& input": {

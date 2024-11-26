@@ -116,9 +116,10 @@ const RequestList = (props) => {
   }, [dispatch, token]);
 
   const handleRowClick = (params) => {
-    const projectId = params.row.projectId; // Sostituire `projectId` con il nome effettivo del campo.
+    const projectId = params.row[0];
+    console.log(projectId);
     if (projectId) {
-      navigate(`richieste/projectitems/${projectId}`);
+      navigate(`/dashboard/${projectId}`);
     }
   };
 
@@ -256,7 +257,7 @@ const RequestList = (props) => {
               rows={filteredRequests}
               useChips={false}
               showAddItem={true}
-              onRowClick={handleRowClick} // Aggiungi questa proprietà.
+              onRowDoubleClick={handleRowClick} // Aggiungi questa proprietà.
             />
           ) : (
             <Box

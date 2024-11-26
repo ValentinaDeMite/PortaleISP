@@ -199,6 +199,9 @@ const ProjectItems = () => {
       })),
     ]);
 
+    //if quantita id gia presente aggiornare la qty del payload e aggiornare la label text,
+    //altrimenti aggiungerli come gia fatto
+
     setPayloadObj((prevPayload) => ({
       ...prevPayload,
       new: {
@@ -213,7 +216,8 @@ const ProjectItems = () => {
         ([key, value]) => `Aggiunto articolo [${key}] quantità: ${value}`
       ),
     ]);
-    console.log(payloadObj);
+
+    setOpenModal(false);
   };
 
   useEffect(() => {
@@ -269,6 +273,13 @@ const ProjectItems = () => {
       ...prevData,
       [name]: value,
     }));
+    setPayloadObj((prevPayload) => ({
+      ...prevPayload,
+      project: {
+        ...prevPayload.project, // Mantieni le chiavi esistenti
+        [name]: value, // Aggiorna il campo specifico con il nuovo valore
+      },
+    }));
 
     setPendingRequests((prevRequests) => {
       const updatedRequests = prevRequests.filter(
@@ -279,6 +290,7 @@ const ProjectItems = () => {
       }
       return updatedRequests;
     });
+    console.log("Payload aggiornato:", payloadObj);
   };
 
   const handleCancelChange = (field) => {
@@ -334,14 +346,14 @@ const ProjectItems = () => {
       cancelRequests: false,
     };
 
-    console.log(updatedPayload);
+    console.log("Payload pronto per invio:", updatedPayload);
 
-    return;
+    // return;
     try {
       // setVisible(true)
       // setIsLoading(true)
       const api = new ApiRest();
-      const data = api.iuProject(token, payloadObj);
+      const data = api.iuProject(token, updatedPayload);
       if (data.code === 200) {
         // setIsLoading(false)
         // setErrorTitle('Success')

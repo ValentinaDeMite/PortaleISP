@@ -41,7 +41,7 @@ const Dashboard = (props) => {
       projectDetails,
     });
 
-    navigate(`/dashboard/projectitems/${projectId}`);
+    navigate(`/dashboard/${projectId}`);
   };
 
   const filteredProjects = Array.isArray(projects)

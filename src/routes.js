@@ -12,7 +12,7 @@ const routes = [
   { path: "homepage", element: <Homepage /> },
   { path: "dashboard", element: <Dashboard /> },
   { path: "stock", element: <Stock /> },
-  { path: "dashboard/projectitems/:id", element: <ProjectItems /> },
+  { path: "dashboard/:id", element: <ProjectItems /> },
   { path: "nuovo-progetto", element: <NewProject /> },
   { path: "richieste", element: <RequestList /> },
   { path: "contatti", element: <Contacts /> },
