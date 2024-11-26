@@ -56,7 +56,6 @@ const ProjectItems = () => {
   const [isLoadingModal, setIsLoadingModal] = useState(false);
   const [editedRows, setEditedRows] = useState([]);
   const [deletedRows, setDeletedRows] = useState([]);
-
   const [payloadObj, setPayloadObj] = useState({});
 
   const info = useSelector((state) => state.info);
@@ -108,6 +107,12 @@ const ProjectItems = () => {
     try {
       setIsLoadingModal(true);
       const response = await api.getStock(token);
+
+      //to filter the modal table with the already present article in the table of project items
+      response.values = response.values.filter(
+        (item) =>
+          !projectItemsData.some((projectItem) => projectItem[9] === item[1])
+      );
 
       setModalStockData(response.values.slice(0, 10));
 
@@ -188,39 +193,91 @@ const ProjectItems = () => {
     ]);
   };*/
   }
-  const handleAddStockItemFromModal = (filteredQnt) => {
+  {
+    /*const handleAddStockItemFromModal = (filteredQnt) => {
     setStockData((prevStockData) => [
       ...prevStockData,
-      ...Object.entries(filteredQnt).map(([key, value]) => {
-        const description = key.replace(/^\d+/, "").trim();
-        return {
-          projectDescription: description,
-          quantity: value,
-        };
-      }),
+      //...Object.entries(filteredQnt).map(([key, value]) => {
+      //const partNumberStock = key.replace(/^\d+/, "").trim();
+      // return {
+      //   partNumberStock,
+      //   quantity: value,
+      ...Object.entries(filteredQnt).map(([key, value]) => ({
+        partNumberStock: key,
+        quantity: value,
+      })),
     ]);
 
+    // Se la quantità è già presente, aggiorna la quantità nel payload
     setPayloadObj((prevPayload) => ({
       ...prevPayload,
+      //new: {
+      //  ...(prevPayload.new || {}),
+      //  ...Object.fromEntries(
+      //    Object.entries(filteredQnt).map(([key, value]) => {
+      //      const partNumberStock = key.replace(/^\d+/, "").trim();
+      //      return [partNumberStock, value];
+      //    })
+      //  ),},
       new: {
         ...(prevPayload.new || {}),
-        ...Object.fromEntries(
-          Object.entries(filteredQnt).map(([key, value]) => {
-            const description = key.replace(/^\d+/, "").trim();
-            return [description, value];
-          })
-        ),
+        ...filteredQnt,
       },
     }));
 
     setPendingRequests((prevRequests) => [
       ...prevRequests,
-      ...Object.entries(filteredQnt).map(([key, value]) => {
-        const description = key.replace(/^\d+/, "").trim();
-        return `Aggiunto articolo [${description}] quantità: ${value}`;
-      }),
+      //...Object.entries(filteredQnt).map(([key, value]) => {
+      //  const partNumberStock = key.replace(/^\d+/, "").trim();
+      //  return `Aggiunto articolo [${partNumberStock}] quantità: ${value}`;
+      //}),
+      ...Object.entries(filteredQnt).map(
+        ([key, value]) => `Aggiunto articolo [${key}] quantità: ${value}`
+      ),
     ]);
 
+    console.log("Payload aggiornato:", payloadObj);
+    setOpenModal(false);
+  };*/
+  }
+  const handleAddStockItemFromModal = (filteredQnt) => {
+    // Controllo preliminare per verificare che filteredQnt sia un oggetto valido
+    if (!filteredQnt || Object.keys(filteredQnt).length === 0) {
+      console.error("filteredQnt è vuoto o non definito.");
+      return;
+    }
+
+    // Aggiorna stockData con i nuovi articoli
+
+    // Aggiorna payloadObj con i nuovi dati (senza numeri nelle chiavi)
+    setPayloadObj((prevPayload) => ({
+      ...prevPayload,
+      new: {
+        ...(prevPayload.new || {}),
+        ...filteredQnt,
+      },
+    }));
+
+    // Aggiungi nuove richieste pendenti (senza numeri nelle chiavi)
+    setPendingRequests((prevRequests) => [
+      ...prevRequests,
+      ...Object.entries(filteredQnt).map(
+        ([key, value]) => `Aggiunto articolo [${key}] quantità: ${value}`
+      ),
+    ]);
+
+    // Log del payload aggiornato per debug
+    console.log("Payload aggiornato:", {
+      ...payloadObj,
+      new: {
+        ...(payloadObj.new || {}),
+        ...Object.fromEntries(
+          Object.entries(filteredQnt).map(([key, value]) => [key, value])
+        ),
+      },
+    });
+
+    // Chiude la modale
     setOpenModal(false);
   };
 

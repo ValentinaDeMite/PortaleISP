@@ -71,15 +71,14 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
   };
 
   const handleEditFieldChange = (row, newQuantity) => {
-    const id = row[0];
+    const id = row[1];
     const max = row[8];
-    const desc = row[1];
 
     console.log(newQuantity, max);
 
     if (newQuantity > max) {
       alert(
-        `Quantità non disponibile. Disponibilità massima per l'articolo ${desc}: ${max}`
+        `Quantità non disponibile. Disponibilità massima per l'articolo ${id}: ${max}`
       );
       return;
     }
