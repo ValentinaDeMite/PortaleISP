@@ -516,17 +516,27 @@ const AppTable = ({
             ...col,
             renderCell: (params) => (
               <Tooltip title={params.value || ""} arrow>
-                <span
+                <div
                   style={{
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    display: "block",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                     width: "100%",
+                    height: "100%",
                   }}
                 >
-                  {col.renderCell ? col.renderCell(params) : params.value}
-                </span>
+                  <span
+                    style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      display: "block",
+                      maxWidth: "100%",
+                    }}
+                  >
+                    {col.renderCell ? col.renderCell(params) : params.value}
+                  </span>
+                </div>
               </Tooltip>
             ),
           }))}
