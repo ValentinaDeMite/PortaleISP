@@ -771,78 +771,98 @@ const ProjectItems = () => {
               )}
             </Stack>
 
-            <Stack spacing={2} direction="row" alignItems="flex-start">
-              <TextField
-                label="Richiesta Iniziale"
-                value={project[15] || "Nessuna richiesta iniziale"}
-                InputProps={{ readOnly: true }}
-                fullWidth
-                multiline
-                rows={1}
-                sx={{
-                  backgroundColor: "#D8D8D8",
-                  borderRadius: "8px",
-                }}
-              />
+            <Stack spacing={2} direction="row" alignItems="stretch">
               <TextField
                 label="Richieste Pendenti"
                 value={pendingRequests.join("\n")}
-                fullWidth
                 multiline
                 rows={Math.max(pendingRequests.length, 1)}
                 sx={{
                   borderRadius: "8px",
+                  width: "60%", // Mantiene il TextField al 50% della larghezza
                 }}
               />
-            </Stack>
-
-            {pendingRequests.length > 0 && (
               <Box
                 sx={{
                   display: "flex",
-                  justifyContent: "flex-end",
-                  marginTop: 2,
+                  width: "40%", // Mantiene la larghezza uguale al TextField
+                  height: "auto", // Adatta l'altezza della box alla TextField
+                  alignItems: "center", // Centra verticalmente il contenuto
                 }}
               >
-                <Button
-                  variant="contained"
+                <Box
                   sx={{
-                    backgroundColor: "#FF8C00",
-                    color: "white",
-                    marginRight: "10px",
-                    fontSize: {
-                      xs: "0.4rem",
-                      sm: "0.4rem",
-                      md: "0.6rem",
-                      lg: "0.8rem",
-                      xl: "0.9rem",
+                    display: "flex",
+                    justifyContent: "center", // Centra i pulsanti orizzontalmente
+                    alignItems: "center", // Centra i pulsanti verticalmente
+                    gap: "15px", // Spaziatura tra i pulsanti
+                    margin: "auto", // Centra la box interna sia verticalmente che orizzontalmente
+                    flexDirection: {
+                      xs: "column", // Disposizione verticale su schermi piccoli
+                      sm: "row", // Disposizione orizzontale su schermi più grandi
                     },
-                    fontFamily: "Poppins!important",
                   }}
-                  onClick={handleConfirm}
                 >
-                  Conferma
-                </Button>
-                <Button
-                  variant="contained"
-                  sx={{
-                    backgroundColor: "#108CCB",
-                    color: "white",
-                    fontSize: {
-                      xs: "0.4rem",
-                      sm: "0.4rem",
-                      md: "0.6rem",
-                      lg: "0.8rem",
-                      xl: "0.9rem",
-                    },
-                    fontFamily: "Poppins!important",
-                  }}
-                  onClick={handleDeleteConfirmOpen}
-                >
-                  Elimina
-                </Button>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "#FF8C00",
+                      color: "white",
+                      width: "25%",
+                      fontSize: {
+                        xs: "0.4rem",
+                        sm: "0.4rem",
+                        md: "0.6rem",
+                        lg: "0.8rem",
+                        xl: "0.9rem",
+                      },
+                      fontFamily: "Poppins!important",
+                    }}
+                    onClick={handleConfirm}
+                  >
+                    Conferma
+                  </Button>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "#108CCB",
+                      color: "white",
+                      width: "25%",
+                      fontSize: {
+                        xs: "0.4rem",
+                        sm: "0.4rem",
+                        md: "0.6rem",
+                        lg: "0.8rem",
+                        xl: "0.9rem",
+                      },
+                      fontFamily: "Poppins!important",
+                    }}
+                    onClick={handleDeleteConfirmOpen}
+                  >
+                    Cancella
+                  </Button>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "red",
+                      color: "white",
+                      width: "auto",
+                      fontSize: {
+                        xs: "0.4rem",
+                        sm: "0.4rem",
+                        md: "0.6rem",
+                        lg: "0.8rem",
+                        xl: "0.9rem",
+                      },
+                      fontFamily: "Poppins!important",
+                    }}
+                    onClick={() => console.log("ciao")}
+                  >
+                    Elimina Progetto
+                  </Button>
+                </Box>
               </Box>
-            )}
+            </Stack>
           </Box>
         </Box>
       </Box>
