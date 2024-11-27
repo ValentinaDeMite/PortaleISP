@@ -287,15 +287,6 @@ const ProjectItems = () => {
         const items = await api.getItems(token, project[0]);
         setProjectItemsData(items.values);
 
-        const descriptions = items.values
-          .filter((item) => item[19]) // Verifica che il valore al 19° indice esista
-          .map((item) => `Richiesta: ${item[19]}`); // Formatta la descrizione
-
-        setPendingRequests((prevRequests) => [
-          ...prevRequests,
-          ...descriptions,
-        ]); // Aggiungi solo le nuove descrizioni
-
         const columns = items.fields
           .filter((field) => {
             const fieldKey = Object.keys(field)[0];
@@ -334,6 +325,199 @@ const ProjectItems = () => {
 
     fetchProjectItems();
   }, [token, project]);
+
+  {
+    /* useEffect(() => {
+    // Funzione per aggiungere gli elementi con stato "REQ" nel payload e nelle richieste pendenti
+    const handleReqItems = () => {
+      if (projectItemsData.length > 0) {
+        const reqItems = projectItemsData.filter(
+          (item) => item[2] === "REQ" // Campo stato è item[2]
+        );
+
+        // Aggiorna pendingRequests con gli elementi "REQ"
+        setPendingRequests((prevRequests) => [
+          ...prevRequests,
+          ...reqItems
+            .map((item) => {
+              const quantity = Number(item[12]); // Converti il valore in numero
+              if (isNaN(quantity)) {
+                console.error(
+                  `La quantità per ${item[9]} non è un numero valido.`
+                );
+                return null;
+              }
+              return `Modifica articolo [${item[9]}] nuovo allocato: ${quantity}`;
+            })
+            .filter(Boolean), // Rimuovi eventuali valori null
+        ]);
+
+        // Aggiorna il payload con gli elementi "REQ"
+        setPayloadObj((prevPayload) => ({
+          ...prevPayload,
+          edits: {
+            ...(prevPayload.edits || {}),
+            ...reqItems.reduce((acc, item) => {
+              const quantity = Number(item[12]); // Converti il valore in numero
+              if (!isNaN(quantity)) {
+                acc[item[9]] = quantity; // Aggiungi solo se è un numero
+              }
+              return acc;
+            }, {}),
+          },
+        }));
+      }
+    };
+
+    handleReqItems();
+  }, [projectItemsData]); // Trigger quando cambia projectItemsData
+
+
+
+  useEffect(() => {
+    const handleReqItems = () => {
+      if (projectItemsData.length > 0) {
+        const reqItems = projectItemsData.filter(
+          (item) => item[2] === "REQ" && item[19]
+        ); // Solo elementi REQ con descrizione in [19]
+
+        const newPendingRequests = reqItems
+          .map((item) => {
+            const partNumber = item[9];
+            const description = item[19];
+            const pendingQuantity = Number(item[13]); // Valore da usare come "pending"
+            const quantity = Number(item[12]); // Valore allocato
+
+            if (description.includes("Elimina articolo")) {
+              // Gestisci eliminazione
+              return `Elimina articolo [${partNumber}]`;
+            } else if (
+              description.includes("Modifica articolo") &&
+              !isNaN(pendingQuantity)
+            ) {
+              // Gestisci modifica con valore pending
+              return `Modifica articolo [${partNumber}] nuovo allocato: ${pendingQuantity}`;
+            }
+
+            console.error(
+              `Elemento non valido: ${partNumber}, descrizione: ${description}`
+            );
+            return null; // Ignora valori non validi
+          })
+          .filter(Boolean); // Rimuovi eventuali null
+
+        setPendingRequests(newPendingRequests);
+
+        // Aggiorna il payload
+        setPayloadObj((prevPayload) => {
+          const newEdits = { ...(prevPayload.edits || {}) };
+
+          reqItems.forEach((item) => {
+            const partNumber = item[9];
+            const description = item[19];
+            const pendingQuantity = Number(item[13]); // Valore pending
+            const quantity = Number(item[12]); // Valore allocato
+
+            if (description.includes("Elimina articolo")) {
+              // Aggiungi come eliminazione
+              newEdits[partNumber] = "DELETED";
+            } else if (
+              description.includes("Modifica articolo") &&
+              !isNaN(pendingQuantity)
+            ) {
+              // Aggiungi come modifica con valore pending
+              newEdits[partNumber] = pendingQuantity;
+            }
+          });
+
+          return {
+            ...prevPayload,
+            edits: newEdits, // Aggiorna edits
+          };
+        });
+      }
+    };
+
+    handleReqItems();
+  }, [projectItemsData]); // Trigger quando cambia projectItemsData
+*/
+  }
+
+  useEffect(() => {
+    const handleReqItems = () => {
+      if (projectItemsData.length > 0) {
+        const reqItems = projectItemsData.filter(
+          (item) => item[2] === "REQ" && item[19]
+        ); // Solo elementi REQ con descrizione in [19]
+
+        const newPendingRequests = reqItems
+          .map((item) => {
+            const partNumber = item[9];
+            const description = item[19];
+            const pendingQuantity = Number(item[13]); // Valore da usare come "pending"
+
+            if (description.includes("Elimina articolo")) {
+              return `Elimina articolo [${partNumber}]`;
+            } else if (
+              description.includes("Modifica articolo") &&
+              !isNaN(pendingQuantity)
+            ) {
+              return `Modifica articolo [${partNumber}] nuovo allocato: ${pendingQuantity}`;
+            } else if (
+              description.includes("Aggiunto articolo") &&
+              !isNaN(pendingQuantity)
+            ) {
+              return `Aggiunto articolo [${partNumber}] quantità: ${pendingQuantity}`;
+            }
+
+            console.error(
+              `Elemento non valido: ${partNumber}, descrizione: ${description}`
+            );
+            return null; // Ignora valori non validi
+          })
+          .filter(Boolean); // Rimuovi eventuali null
+
+        setPendingRequests(newPendingRequests);
+
+        // Aggiorna il payload
+        setPayloadObj((prevPayload) => {
+          const newEdits = { ...(prevPayload.edits || {}) };
+          const newItems = { ...(prevPayload.new || {}) };
+
+          reqItems.forEach((item) => {
+            const partNumber = item[9];
+            const description = item[19];
+            const pendingQuantity = Number(item[13]); // Valore pending
+
+            if (description.includes("Elimina articolo")) {
+              // Aggiungi come eliminazione
+              newEdits[partNumber] = "DELETED";
+            } else if (
+              description.includes("Modifica articolo") &&
+              !isNaN(pendingQuantity)
+            ) {
+              // Aggiungi come modifica
+              newEdits[partNumber] = pendingQuantity;
+            } else if (
+              description.includes("Aggiunto articolo") &&
+              !isNaN(pendingQuantity)
+            ) {
+              // Aggiungi come nuovo articolo
+              newItems[partNumber] = pendingQuantity;
+            }
+          });
+
+          return {
+            ...prevPayload,
+            edits: newEdits, // Aggiorna edits
+            new: newItems, // Aggiorna new
+          };
+        });
+      }
+    };
+
+    handleReqItems();
+  }, [projectItemsData]); // Trigger quando cambia projectItemsData
 
   // Form
 
@@ -396,12 +580,6 @@ const ProjectItems = () => {
   };
 
   const handleConfirm = () => {
-    // setPayloadObj((prevPayload) => {
-
-    // con operatore terniario esempio       isSupoervisor ? cancelRequests: true : cancelRequests: false
-    //  console.log(updatedPayload);
-    //   });
-
     project[8] = editableData.projectName;
     project[9] = editableData.projectDescription;
     project[10] = editableData.projectNotes;
@@ -418,33 +596,19 @@ const ProjectItems = () => {
 
     console.log("Payload pronto per invio:", updatedPayload);
 
-    // return;
     try {
-      // setVisible(true)
-      // setIsLoading(true)
       const api = new ApiRest();
       const data = api.iuProject(token, updatedPayload);
       if (data.code === 200) {
-        // setIsLoading(false)
-        // setErrorTitle('Success')
-        // const text = isSupervisor
-        //   ? `All your  ${editCounter()} request(s) have been correctly registered`
-        //   : `All your ${editCounter()} request(s) have been correctly submitted to your supervisor`
-        // setErrorMessage(text)
+        console.log("Richieste salvate correttamente");
       } else {
-        alert("Something went wrong, please try again submit your request(s)");
+        alert("Errore durante l'invio delle richieste");
       }
     } catch (error) {
-      // setIsLoading(false)
-      console.log(error.response.data.message);
-      // alert('Something went wrong, please try again submit your request(s)')
-      // setErrorTitle('Error while updating project')
-      // setErrorMessage(error.response.data.message)
-      // setVisible(true)
+      console.error("Errore durante l'invio del payload:", error);
     }
 
     return updatedPayload;
-    alert("Tutte le richieste sono state accettate!");
   };
 
   useEffect(() => {
@@ -788,15 +952,15 @@ const ProjectItems = () => {
                 rows={Math.max(pendingRequests.length, 1)}
                 sx={{
                   borderRadius: "8px",
-                  width: "60%",
+                  width: "60%", // Mantiene il TextField al 50% della larghezza
                 }}
               />
               <Box
                 sx={{
                   display: "flex",
-                  width: "40%",
-                  height: "auto",
-                  alignItems: "center",
+                  width: "40%", // Mantiene la larghezza uguale al TextField
+                  height: "auto", // Adatta l'altezza della box alla TextField
+                  alignItems: "center", // Centra verticalmente il contenuto
                 }}
               >
                 <Box
@@ -806,10 +970,7 @@ const ProjectItems = () => {
                     alignItems: "center", // Centra i pulsanti verticalmente
                     gap: "15px", // Spaziatura tra i pulsanti
                     margin: "auto", // Centra la box interna sia verticalmente che orizzontalmente
-                    flexDirection: {
-                      xs: "column", // Disposizione verticale su schermi piccoli
-                      sm: "row", // Disposizione orizzontale su schermi più grandi
-                    },
+                    flexDirection: "row",
                   }}
                 >
                   <Button
@@ -819,11 +980,11 @@ const ProjectItems = () => {
                       color: "white",
                       width: "25%",
                       fontSize: {
-                        xs: "0.4rem",
-                        sm: "0.4rem",
+                        xs: "0.5rem",
+                        sm: "0.5rem",
                         md: "0.6rem",
-                        lg: "0.8rem",
-                        xl: "0.9rem",
+                        lg: "0.7rem",
+                        xl: "0.8rem",
                       },
                       fontFamily: "Poppins!important",
                     }}
@@ -838,11 +999,11 @@ const ProjectItems = () => {
                       color: "white",
                       width: "25%",
                       fontSize: {
-                        xs: "0.4rem",
-                        sm: "0.4rem",
+                        xs: "0.5rem",
+                        sm: "0.5rem",
                         md: "0.6rem",
-                        lg: "0.8rem",
-                        xl: "0.9rem",
+                        lg: "0.7rem",
+                        xl: "0.8rem",
                       },
                       fontFamily: "Poppins!important",
                     }}
@@ -857,11 +1018,11 @@ const ProjectItems = () => {
                       color: "white",
                       width: "auto",
                       fontSize: {
-                        xs: "0.4rem",
-                        sm: "0.4rem",
+                        xs: "0.5rem",
+                        sm: "0.5rem",
                         md: "0.6rem",
-                        lg: "0.8rem",
-                        xl: "0.9rem",
+                        lg: "0.7rem",
+                        xl: "0.8rem",
                       },
                       fontFamily: "Poppins!important",
                     }}
