@@ -287,6 +287,15 @@ const ProjectItems = () => {
         const items = await api.getItems(token, project[0]);
         setProjectItemsData(items.values);
 
+        const descriptions = items.values
+          .filter((item) => item[19]) // Verifica che il valore al 19° indice esista
+          .map((item) => `Richiesta: ${item[19]}`); // Formatta la descrizione
+
+        setPendingRequests((prevRequests) => [
+          ...prevRequests,
+          ...descriptions,
+        ]); // Aggiungi solo le nuove descrizioni
+
         const columns = items.fields
           .filter((field) => {
             const fieldKey = Object.keys(field)[0];
@@ -779,15 +788,15 @@ const ProjectItems = () => {
                 rows={Math.max(pendingRequests.length, 1)}
                 sx={{
                   borderRadius: "8px",
-                  width: "60%", // Mantiene il TextField al 50% della larghezza
+                  width: "60%",
                 }}
               />
               <Box
                 sx={{
                   display: "flex",
-                  width: "40%", // Mantiene la larghezza uguale al TextField
-                  height: "auto", // Adatta l'altezza della box alla TextField
-                  alignItems: "center", // Centra verticalmente il contenuto
+                  width: "40%",
+                  height: "auto",
+                  alignItems: "center",
                 }}
               >
                 <Box
