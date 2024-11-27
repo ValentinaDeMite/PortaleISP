@@ -693,28 +693,6 @@ const ProjectItems = () => {
           >
             {project[8]}
           </Typography>
-          <Tooltip title="Elimina progetto">
-            <RemoveCircleIcon
-              sx={{
-                color: "#d32f2f",
-                cursor: "pointer",
-                fontSize: {
-                  xs: "16px",
-                  sm: "18px",
-                  md: "20px",
-                  lg: "22px",
-                  xl: "24px",
-                },
-                "&:hover": {
-                  transform: "scale(1.2)",
-                  transition: "transform 0.2s ease-in-out",
-                },
-              }}
-              onClick={() => {
-                console.log("Cliccato su elimina progetto:", project[8]);
-              }}
-            />
-          </Tooltip>
         </Box>
         <Box
           sx={{
