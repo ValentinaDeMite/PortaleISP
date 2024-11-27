@@ -108,7 +108,6 @@ const ProjectItems = () => {
       setIsLoadingModal(true);
       const response = await api.getStock(token);
 
-      //to filter the modal table with the already present article in the table of project items
       response.values = response.values.filter(
         (item) =>
           !projectItemsData.some((projectItem) => projectItem[9] === item[1])
@@ -241,15 +240,11 @@ const ProjectItems = () => {
   };*/
   }
   const handleAddStockItemFromModal = (filteredQnt) => {
-    // Controllo preliminare per verificare che filteredQnt sia un oggetto valido
     if (!filteredQnt || Object.keys(filteredQnt).length === 0) {
       console.error("filteredQnt è vuoto o non definito.");
       return;
     }
 
-    // Aggiorna stockData con i nuovi articoli
-
-    // Aggiorna payloadObj con i nuovi dati (senza numeri nelle chiavi)
     setPayloadObj((prevPayload) => ({
       ...prevPayload,
       new: {
@@ -258,7 +253,6 @@ const ProjectItems = () => {
       },
     }));
 
-    // Aggiungi nuove richieste pendenti (senza numeri nelle chiavi)
     setPendingRequests((prevRequests) => [
       ...prevRequests,
       ...Object.entries(filteredQnt).map(
@@ -266,7 +260,6 @@ const ProjectItems = () => {
       ),
     ]);
 
-    // Log del payload aggiornato per debug
     console.log("Payload aggiornato:", {
       ...payloadObj,
       new: {
@@ -448,13 +441,13 @@ const ProjectItems = () => {
       if (projectItemsData.length > 0) {
         const reqItems = projectItemsData.filter(
           (item) => item[2] === "REQ" && item[19]
-        ); // Solo elementi REQ con descrizione in [19]
+        );
 
         const newPendingRequests = reqItems
           .map((item) => {
             const partNumber = item[9];
             const description = item[19];
-            const pendingQuantity = Number(item[13]); // Valore da usare come "pending"
+            const pendingQuantity = Number(item[13]);
 
             if (description.includes("Elimina articolo")) {
               return `Elimina articolo [${partNumber}]`;
@@ -473,9 +466,9 @@ const ProjectItems = () => {
             console.error(
               `Elemento non valido: ${partNumber}, descrizione: ${description}`
             );
-            return null; // Ignora valori non validi
+            return null;
           })
-          .filter(Boolean); // Rimuovi eventuali null
+          .filter(Boolean);
 
         setPendingRequests(newPendingRequests);
 
@@ -487,7 +480,7 @@ const ProjectItems = () => {
           reqItems.forEach((item) => {
             const partNumber = item[9];
             const description = item[19];
-            const pendingQuantity = Number(item[13]); // Valore pending
+            const pendingQuantity = Number(item[13]);
 
             if (description.includes("Elimina articolo")) {
               // Aggiungi come eliminazione
@@ -509,15 +502,15 @@ const ProjectItems = () => {
 
           return {
             ...prevPayload,
-            edits: newEdits, // Aggiorna edits
-            new: newItems, // Aggiorna new
+            edits: newEdits,
+            new: newItems,
           };
         });
       }
     };
 
     handleReqItems();
-  }, [projectItemsData]); // Trigger quando cambia projectItemsData
+  }, [projectItemsData]);
 
   // Form
 
@@ -944,95 +937,92 @@ const ProjectItems = () => {
               )}
             </Stack>
 
-            <Stack spacing={2} direction="row" alignItems="stretch">
+            <Stack spacing={2} direction="row" alignItems="flex-start">
+              <TextField
+                label="Richiesta Iniziale"
+                value={project[15] || "Nessuna richiesta iniziale"}
+                InputProps={{ readOnly: true }}
+                fullWidth
+                multiline
+                rows={1}
+                sx={{
+                  backgroundColor: "#D8D8D8",
+                  borderRadius: "8px",
+                }}
+              />
               <TextField
                 label="Richieste Pendenti"
                 value={pendingRequests.join("\n")}
+                fullWidth
                 multiline
-                rows={Math.max(pendingRequests.length, 1)}
                 sx={{
                   borderRadius: "8px",
-                  width: "60%", // Mantiene il TextField al 50% della larghezza
                 }}
               />
-              <Box
-                sx={{
-                  display: "flex",
-                  width: "40%", // Mantiene la larghezza uguale al TextField
-                  height: "auto", // Adatta l'altezza della box alla TextField
-                  alignItems: "center", // Centra verticalmente il contenuto
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center", // Centra i pulsanti orizzontalmente
-                    alignItems: "center", // Centra i pulsanti verticalmente
-                    gap: "15px", // Spaziatura tra i pulsanti
-                    margin: "auto", // Centra la box interna sia verticalmente che orizzontalmente
-                    flexDirection: "row",
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: "#FF8C00",
-                      color: "white",
-                      width: "25%",
-                      fontSize: {
-                        xs: "0.5rem",
-                        sm: "0.5rem",
-                        md: "0.6rem",
-                        lg: "0.7rem",
-                        xl: "0.8rem",
-                      },
-                      fontFamily: "Poppins!important",
-                    }}
-                    onClick={handleConfirm}
-                  >
-                    Conferma
-                  </Button>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: "#108CCB",
-                      color: "white",
-                      width: "25%",
-                      fontSize: {
-                        xs: "0.5rem",
-                        sm: "0.5rem",
-                        md: "0.6rem",
-                        lg: "0.7rem",
-                        xl: "0.8rem",
-                      },
-                      fontFamily: "Poppins!important",
-                    }}
-                    onClick={handleDeleteConfirmOpen}
-                  >
-                    Cancella
-                  </Button>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: "red",
-                      color: "white",
-                      width: "auto",
-                      fontSize: {
-                        xs: "0.5rem",
-                        sm: "0.5rem",
-                        md: "0.6rem",
-                        lg: "0.7rem",
-                        xl: "0.8rem",
-                      },
-                      fontFamily: "Poppins!important",
-                    }}
-                    onClick={() => console.log("ciao")}
-                  >
-                    Elimina Progetto
-                  </Button>
-                </Box>
-              </Box>
             </Stack>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: 2,
+                gap: "15px",
+              }}
+            >
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: "#FF8C00",
+                  color: "white",
+                  fontSize: {
+                    xs: "0.5rem",
+                    sm: "0.5rem",
+                    md: "0.6rem",
+                    lg: "0.7rem",
+                    xl: "0.8rem",
+                  },
+                  fontFamily: "Poppins!important",
+                }}
+                onClick={handleConfirm}
+              >
+                Conferma
+              </Button>
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: "#108CCB",
+                  color: "white",
+                  fontSize: {
+                    xs: "0.5rem",
+                    sm: "0.5rem",
+                    md: "0.6rem",
+                    lg: "0.7rem",
+                    xl: "0.8rem",
+                  },
+                  fontFamily: "Poppins!important",
+                }}
+                onClick={handleDeleteConfirmOpen}
+              >
+                Cancella
+              </Button>
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: "red",
+                  color: "white",
+                  fontSize: {
+                    xs: "0.5rem",
+                    sm: "0.5rem",
+                    md: "0.6rem",
+                    lg: "0.7rem",
+                    xl: "0.8rem",
+                  },
+                  fontFamily: "Poppins!important",
+                }}
+                onClick={() => console.log("ciao")}
+              >
+                Elimina Progetto
+              </Button>
+            </Box>
           </Box>
         </Box>
       </Box>
