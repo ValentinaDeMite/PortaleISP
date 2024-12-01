@@ -57,6 +57,8 @@ const ProjectItems = () => {
   const [editedRows, setEditedRows] = useState([]);
   const [deletedRows, setDeletedRows] = useState([]);
   const [payloadObj, setPayloadObj] = useState({});
+  const [initialPayloadObj, setInitialPayloadObj] = useState({});
+  const [initialPendingRequests, setInitialPendingRequests] = useState([]);
 
   const info = useSelector((state) => state.info);
   let isSupervisor = info.ruolo === "Supervisor";
@@ -437,6 +439,10 @@ const ProjectItems = () => {
   }
 
   useEffect(() => {
+    console.log("ciao");
+
+    console.log(project);
+
     const handleReqItems = () => {
       if (projectItemsData.length > 0) {
         const reqItems = projectItemsData.filter(
@@ -471,6 +477,7 @@ const ProjectItems = () => {
           .filter(Boolean);
 
         setPendingRequests(newPendingRequests);
+        setInitialPendingRequests(newPendingRequests);
 
         // Aggiorna il payload
         setPayloadObj((prevPayload) => {
@@ -506,6 +513,8 @@ const ProjectItems = () => {
             new: newItems,
           };
         });
+
+        setInitialPayloadObj(payloadObj);
       }
     };
 
@@ -587,8 +596,6 @@ const ProjectItems = () => {
       cancelRequests: false,
     };
 
-    console.log("Payload pronto per invio:", updatedPayload);
-
     const api = new ApiRest();
     api
       .iuProject(token, updatedPayload)
@@ -604,12 +611,13 @@ const ProjectItems = () => {
         } else {
           alert("Errore durante l'invio delle richieste");
         }
+        window.location.reload();
       })
       .catch((error) => {
         console.error("Errore durante l'invio del payload:", error);
       });
 
-    return updatedPayload;
+    return;
   };
 
   //try {
@@ -653,6 +661,7 @@ const ProjectItems = () => {
         .iuProject(token, updatedPayload)
         .then((data) => {
           alert("Tutte le richieste sono state eliminate");
+          window.location.reload();
         })
         .catch((error) => {
           console.error(
@@ -663,8 +672,11 @@ const ProjectItems = () => {
     } else {
       setEditableData(initialData);
       setPendingRequests([]);
-      setOpenDeleteConfirm(false);
+      setPayloadObj([]);
+      setPendingRequests(initialPendingRequests);
+      setInitialPayloadObj(initialPayloadObj);
     }
+    setOpenDeleteConfirm(false);
   };
 
   const pendingRequestsCount = pendingRequests.length;
