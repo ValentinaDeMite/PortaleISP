@@ -166,17 +166,6 @@ const RequestList = (props) => {
           >
             Lista Richieste
           </Typography>
-          <Typography
-            variant="subtitle1"
-            align="start"
-            color="textSecondary"
-            gutterBottom
-          >
-            Ultimo aggiornamento:{" "}
-            {date !== undefined
-              ? new Date(date).toLocaleString("it-IT", { hour12: false })
-              : "--/--/----, --:--:--"}
-          </Typography>
 
           <Box
             sx={{

@@ -589,20 +589,42 @@ const ProjectItems = () => {
 
     console.log("Payload pronto per invio:", updatedPayload);
 
-    try {
-      const api = new ApiRest();
-      const data = api.iuProject(token, updatedPayload);
-      if (data.code === 200) {
-        console.log("Richieste salvate correttamente");
-      } else {
-        alert("Errore durante l'invio delle richieste");
-      }
-    } catch (error) {
-      console.error("Errore durante l'invio del payload:", error);
-    }
+    const api = new ApiRest();
+    api
+      .iuProject(token, updatedPayload)
+      .then((data) => {
+        console.log("Codice restituito:", data.code); // Accedi a data.code
+
+        if (data.code === 200) {
+          if (isSupervisor) {
+            alert("Tutte le richieste sono state accettate");
+          } else {
+            alert("La tua richiesta è stata inviata correttamente");
+          }
+        } else {
+          alert("Errore durante l'invio delle richieste");
+        }
+      })
+      .catch((error) => {
+        console.error("Errore durante l'invio del payload:", error);
+      });
 
     return updatedPayload;
   };
+
+  //try {
+  //  const api = new ApiRest();
+  //  const data = api.iuProject(token, updatedPayload);
+  // if (data.code === 200) {
+  //   console.log("Richieste salvate correttamente");
+  // } else {
+  // alert("Errore durante l'invio delle richieste");
+  // }
+  //} catch (error) {
+  //  console.error("Errore durante l'invio del payload:", error);
+  // }
+  //return updatedPayload;
+  // window.location.reload();}
 
   useEffect(() => {
     console.log("PayloadObj after state update:", payloadObj);
@@ -612,9 +634,37 @@ const ProjectItems = () => {
   const handleDeleteConfirmClose = () => setOpenDeleteConfirm(false);
 
   const handleDelete = () => {
-    setEditableData(initialData);
-    setPendingRequests([]);
-    setOpenDeleteConfirm(false);
+    if (isSupervisor) {
+      project[8] = editableData.projectName;
+      project[9] = editableData.projectDescription;
+      project[10] = editableData.projectNotes;
+      project[16] = editableData.projectManager;
+      project[17] = editableData.startDate;
+      project[18] = editableData.endDate;
+
+      const updatedPayload = {
+        new: payloadObj.new || {},
+        edits: payloadObj.edits || {},
+        project: project,
+        cancelRequests: true,
+      };
+      const api = new ApiRest();
+      api
+        .iuProject(token, updatedPayload)
+        .then((data) => {
+          alert("Tutte le richieste sono state eliminate");
+        })
+        .catch((error) => {
+          console.error(
+            "Errore durante la cancellazione delle richieste",
+            error
+          );
+        });
+    } else {
+      setEditableData(initialData);
+      setPendingRequests([]);
+      setOpenDeleteConfirm(false);
+    }
   };
 
   const pendingRequestsCount = pendingRequests.length;
