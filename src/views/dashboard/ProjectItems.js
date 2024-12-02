@@ -29,6 +29,7 @@ import AppTable from "../../components/AppTable";
 import AppModalTable from "../../components/AppModalTable";
 import StockData from "../../service-API/stock.json";
 import ApiRest from "../../service-API/ApiRest";
+import { Snackbar, Alert } from "@mui/material";
 
 const api = new ApiRest();
 const ProjectItems = () => {
@@ -59,6 +60,10 @@ const ProjectItems = () => {
   const [payloadObj, setPayloadObj] = useState({});
   const [initialPayloadObj, setInitialPayloadObj] = useState({});
   const [initialPendingRequests, setInitialPendingRequests] = useState([]);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const info = useSelector((state) => state.info);
   let isSupervisor = info.ruolo === "Supervisor";
@@ -319,7 +324,7 @@ const ProjectItems = () => {
     };
 
     fetchProjectItems();
-  }, [token, project]);
+  }, [token, project, refreshKey]); // Aggiungi refreshKey come dipendenza
 
   {
     /* useEffect(() => {
@@ -521,6 +526,10 @@ const ProjectItems = () => {
     handleReqItems();
   }, [projectItemsData]);
 
+  useEffect(() => {
+    console.log("openSnackbar:", openSnackbar);
+  }, [openSnackbar]);
+
   // Form
 
   const handleInputChange = (e) => {
@@ -600,24 +609,21 @@ const ProjectItems = () => {
     api
       .iuProject(token, updatedPayload)
       .then((data) => {
-        console.log("Codice restituito:", data.code); // Accedi a data.code
-
-        if (data.code === 200) {
-          if (isSupervisor) {
-            alert("Tutte le richieste sono state accettate");
-          } else {
-            alert("La tua richiesta è stata inviata correttamente");
-          }
-        } else {
-          alert("Errore durante l'invio delle richieste");
-        }
-        window.location.reload();
+        setSnackbarMessage(
+          isSupervisor
+            ? "Tutte le richieste sono state accettate"
+            : "La tua richiesta è stata inviata correttamente"
+        );
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
+        setRefreshKey((prevKey) => prevKey + 1); // Triggera il refresh
       })
       .catch((error) => {
         console.error("Errore durante l'invio del payload:", error);
+        setSnackbarMessage("Errore durante l'invio delle richieste");
+        setSnackbarSeverity("error");
+        setOpenSnackbar(true);
       });
-
-    return;
   };
 
   //try {
@@ -640,6 +646,12 @@ const ProjectItems = () => {
 
   const handleDeleteConfirmOpen = () => setOpenDeleteConfirm(true);
   const handleDeleteConfirmClose = () => setOpenDeleteConfirm(false);
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
 
   const handleDelete = () => {
     if (isSupervisor) {
@@ -656,18 +668,24 @@ const ProjectItems = () => {
         project: project,
         cancelRequests: true,
       };
+
       const api = new ApiRest();
       api
         .iuProject(token, updatedPayload)
         .then((data) => {
-          alert("Tutte le richieste sono state eliminate");
-          window.location.reload();
+          setSnackbarMessage("Tutte le richieste sono state eliminate");
+          setSnackbarSeverity("success");
+          setOpenSnackbar(true);
+          setRefreshKey((prevKey) => prevKey + 1); // Triggera il refresh
         })
         .catch((error) => {
           console.error(
             "Errore durante la cancellazione delle richieste",
             error
           );
+          setSnackbarMessage("Errore durante la cancellazione delle richieste");
+          setSnackbarSeverity("error");
+          setOpenSnackbar(true);
         });
     } else {
       setEditableData(initialData);
@@ -722,6 +740,21 @@ const ProjectItems = () => {
         },
       }}
     >
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={5000} // Aumenta la durata
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+
       <Box
         sx={{
           width: "100%",
