@@ -246,7 +246,7 @@ const RequestList = (props) => {
               rows={filteredRequests}
               useChips={false}
               showAddItem={true}
-              onRowDoubleClick={handleRowClick} // Aggiungi questa proprietà.
+              onRowDoubleClick={handleRowClick}
             />
           ) : (
             <Box

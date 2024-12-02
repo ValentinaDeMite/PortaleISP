@@ -182,70 +182,6 @@ const ProjectItems = () => {
     }));
   };
 
-  // Funzione per aggiungere un nuovo elemento dalla modale
-  {
-    /*const handleAddStockItemFromModal = (newRow) => {
-    setStockData((prevStockData) => [...prevStockData, newRow]);
-    setPayloadObj((prevPayload) => ({
-      ...prevPayload,
-      new: {
-        ...(prevPayload.new || {}),
-        [newRow[9]]: Number(newRow[12]),
-      },
-    }));
-    setPendingRequests((prevRequests) => [
-      ...prevRequests,
-      `Aggiunto nuovo articolo: Part Number ${newRow[9]}`,
-    ]);
-  };*/
-  }
-  {
-    /*const handleAddStockItemFromModal = (filteredQnt) => {
-    setStockData((prevStockData) => [
-      ...prevStockData,
-      //...Object.entries(filteredQnt).map(([key, value]) => {
-      //const partNumberStock = key.replace(/^\d+/, "").trim();
-      // return {
-      //   partNumberStock,
-      //   quantity: value,
-      ...Object.entries(filteredQnt).map(([key, value]) => ({
-        partNumberStock: key,
-        quantity: value,
-      })),
-    ]);
-
-    // Se la quantità è già presente, aggiorna la quantità nel payload
-    setPayloadObj((prevPayload) => ({
-      ...prevPayload,
-      //new: {
-      //  ...(prevPayload.new || {}),
-      //  ...Object.fromEntries(
-      //    Object.entries(filteredQnt).map(([key, value]) => {
-      //      const partNumberStock = key.replace(/^\d+/, "").trim();
-      //      return [partNumberStock, value];
-      //    })
-      //  ),},
-      new: {
-        ...(prevPayload.new || {}),
-        ...filteredQnt,
-      },
-    }));
-
-    setPendingRequests((prevRequests) => [
-      ...prevRequests,
-      //...Object.entries(filteredQnt).map(([key, value]) => {
-      //  const partNumberStock = key.replace(/^\d+/, "").trim();
-      //  return `Aggiunto articolo [${partNumberStock}] quantità: ${value}`;
-      //}),
-      ...Object.entries(filteredQnt).map(
-        ([key, value]) => `Aggiunto articolo [${key}] quantità: ${value}`
-      ),
-    ]);
-
-    console.log("Payload aggiornato:", payloadObj);
-    setOpenModal(false);
-  };*/
-  }
   const handleAddStockItemFromModal = (filteredQnt) => {
     if (!filteredQnt || Object.keys(filteredQnt).length === 0) {
       console.error("filteredQnt è vuoto o non definito.");
@@ -324,124 +260,7 @@ const ProjectItems = () => {
     };
 
     fetchProjectItems();
-  }, [token, project, refreshKey]); // Aggiungi refreshKey come dipendenza
-
-  {
-    /* useEffect(() => {
-    // Funzione per aggiungere gli elementi con stato "REQ" nel payload e nelle richieste pendenti
-    const handleReqItems = () => {
-      if (projectItemsData.length > 0) {
-        const reqItems = projectItemsData.filter(
-          (item) => item[2] === "REQ" // Campo stato è item[2]
-        );
-
-        // Aggiorna pendingRequests con gli elementi "REQ"
-        setPendingRequests((prevRequests) => [
-          ...prevRequests,
-          ...reqItems
-            .map((item) => {
-              const quantity = Number(item[12]); // Converti il valore in numero
-              if (isNaN(quantity)) {
-                console.error(
-                  `La quantità per ${item[9]} non è un numero valido.`
-                );
-                return null;
-              }
-              return `Modifica articolo [${item[9]}] nuovo allocato: ${quantity}`;
-            })
-            .filter(Boolean), // Rimuovi eventuali valori null
-        ]);
-
-        // Aggiorna il payload con gli elementi "REQ"
-        setPayloadObj((prevPayload) => ({
-          ...prevPayload,
-          edits: {
-            ...(prevPayload.edits || {}),
-            ...reqItems.reduce((acc, item) => {
-              const quantity = Number(item[12]); // Converti il valore in numero
-              if (!isNaN(quantity)) {
-                acc[item[9]] = quantity; // Aggiungi solo se è un numero
-              }
-              return acc;
-            }, {}),
-          },
-        }));
-      }
-    };
-
-    handleReqItems();
-  }, [projectItemsData]); // Trigger quando cambia projectItemsData
-
-
-
-  useEffect(() => {
-    const handleReqItems = () => {
-      if (projectItemsData.length > 0) {
-        const reqItems = projectItemsData.filter(
-          (item) => item[2] === "REQ" && item[19]
-        ); // Solo elementi REQ con descrizione in [19]
-
-        const newPendingRequests = reqItems
-          .map((item) => {
-            const partNumber = item[9];
-            const description = item[19];
-            const pendingQuantity = Number(item[13]); // Valore da usare come "pending"
-            const quantity = Number(item[12]); // Valore allocato
-
-            if (description.includes("Elimina articolo")) {
-              // Gestisci eliminazione
-              return `Elimina articolo [${partNumber}]`;
-            } else if (
-              description.includes("Modifica articolo") &&
-              !isNaN(pendingQuantity)
-            ) {
-              // Gestisci modifica con valore pending
-              return `Modifica articolo [${partNumber}] nuovo allocato: ${pendingQuantity}`;
-            }
-
-            console.error(
-              `Elemento non valido: ${partNumber}, descrizione: ${description}`
-            );
-            return null; // Ignora valori non validi
-          })
-          .filter(Boolean); // Rimuovi eventuali null
-
-        setPendingRequests(newPendingRequests);
-
-        // Aggiorna il payload
-        setPayloadObj((prevPayload) => {
-          const newEdits = { ...(prevPayload.edits || {}) };
-
-          reqItems.forEach((item) => {
-            const partNumber = item[9];
-            const description = item[19];
-            const pendingQuantity = Number(item[13]); // Valore pending
-            const quantity = Number(item[12]); // Valore allocato
-
-            if (description.includes("Elimina articolo")) {
-              // Aggiungi come eliminazione
-              newEdits[partNumber] = "DELETED";
-            } else if (
-              description.includes("Modifica articolo") &&
-              !isNaN(pendingQuantity)
-            ) {
-              // Aggiungi come modifica con valore pending
-              newEdits[partNumber] = pendingQuantity;
-            }
-          });
-
-          return {
-            ...prevPayload,
-            edits: newEdits, // Aggiorna edits
-          };
-        });
-      }
-    };
-
-    handleReqItems();
-  }, [projectItemsData]); // Trigger quando cambia projectItemsData
-*/
-  }
+  }, [token, project, refreshKey]);
 
   useEffect(() => {
     console.log("ciao");
@@ -626,20 +445,6 @@ const ProjectItems = () => {
       });
   };
 
-  //try {
-  //  const api = new ApiRest();
-  //  const data = api.iuProject(token, updatedPayload);
-  // if (data.code === 200) {
-  //   console.log("Richieste salvate correttamente");
-  // } else {
-  // alert("Errore durante l'invio delle richieste");
-  // }
-  //} catch (error) {
-  //  console.error("Errore durante l'invio del payload:", error);
-  // }
-  //return updatedPayload;
-  // window.location.reload();}
-
   useEffect(() => {
     console.log("PayloadObj after state update:", payloadObj);
   }, [payloadObj]);
@@ -676,7 +481,7 @@ const ProjectItems = () => {
           setSnackbarMessage("Tutte le richieste sono state eliminate");
           setSnackbarSeverity("success");
           setOpenSnackbar(true);
-          setRefreshKey((prevKey) => prevKey + 1); // Triggera il refresh
+          setRefreshKey((prevKey) => prevKey + 1);
         })
         .catch((error) => {
           console.error(
@@ -742,7 +547,8 @@ const ProjectItems = () => {
     >
       <Snackbar
         open={openSnackbar}
-        autoHideDuration={5000} // Aumenta la durata
+        autoHideDuration={5000}
+        a
         onClose={handleSnackbarClose}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
