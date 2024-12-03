@@ -74,6 +74,8 @@ const AppTable = ({
   disableCheckboxSelection,
   onDeleteRow,
   onEditRow,
+  enableSearch = false,
+  enableExcelExport = false,
 }) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
@@ -115,24 +117,19 @@ const AppTable = ({
       )
     : [];
   const exportToExcel = () => {
-    // Usa l'identificatore definito per le righe nel DataGrid
     const getRowId = (row, index) => row.id || index;
 
-    // Filtra le righe selezionate usando la funzione di identificazione
     const selectedData = filteredRows.filter((row, index) =>
       selectedRows.includes(getRowId(row, index))
     );
 
-    // Se non ci sono righe selezionate, esporta tutte le righe filtrate
     const dataToExport = selectedRows.length > 0 ? selectedData : filteredRows;
 
-    // Verifica se ci sono dati da esportare
     if (dataToExport.length === 0) {
       console.warn("Nessuna riga selezionata per l'esportazione.");
       return;
     }
 
-    // Genera il file Excel
     const worksheet = XLSX.utils.json_to_sheet(dataToExport);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Progetti");
@@ -450,73 +447,78 @@ const AppTable = ({
 
   return (
     <Box sx={{ height: "100%", width: "100%" }} ref={tableRef}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 2,
-          height: "15%",
-        }}
-      >
-        <TextField
-          variant="standard"
-          placeholder="Cerca"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{ color: "rgb(27, 158, 62, .9)" }} />
-              </InputAdornment>
-            ),
-          }}
+      {(enableSearch || enableExcelExport) && (
+        <Box
           sx={{
-            width: "20%",
-            "& .MuiInput-root": {
-              fontSize: {
-                xs: "0.7rem",
-                sm: "0.75rem",
-                md: "0.8rem",
-                lg: "0.8rem",
-                xl: "0.9rem",
-              },
-              borderBottom: "1px solid rgb(27, 158, 62, .5)",
-              "&:before": {
-                borderBottom: "1px solid rgb(27, 158, 62, .5)",
-              },
-              "&:after": {
-                borderBottom: "2px solid rgb(27, 158, 62, .8)",
-              },
-              ":hover:not(.Mui-focused)": {
-                "&:before": {
-                  borderBottom: "2px solid rgb(27, 158, 62, .9)",
-                },
-              },
-            },
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 2,
+            height: "15%",
           }}
-        />
-        <Tooltip title="Scarica in formato Excel">
-          <DownloadForOfflineRoundedIcon
-            sx={{
-              color: "orange",
-              cursor: "pointer",
-              fontSize: {
-                xs: "20px",
-                sm: "25px",
-                md: "30px",
-                lg: "32px",
-                xl: "35px",
-              },
-              transition: "transform 0.3s ease-in-out",
-              "&:hover": {
-                transform: "scale(1.2)",
-              },
-            }}
-            onClick={exportToExcel}
-          />
-        </Tooltip>
-      </Box>
+        >
+          {enableSearch && (
+            <TextField
+              variant="standard"
+              placeholder="Cerca"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ color: "rgb(27, 158, 62, .9)" }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                width: "20%",
+                "& .MuiInput-root": {
+                  fontSize: {
+                    xs: "0.7rem",
+                    sm: "0.75rem",
+                    md: "0.8rem",
+                    lg: "0.8rem",
+                    xl: "0.9rem",
+                  },
+                  borderBottom: "1px solid rgb(27, 158, 62, .5)",
+                  "&:before": {
+                    borderBottom: "1px solid rgb(27, 158, 62, .5)",
+                  },
+                  "&:after": {
+                    borderBottom: "2px solid rgb(27, 158, 62, .8)",
+                  },
+                  ":hover:not(.Mui-focused)": {
+                    "&:before": {
+                      borderBottom: "2px solid rgb(27, 158, 62, .9)",
+                    },
+                  },
+                },
+              }}
+            />
+          )}
+          {enableExcelExport && (
+            <Tooltip title="Scarica in formato Excel">
+              <DownloadForOfflineRoundedIcon
+                sx={{
+                  color: "orange",
+                  cursor: "pointer",
+                  fontSize: {
+                    xs: "20px",
+                    sm: "25px",
+                    md: "30px",
+                    lg: "32px",
+                    xl: "35px",
+                  },
+                  "&:hover": {
+                    color: "rgbA(50, 50, 50, .9)",
+                  },
+                }}
+                onClick={exportToExcel}
+              />
+            </Tooltip>
+          )}
+        </Box>
+      )}
 
       <Box sx={{ height: "76.5%", width: "100%" }}>
         <StripedDataGrid
@@ -533,6 +535,7 @@ const AppTable = ({
                 lg: "0.7rem",
                 xl: "0.9rem",
               },
+              height: "auto",
             },
             "& .MuiDataGrid-columnHeaders": {
               position: "sticky",
@@ -663,7 +666,7 @@ const AppTable = ({
           }}
           pageSizeOptions={[10, 25, 50]}
           sortingOrder={["asc", "desc"]}
-          checkboxSelection={!disableCheckboxSelection} // Corretto qui
+          checkboxSelection={!disableCheckboxSelection}
           onRowSelectionModelChange={handleRowSelectionModelChange}
           rowSelectionModel={selectedRows}
           groupRowsByColumn="status"

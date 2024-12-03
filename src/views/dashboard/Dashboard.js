@@ -191,6 +191,8 @@ const Dashboard = (props) => {
             useChips={true}
             onRowDoubleClick={handleRowDoubleClick}
             allowDoubleClick={true}
+            enableSearch={true} // Attiva la barra di ricerca
+            enableExcelExport={true} // Attiva l'esportazione in Excel
           />
         )}
       </Box>

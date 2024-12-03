@@ -858,6 +858,9 @@ const ProjectItems = () => {
                     xl: "0.8rem",
                   },
                   fontFamily: "Poppins!important",
+                  "&:hover": {
+                    backgroundColor: "rgbA(50, 50, 50, .89)",
+                  },
                 }}
                 onClick={handleConfirm}
               >
@@ -876,6 +879,9 @@ const ProjectItems = () => {
                     xl: "0.8rem",
                   },
                   fontFamily: "Poppins!important",
+                  "&:hover": {
+                    backgroundColor: "rgbA(50, 50, 50, .89)",
+                  },
                 }}
                 onClick={handleDeleteConfirmOpen}
               >
@@ -894,6 +900,9 @@ const ProjectItems = () => {
                     xl: "0.8rem",
                   },
                   fontFamily: "Poppins!important",
+                  "&:hover": {
+                    backgroundColor: "rgbA(50, 50, 50, .89)",
+                  },
                 }}
                 onClick={() => console.log("ciao")}
               >
@@ -954,8 +963,7 @@ const ProjectItems = () => {
               backgroundColor: "#FFA500",
               color: "white",
               "&:hover": {
-                transform: "scale(1.1)",
-                backgroundColor: "#FFB84D",
+                backgroundColor: "rgbA(50, 50, 50, .89)",
               },
             }}
             onClick={handleOpenModal}

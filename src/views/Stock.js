@@ -156,6 +156,8 @@ const Stock = (props) => {
             rows={stock}
             useChips={false}
             showAddItem={true}
+            enableSearch={true} // Attiva la barra di ricerca
+            enableExcelExport={true} // Attiva l'esportazione in Excel
           />
         )}
       </Box>
