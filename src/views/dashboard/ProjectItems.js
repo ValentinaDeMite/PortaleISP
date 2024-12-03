@@ -184,7 +184,7 @@ const ProjectItems = () => {
 
   const handleAddStockItemFromModal = (filteredQnt) => {
     if (!filteredQnt || Object.keys(filteredQnt).length === 0) {
-      console.error("filteredQnt è vuoto o non definito.");
+      //console.error("filteredQnt è vuoto o non definito.");
       return;
     }
 
@@ -263,9 +263,7 @@ const ProjectItems = () => {
   }, [token, project, refreshKey]);
 
   useEffect(() => {
-    console.log("ciao");
-
-    console.log(project);
+    //console.log(project);
 
     const handleReqItems = () => {
       if (projectItemsData.length > 0) {
@@ -346,7 +344,7 @@ const ProjectItems = () => {
   }, [projectItemsData]);
 
   useEffect(() => {
-    console.log("openSnackbar:", openSnackbar);
+    // console.log("openSnackbar:", openSnackbar);
   }, [openSnackbar]);
 
   // Form
@@ -435,7 +433,7 @@ const ProjectItems = () => {
         );
         setSnackbarSeverity("success");
         setOpenSnackbar(true);
-        setRefreshKey((prevKey) => prevKey + 1); // Triggera il refresh
+        setRefreshKey((prevKey) => prevKey + 1);
       })
       .catch((error) => {
         console.error("Errore durante l'invio del payload:", error);

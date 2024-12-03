@@ -11,6 +11,7 @@ import {
   DialogTitle,
   Button,
   TextField,
+  InputAdornment,
 } from "@mui/material";
 import { DataGridPremium, useGridApiRef } from "@mui/x-data-grid-premium";
 import { alpha, styled } from "@mui/material/styles";
@@ -19,6 +20,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
 import NotificationsOffIcon from "@mui/icons-material/NotificationsOff";
 import { useMediaQuery } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import DownloadForOfflineRoundedIcon from "@mui/icons-material/DownloadForOfflineRounded";
+import * as XLSX from "xlsx";
 
 const ODD_COLOR = "rgba(217, 217, 217, 0.7)";
 const EVEN_COLOR = "rgba(255, 255, 255, 1)";
@@ -78,12 +82,16 @@ const AppTable = ({
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedRows, setSelectedRows] = useState([]);
   const [editedRow, setEditedRow] = useState(null);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const tableRef = useRef(null);
   const isSmallScreen = useMediaQuery("(max-width: 1600px)");
+  const [searchText, setSearchText] = useState("");
+
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
     setRowSelectionModel(newRowSelectionModel);
+    setSelectedRows(newRowSelectionModel);
   };
 
   const handleClickOutside = (event) => {
@@ -98,6 +106,38 @@ const AppTable = ({
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  const filteredRows = Array.isArray(rows)
+    ? rows.filter((item) =>
+        Object.values(item).some((value) =>
+          String(value).toLowerCase().includes(searchText.toLowerCase())
+        )
+      )
+    : [];
+  const exportToExcel = () => {
+    // Usa l'identificatore definito per le righe nel DataGrid
+    const getRowId = (row, index) => row.id || index;
+
+    // Filtra le righe selezionate usando la funzione di identificazione
+    const selectedData = filteredRows.filter((row, index) =>
+      selectedRows.includes(getRowId(row, index))
+    );
+
+    // Se non ci sono righe selezionate, esporta tutte le righe filtrate
+    const dataToExport = selectedRows.length > 0 ? selectedData : filteredRows;
+
+    // Verifica se ci sono dati da esportare
+    if (dataToExport.length === 0) {
+      console.warn("Nessuna riga selezionata per l'esportazione.");
+      return;
+    }
+
+    // Genera il file Excel
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Progetti");
+    XLSX.writeFile(workbook, "lista_projects.xlsx");
+  };
 
   {
     /*Edit */
@@ -410,7 +450,75 @@ const AppTable = ({
 
   return (
     <Box sx={{ height: "100%", width: "100%" }} ref={tableRef}>
-      <Box sx={{ height: "auto", width: "100%" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 2,
+          height: "15%",
+        }}
+      >
+        <TextField
+          variant="standard"
+          placeholder="Cerca"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon sx={{ color: "rgb(27, 158, 62, .9)" }} />
+              </InputAdornment>
+            ),
+          }}
+          sx={{
+            width: "20%",
+            "& .MuiInput-root": {
+              fontSize: {
+                xs: "0.7rem",
+                sm: "0.75rem",
+                md: "0.8rem",
+                lg: "0.8rem",
+                xl: "0.9rem",
+              },
+              borderBottom: "1px solid rgb(27, 158, 62, .5)",
+              "&:before": {
+                borderBottom: "1px solid rgb(27, 158, 62, .5)",
+              },
+              "&:after": {
+                borderBottom: "2px solid rgb(27, 158, 62, .8)",
+              },
+              ":hover:not(.Mui-focused)": {
+                "&:before": {
+                  borderBottom: "2px solid rgb(27, 158, 62, .9)",
+                },
+              },
+            },
+          }}
+        />
+        <Tooltip title="Scarica in formato Excel">
+          <DownloadForOfflineRoundedIcon
+            sx={{
+              color: "orange",
+              cursor: "pointer",
+              fontSize: {
+                xs: "20px",
+                sm: "25px",
+                md: "30px",
+                lg: "32px",
+                xl: "35px",
+              },
+              transition: "transform 0.3s ease-in-out",
+              "&:hover": {
+                transform: "scale(1.2)",
+              },
+            }}
+            onClick={exportToExcel}
+          />
+        </Tooltip>
+      </Box>
+
+      <Box sx={{ height: "76.5%", width: "100%" }}>
         <StripedDataGrid
           apiRef={apiRef}
           rowHeight={isSmallScreen ? 35 : 40}
@@ -512,7 +620,7 @@ const AppTable = ({
               height: "100%",
             },
           }}
-          rows={rows}
+          rows={filteredRows || []}
           columns={updatedColumns.map((col) => ({
             ...col,
             renderCell: (params) => (
@@ -555,9 +663,9 @@ const AppTable = ({
           }}
           pageSizeOptions={[10, 25, 50]}
           sortingOrder={["asc", "desc"]}
-          checkboxSelection={!disableCheckboxSelection}
+          checkboxSelection={!disableCheckboxSelection} // Corretto qui
           onRowSelectionModelChange={handleRowSelectionModelChange}
-          rowSelectionModel={rowSelectionModel}
+          rowSelectionModel={selectedRows}
           groupRowsByColumn="status"
           rowGroupingModel={rowGroupingModel}
           onRowGroupingModelChange={setRowGroupingModel}
