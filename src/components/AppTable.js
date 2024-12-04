@@ -133,7 +133,7 @@ const AppTable = ({
     const worksheet = XLSX.utils.json_to_sheet(dataToExport);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Progetti");
-    XLSX.writeFile(workbook, "lista_projects.xlsx");
+    XLSX.writeFile(workbook, "file_esportati.xlsx");
   };
 
   {
@@ -385,35 +385,33 @@ const AppTable = ({
   const renderRichiestePendingIcon = (params) => {
     if (params.value > "0") {
       return (
-        <Tooltip title={`Richieste Pending: ${params.value}`}>
-          <Box
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+          }}
+        >
+          <NotificationImportantIcon
             sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
+              color: "#d32f2f",
+              fontSize: {
+                xs: "16px",
+                sm: "18px",
+                md: "20px",
+                lg: "22px",
+                xl: "24px",
+              },
+              cursor: "pointer",
+              transition: "transform 0.3s ease-in-out",
+              "&:hover": {
+                transform: "scale(1.2)",
+              },
             }}
-          >
-            <NotificationImportantIcon
-              sx={{
-                color: "#d32f2f",
-                fontSize: {
-                  xs: "16px",
-                  sm: "18px",
-                  md: "20px",
-                  lg: "22px",
-                  xl: "24px",
-                },
-                cursor: "pointer",
-                transition: "transform 0.3s ease-in-out",
-                "&:hover": {
-                  transform: "scale(1.2)",
-                },
-              }}
-              onClick={() => alert(`Richieste Pending ID: ${params.row.id}`)}
-            />
-          </Box>
-        </Tooltip>
+            onClick={() => alert(`Richieste Pending ID: ${params.row.id}`)}
+          />
+        </Box>
       );
     } else {
       return (
