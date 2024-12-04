@@ -80,7 +80,6 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
               transition: "height .8s ease",
             }}
           >
-            {/* Logo per sidebar chiusa */}
             <a
               href="https://www.intesasanpaolo.com/"
               target="_blank"
@@ -109,7 +108,6 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
               />
             </a>
 
-            {/* Logo per sidebar aperta */}
             <a
               href="https://www.intesasanpaolo.com/"
               target="_blank"
@@ -141,7 +139,6 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
 
           <Menu iconShape="square">
             <Box sx={{ height: "100%", transition: "width 0.3s ease" }}>
-              {/* Home */}
               <MenuItem
                 style={{
                   color: "white",
@@ -182,7 +179,6 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 )}
               </MenuItem>
 
-              {/* Dashboard */}
               <MenuItem
                 style={{
                   color: "white",
@@ -281,7 +277,6 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 </Box>
               </Collapse>
 
-              {/* Richieste */}
               <MenuItem
                 style={{ color: "white", margin: "10px 0" }}
                 icon={
@@ -318,7 +313,6 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 )}
               </MenuItem>
 
-              {/* Stock */}
               <MenuItem
                 style={{ color: "white", margin: "10px 0" }}
                 icon={
@@ -358,7 +352,6 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
           </Menu>
         </Box>
 
-        {/* Contatti */}
         <Box
           style={{
             width: isCollapsed ? "80px" : "220px",

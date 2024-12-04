@@ -57,7 +57,6 @@ function AppHeader() {
 
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center">
-      {/* Breadcrumbs */}
       <Box display="flex" alignItems="center">
         <Breadcrumbs
           aria-label="breadcrumb"
@@ -121,7 +120,6 @@ function AppHeader() {
         </Breadcrumbs>
       </Box>
 
-      {/* Account */}
       <Box display="flex" alignItems="center" m="0">
         <IconButton
           id="account-button"

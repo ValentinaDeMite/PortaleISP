@@ -165,13 +165,11 @@ const ProjectItems = () => {
     }
   };
 
-  // Apri la modale e recupera i dati dello stock
   const handleOpenModal = () => {
     setOpenModal(true);
     fetchStockDataForModal();
   };
 
-  // Chiudi la modale
   const handleCloseModal = () => setOpenModal(false);
 
   const getModalColumnDefs = () => {
@@ -312,19 +310,16 @@ const ProjectItems = () => {
             const pendingQuantity = Number(item[13]);
 
             if (description.includes("Elimina articolo")) {
-              // Aggiungi come eliminazione
               newEdits[partNumber] = "DELETED";
             } else if (
               description.includes("Modifica articolo") &&
               !isNaN(pendingQuantity)
             ) {
-              // Aggiungi come modifica
               newEdits[partNumber] = pendingQuantity;
             } else if (
               description.includes("Aggiunto articolo") &&
               !isNaN(pendingQuantity)
             ) {
-              // Aggiungi come nuovo articolo
               newItems[partNumber] = pendingQuantity;
             }
           });

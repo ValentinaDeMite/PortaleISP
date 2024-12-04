@@ -155,25 +155,6 @@ const Dashboard = (props) => {
           >
             Dashboard - Lista di tutti i progetti
           </Typography>
-          {/*  <Typography
-            variant="subtitle1"
-            align="start"
-            color="textSecondary"
-            gutterBottom
-            sx={{
-              fontSize: {
-                xs: '0.4rem',
-                sm: '0.5rem',
-                md: '0.7rem',
-                lg: '0.8rem',
-                xl: '0.9rem',
-              },
-            }}
-          >
-            Ultimo aggiornamento: {date !== undefined
-              ? new Date(date).toLocaleString('it-IT', { hour12: false })
-              : '--/--/----, --:--:--'}
-          </Typography>*/}
         </Box>
       )}
 
@@ -191,8 +172,7 @@ const Dashboard = (props) => {
             useChips={true}
             onRowDoubleClick={handleRowDoubleClick}
             allowDoubleClick={true}
-            enableSearch={true} // Attiva la barra di ricerca
-            enableExcelExport={true} // Attiva l'esportazione in Excel
+            enableSearch={true}
           />
         )}
       </Box>

@@ -160,8 +160,8 @@ const RequestList = (props) => {
               useChips={false}
               showAddItem={true}
               onRowDoubleClick={handleRowClick}
-              enableSearch={true} // Attiva la barra di ricerca
-              enableExcelExport={true} // Attiva l'esportazione in Excel
+              enableSearch={true}
+              enableExcelExport={true}
             />
           ) : (
             <Box

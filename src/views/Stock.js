@@ -134,17 +134,6 @@ const Stock = (props) => {
           >
             Stock - Lista articoli disponibili
           </Typography>
-          {/*<Typography
-            variant="subtitle1"
-            align="start"
-            color="textSecondary"
-            gutterBottom
-          >
-            Ultimo aggiornamento:{" "}
-            {date !== undefined
-              ? new Date(date).toLocaleString("it-IT", { hour12: false })
-              : "--/--/----, --:--:--"}
-          </Typography> */}
         </Box>
       )}
 
@@ -156,8 +145,8 @@ const Stock = (props) => {
             rows={stock}
             useChips={false}
             showAddItem={true}
-            enableSearch={true} // Attiva la barra di ricerca
-            enableExcelExport={true} // Attiva l'esportazione in Excel
+            enableSearch={true}
+            enableExcelExport={true}
           />
         )}
       </Box>
