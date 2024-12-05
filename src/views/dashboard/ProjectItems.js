@@ -30,10 +30,12 @@ import AppModalTable from "../../components/AppModalTable";
 import StockData from "../../service-API/stock.json";
 import ApiRest from "../../service-API/ApiRest";
 import { Snackbar, Alert } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const api = new ApiRest();
 const ProjectItems = () => {
   const ref = useRef();
+  const navigate = useNavigate();
   const project = useSelector((state) => state.selectedProject);
   const token = useSelector((state) => state.token);
   const [openModal, setOpenModal] = useState(false);
@@ -64,6 +66,7 @@ const ProjectItems = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [refreshKey, setRefreshKey] = useState(0);
+  const [openDeleteProjectDialog, setOpenDeleteProjectDialog] = useState(false);
 
   const info = useSelector((state) => state.info);
   let isSupervisor = info.ruolo === "Supervisor";
@@ -415,6 +418,7 @@ const ProjectItems = () => {
       edits: payloadObj.edits || {},
       project: project,
       cancelRequests: false,
+      deleteProject: false,
     };
 
     const api = new ApiRest();
@@ -465,6 +469,7 @@ const ProjectItems = () => {
         edits: payloadObj.edits || {},
         project: project,
         cancelRequests: true,
+        deleteProject: false,
       };
 
       const api = new ApiRest();
@@ -493,6 +498,41 @@ const ProjectItems = () => {
       setInitialPayloadObj(initialPayloadObj);
     }
     setOpenDeleteConfirm(false);
+  };
+  const handleOpenDeleteProjectDialog = () => setOpenDeleteProjectDialog(true);
+  const handleCloseDeleteProjectDialog = () =>
+    setOpenDeleteProjectDialog(false);
+
+  const handleDeleteProject = async () => {
+    const updatedPayload = {
+      new: payloadObj || {},
+      edits: payloadObj || {},
+      project: project,
+      cancelRequests: false,
+      deleteProject: true,
+    };
+    console.log(payloadObj);
+    const api = new ApiRest();
+    api
+      .iuProject(token, updatedPayload)
+      .then((data) => {
+        setSnackbarMessage(
+          isSupervisor
+            ? "Tutte le richieste sono state accettate"
+            : "La tua richiesta è stata inviata correttamente"
+        );
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
+        setRefreshKey((prevKey) => prevKey + 1);
+      })
+      .catch((error) => {
+        console.error("Errore durante l'invio del payload:", error);
+        setSnackbarMessage("Errore durante l'invio delle richieste");
+        setSnackbarSeverity("error");
+        setOpenSnackbar(true);
+      });
+    setOpenDeleteProjectDialog(false);
+    navigate("/dashboard");
   };
 
   const pendingRequestsCount = pendingRequests.length;
@@ -882,6 +922,7 @@ const ProjectItems = () => {
               >
                 Cancella
               </Button>
+
               <Button
                 variant="contained"
                 sx={{
@@ -899,7 +940,7 @@ const ProjectItems = () => {
                     backgroundColor: "rgbA(50, 50, 50, .89)",
                   },
                 }}
-                onClick={() => console.log("ciao")}
+                onClick={handleOpenDeleteProjectDialog}
               >
                 Elimina Progetto
               </Button>
@@ -921,6 +962,27 @@ const ProjectItems = () => {
           </Button>
           <Button onClick={handleDelete} color="error" autoFocus>
             Elimina
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openDeleteProjectDialog}
+        onClose={handleCloseDeleteProjectDialog}
+      >
+        <DialogTitle>Conferma Eliminazione</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Sei sicuro di voler eliminare questo progetto? Questa azione non può
+            essere annullata.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteProjectDialog} color="primary">
+            Annulla
+          </Button>
+          <Button onClick={handleDeleteProject} color="error" autoFocus>
+            Conferma
           </Button>
         </DialogActions>
       </Dialog>
