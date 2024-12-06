@@ -10,9 +10,9 @@ import {
   FormControl,
   Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import ApiRest from "../../service-API/ApiRest";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const inputs = [
   { key: "8", name: "Project", type: "text" },
@@ -37,8 +37,8 @@ const NewProject = () => {
   const info = useSelector((state) => state.info);
   const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const api = new ApiRest();
-  const history = useNavigate();
 
   const handleOnChange = (event, target) => {
     setState((prevState) => ({
@@ -51,44 +51,57 @@ const NewProject = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     buttonRef.current.disabled = true;
-    if (Object.values(state).includes("") && state[16] !== "") {
-      console.log(state);
-      console.log("Complete all fields before submitting!");
-      alert("Attention!\nComplete all fields before submitting!");
 
+    // Verifica che tutti i campi obbligatori siano completi
+    if (Object.values(state).includes("") || state["16"] === "") {
+      alert("Attenzione!\nCompleta tutti i campi prima di procedere!");
+      buttonRef.current.disabled = false;
       return;
     }
-    buttonRef.current.disabled = false;
+
     try {
-      const payload = {
+      // Costruzione del payload
+      const payloadObj = {
         new: {},
         edits: {},
         project: state,
       };
-      console.log("Payload:", payload);
-      const response = await api.iuProject(token, payload);
-      console.log("API Response:", response);
 
-      if (response.idprogetto) {
-        const idprogetto = response.idprogetto;
-        console.log(idprogetto);
-        const newData = await api.getDashboard(token);
-        dispatch({ type: "set", projects: newData.values });
-        dispatch({ type: "set", id: { id: idprogetto } });
-        history(`/dashboard/projectitems/${idprogetto}`, {
-          state: { id: idprogetto },
+      console.log("Payload inviato:", payloadObj);
+
+      // Chiamata API per creare il progetto
+      const response = await api.iuProject(token, payloadObj);
+      console.log("Risposta API:", response);
+
+      // Controlla se la risposta contiene un projectId o idprogetto
+      const projectId = response.projectId || response.idprogetto;
+
+      if (projectId) {
+        console.log(`Progetto creato con ID: ${projectId}`);
+
+        state[0] = projectId;
+        const projectDetails = state;
+
+        console.log("Dettagli progetto selezionato:", projectDetails);
+
+        dispatch({
+          type: "setSelectedProject",
+          projectDetails,
         });
+        // Navigazione diretta alla dashboard
+        navigate(`/dashboard/${projectId}`);
+      } else {
+        console.error("ID progetto non ricevuto.");
+        alert("Errore: ID progetto non ricevuto.");
       }
     } catch (error) {
-      console.log(
-        "Error in newProject component while submitting data: " + error
-      );
-      alert(
-        "Something went wrong.\n" +
-          (error.response?.data?.message || "Unknown error occurred") +
-          "\n Please try again or retry later."
-      );
-      buttonRef.current.disabled = false;
+      console.error("Errore durante la chiamata API:", error);
+
+      // Gestione dell'errore
+      const errorMessage =
+        error.response?.data?.message ||
+        "Errore sconosciuto. Riprova più tardi.";
+      alert(`Qualcosa è andato storto.\n${errorMessage}`);
     }
   };
 
