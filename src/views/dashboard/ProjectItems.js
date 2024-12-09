@@ -111,6 +111,40 @@ const ProjectItems = () => {
     ]);
   };
 
+  // Delete Project
+
+  const handleDeleteProject = async () => {
+    const updatedPayload = {
+      new: payloadObj || {},
+      edits: payloadObj || {},
+      project: project,
+      cancelRequests: false,
+      deleteProject: true,
+    };
+    console.log(payloadObj);
+    const api = new ApiRest();
+    api
+      .iuProject(token, updatedPayload)
+      .then((data) => {
+        setSnackbarMessage(
+          isSupervisor
+            ? "Tutte le richieste sono state accettate"
+            : "La tua richiesta è stata inviata correttamente"
+        );
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
+        setRefreshKey((prevKey) => prevKey + 1);
+      })
+      .catch((error) => {
+        console.error("Errore durante l'invio del payload:", error);
+        setSnackbarMessage("Errore durante l'invio delle richieste");
+        setSnackbarSeverity("error");
+        setOpenSnackbar(true);
+      });
+    setOpenDeleteProjectDialog(false);
+    navigate("/dashboard");
+  };
+
   // Modale
 
   const fetchStockDataForModal = async () => {
@@ -269,9 +303,12 @@ const ProjectItems = () => {
     const handleReqItems = () => {
       if (projectItemsData.length > 0) {
         const reqItems = projectItemsData.filter(
-          (item) => item[2] === "REQ" && item[19]
+          (item) => (item[2] === "REQ" || item[19]) && item[19]
         );
 
+        let deleteProjectRequestLogged = false;
+
+        // Aggiorna pendingRequests direttamente
         const newPendingRequests = reqItems
           .map((item) => {
             const partNumber = item[9];
@@ -279,17 +316,28 @@ const ProjectItems = () => {
             const pendingQuantity = Number(item[13]);
 
             if (description.includes("Elimina articolo")) {
-              return `Elimina articolo [${partNumber}]`;
+              return `Elimina articolo [${partNumber}];`;
             } else if (
               description.includes("Modifica articolo") &&
               !isNaN(pendingQuantity)
             ) {
-              return `Modifica articolo [${partNumber}] nuovo allocato: ${pendingQuantity}`;
+              return `Modifica articolo [${partNumber}] nuovo allocato: ${pendingQuantity};`;
             } else if (
               description.includes("Aggiunto articolo") &&
               !isNaN(pendingQuantity)
             ) {
-              return `Aggiunto articolo [${partNumber}] quantità: ${pendingQuantity}`;
+              return `Aggiunto articolo [${partNumber}] quantità: ${pendingQuantity};`;
+            } else if (
+              description.includes("Richiesta eliminazione Progetto") &&
+              !deleteProjectRequestLogged
+            ) {
+              deleteProjectRequestLogged = true;
+              return `Richiesta eliminazione progetto;`;
+            } else if (
+              description.includes("Richiesta eliminazione Progetto") &&
+              reqItems.length === 1
+            ) {
+              return `Richiesta eliminazione progetto;`;
             }
 
             console.error(
@@ -306,6 +354,7 @@ const ProjectItems = () => {
         setPayloadObj((prevPayload) => {
           const newEdits = { ...(prevPayload.edits || {}) };
           const newItems = { ...(prevPayload.new || {}) };
+          let deleteProjectRequest = false;
 
           reqItems.forEach((item) => {
             const partNumber = item[9];
@@ -324,6 +373,10 @@ const ProjectItems = () => {
               !isNaN(pendingQuantity)
             ) {
               newItems[partNumber] = pendingQuantity;
+            } else if (
+              description.includes("Richiesta eliminazione Progetto")
+            ) {
+              deleteProjectRequest = true;
             }
           });
 
@@ -331,6 +384,7 @@ const ProjectItems = () => {
             ...prevPayload,
             edits: newEdits,
             new: newItems,
+            deleteProject: deleteProjectRequest,
           };
         });
 
@@ -405,6 +459,8 @@ const ProjectItems = () => {
     }
   };
 
+  // Conferma Richieste
+
   const handleConfirm = () => {
     project[8] = editableData.projectName;
     project[9] = editableData.projectDescription;
@@ -418,7 +474,7 @@ const ProjectItems = () => {
       edits: payloadObj.edits || {},
       project: project,
       cancelRequests: false,
-      deleteProject: false,
+      deleteProject: payloadObj.deleteProject || false,
     };
 
     const api = new ApiRest();
@@ -433,6 +489,11 @@ const ProjectItems = () => {
         setSnackbarSeverity("success");
         setOpenSnackbar(true);
         setRefreshKey((prevKey) => prevKey + 1);
+        if (updatedPayload.deleteProject) {
+          setTimeout(() => {
+            navigate("/dashboard");
+          }, 3000);
+        }
       })
       .catch((error) => {
         console.error("Errore durante l'invio del payload:", error);
@@ -454,6 +515,8 @@ const ProjectItems = () => {
     }
     setOpenSnackbar(false);
   };
+
+  // Elimina Richieste
 
   const handleDelete = () => {
     if (isSupervisor) {
@@ -502,38 +565,6 @@ const ProjectItems = () => {
   const handleOpenDeleteProjectDialog = () => setOpenDeleteProjectDialog(true);
   const handleCloseDeleteProjectDialog = () =>
     setOpenDeleteProjectDialog(false);
-
-  const handleDeleteProject = async () => {
-    const updatedPayload = {
-      new: payloadObj || {},
-      edits: payloadObj || {},
-      project: project,
-      cancelRequests: false,
-      deleteProject: true,
-    };
-    console.log(payloadObj);
-    const api = new ApiRest();
-    api
-      .iuProject(token, updatedPayload)
-      .then((data) => {
-        setSnackbarMessage(
-          isSupervisor
-            ? "Tutte le richieste sono state accettate"
-            : "La tua richiesta è stata inviata correttamente"
-        );
-        setSnackbarSeverity("success");
-        setOpenSnackbar(true);
-        setRefreshKey((prevKey) => prevKey + 1);
-      })
-      .catch((error) => {
-        console.error("Errore durante l'invio del payload:", error);
-        setSnackbarMessage("Errore durante l'invio delle richieste");
-        setSnackbarSeverity("error");
-        setOpenSnackbar(true);
-      });
-    setOpenDeleteProjectDialog(false);
-    navigate("/dashboard");
-  };
 
   const pendingRequestsCount = pendingRequests.length;
 
