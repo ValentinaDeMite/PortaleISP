@@ -90,6 +90,7 @@ const AppTable = ({
   const tableRef = useRef(null);
   const isSmallScreen = useMediaQuery("(max-width: 1600px)");
   const [searchText, setSearchText] = useState("");
+  const [tableHeight, setTableHeight] = useState("auto");
 
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
     setRowSelectionModel(newRowSelectionModel);
@@ -204,6 +205,13 @@ const AppTable = ({
     setSelectedRow(null);
   };
 
+  const sizeChangeTable = (pagination) => {
+    if (pagination.pageSize == 10) {
+      setTableHeight("auto");
+    } else {
+      setTableHeight("80%");
+    }
+  };
   const renderStatusChip = (params) => {
     let chipColor;
     let label;
@@ -518,7 +526,7 @@ const AppTable = ({
         </Box>
       )}
 
-      <Box sx={{ height: "76.5%", width: "100%" }}>
+      <Box sx={{ height: tableHeight, width: "100%" }}>
         <StripedDataGrid
           apiRef={apiRef}
           rowHeight={isSmallScreen ? 35 : 40}
@@ -654,6 +662,7 @@ const AppTable = ({
           onRowDoubleClick={onRowDoubleClick}
           getRowId={(row) => row.id || rows.indexOf(row)}
           pagination
+          onPaginationModelChange={(param) => sizeChangeTable(param)}
           paginationMode="client"
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           page={page}
@@ -673,6 +682,7 @@ const AppTable = ({
           getRowClassName={(params) =>
             params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
           }
+          rowCountChange={console.log("ciao")}
         />
       </Box>
       <Dialog

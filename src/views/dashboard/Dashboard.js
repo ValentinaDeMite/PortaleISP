@@ -173,6 +173,7 @@ const Dashboard = (props) => {
             onRowDoubleClick={handleRowDoubleClick}
             allowDoubleClick={true}
             enableSearch={true}
+            enableExcelExport={true}
           />
         )}
       </Box>
