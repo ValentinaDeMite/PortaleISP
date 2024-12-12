@@ -1,8 +1,18 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Typography } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Tooltip,
+  InputAdornment,
+} from "@mui/material";
 import { DataGridPremium, useGridApiRef } from "@mui/x-data-grid-premium";
 import { alpha, styled } from "@mui/material/styles";
 import Chip from "@mui/material/Chip";
+import SearchIcon from "@mui/icons-material/Search";
+import DownloadForOfflineRoundedIcon from "@mui/icons-material/DownloadForOfflineRounded";
+import * as XLSX from "xlsx";
 
 const ODD_COLOR = "rgba(217, 217, 217, 0.7)";
 const EVEN_COLOR = "rgba(255, 255, 255, 1)";
@@ -43,38 +53,31 @@ const StripedDataGrid = styled(DataGridPremium)(({ theme }) => ({
 const AppModalTable = ({ columns, rows = [], onAdd }) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
+  const [searchText, setSearchText] = useState("");
+
   const apiRef = useGridApiRef();
-  const [addedItems, setAddedItems] = useState(null);
   const [quantities, setQuantities] = useState(
     rows.reduce((acc, row) => ({ ...acc, [row[0]]: 0 }), {})
   );
 
-  const handleAddClick = () => {
-    const validQnts = Object.values(quantities)
-      .map((value) => Number(value))
-      .some((value) => value > 0);
+  // Filtra le righe in base alla ricerca
+  const filteredRows = rows.filter((row) =>
+    Object.values(row).some((value) =>
+      String(value).toLowerCase().includes(searchText.toLowerCase())
+    )
+  );
 
-    if (!validQnts) {
-      alert("Inserisci almeno una quantità valida");
-      return;
-    }
-
-    const filteredQnt = Object.entries(quantities)
-      .filter(([key, value]) => Number(value) > 0)
-      .reduce((acc, [key, value]) => {
-        acc[key] = Number(value);
-        return acc;
-      }, {});
-
-    console.log(filteredQnt);
-    onAdd(filteredQnt);
+  // Esporta i dati filtrati in Excel
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(filteredRows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Dati");
+    XLSX.writeFile(workbook, "ExportedData.xlsx");
   };
 
   const handleEditFieldChange = (row, newQuantity) => {
     const id = row[1];
     const max = row[8];
-
-    console.log(newQuantity, max);
 
     if (newQuantity > max) {
       alert(
@@ -167,6 +170,65 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
 
   return (
     <Box sx={{ height: "100%", width: "100%" }}>
+      {/* Search Bar e Export */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "16px",
+        }}
+      >
+        {/* Search Bar */}
+        <TextField
+          variant="standard"
+          placeholder="Cerca"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon sx={{ color: "rgb(75, 168, 61, 0.9)" }} />
+              </InputAdornment>
+            ),
+          }}
+          sx={{
+            width: "20%",
+            "& .MuiInput-root": {
+              fontSize: "0.9rem",
+              borderBottom: "1px solid rgb(75, 168, 61, 0.5)",
+              "&:before": {
+                borderBottom: "1px solid rgb(75, 168, 61, 0.5)",
+              },
+              "&:after": {
+                borderBottom: "2px solid rgb(75, 168, 61, 0.8)",
+              },
+              ":hover:not(.Mui-focused)": {
+                "&:before": {
+                  borderBottom: "2px solid rgb(75, 168, 61, 0.9)",
+                },
+              },
+            },
+          }}
+        />
+
+        {/* Export Icon */}
+        <Tooltip title="Esporta in Excel" enterDelay={2000}>
+          <DownloadForOfflineRoundedIcon
+            sx={{
+              color: "orange",
+              cursor: "pointer",
+              fontSize: "30px",
+              "&:hover": {
+                color: "rgba(50, 50, 50, 0.9)",
+              },
+            }}
+            onClick={exportToExcel}
+          />
+        </Tooltip>
+      </Box>
+
+      {/* Tabella */}
       <Box sx={{ height: "auto", width: "100%" }}>
         <StripedDataGrid
           apiRef={apiRef}
@@ -258,7 +320,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
               height: "100%",
             },
           }}
-          rows={rows}
+          rows={filteredRows}
           columns={updatedColumns}
           pageSize={pageSize}
           onRowDoubleClick={(params) => console.log(params.row)}
@@ -286,7 +348,26 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
               backgroundColor: "#323232",
             },
           }}
-          onClick={handleAddClick}
+          onClick={() => {
+            const validQnts = Object.values(quantities)
+              .map((value) => Number(value))
+              .some((value) => value > 0);
+
+            if (!validQnts) {
+              alert("Inserisci almeno una quantità valida");
+              return;
+            }
+
+            const filteredQnt = Object.entries(quantities)
+              .filter(([key, value]) => Number(value) > 0)
+              .reduce((acc, [key, value]) => {
+                acc[key] = Number(value);
+                return acc;
+              }, {});
+
+            console.log(filteredQnt);
+            onAdd(filteredQnt);
+          }}
         >
           <Typography
             sx={{

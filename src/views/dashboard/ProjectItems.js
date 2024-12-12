@@ -31,9 +31,13 @@ import StockData from "../../service-API/stock.json";
 import ApiRest from "../../service-API/ApiRest";
 import { Snackbar, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import SearchIcon from "@mui/icons-material/Search";
+import DownloadForOfflineRoundedIcon from "@mui/icons-material/DownloadForOfflineRounded";
+import * as XLSX from "xlsx";
 
 const api = new ApiRest();
 const ProjectItems = () => {
+  const [searchText, setSearchText] = useState("");
   const ref = useRef();
   const navigate = useNavigate();
   const project = useSelector((state) => state.selectedProject);
@@ -70,6 +74,12 @@ const ProjectItems = () => {
 
   const info = useSelector((state) => state.info);
   let isSupervisor = info.ruolo === "Supervisor";
+
+  const filteredData = projectItemsData.filter((row) =>
+    Object.values(row).some((value) =>
+      String(value).toLowerCase().includes(searchText.toLowerCase())
+    )
+  );
 
   // Delete
 
@@ -438,6 +448,22 @@ const ProjectItems = () => {
         (req) => !req.startsWith(`${getFieldLabel(field)} aggiornato:`)
       );
     });
+  };
+
+  const exportToExcel = (data) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "ProjectItems");
+    XLSX.writeFile(workbook, "ProjectItems.xlsx");
+  };
+
+  // Filtra i dati in base al testo di ricerca
+  const handleSearch = (rows) => {
+    return rows.filter((row) =>
+      Object.values(row).some((value) =>
+        String(value).toLowerCase().includes(searchText.toLowerCase())
+      )
+    );
   };
 
   const getFieldLabel = (field) => {
@@ -994,9 +1020,8 @@ const ProjectItems = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          width: "98%",
-          marginTop: "2rem",
-          padding: "1rem 0",
+          width: "99%",
+          margin: "3rem 0 1rem  0 ",
         }}
       >
         <Typography
@@ -1016,37 +1041,107 @@ const ProjectItems = () => {
         >
           Dettagli articoli:
         </Typography>
-        <Tooltip title="Aggiungi un nuovo Item">
-          <IconButton
+
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          {/* Barra di ricerca */}
+          <TextField
+            variant="standard"
+            placeholder="Cerca"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: "rgb(27, 158, 62, .9)" }} />
+                </InputAdornment>
+              ),
+            }}
             sx={{
-              backgroundColor: "#FFA500",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "rgbA(50, 50, 50, .89)",
+              width: "70%",
+              "& .MuiInput-root": {
+                fontSize: {
+                  xs: "0.7rem",
+                  sm: "0.75rem",
+                  md: "0.8rem",
+                  lg: "0.8rem",
+                  xl: "0.9rem",
+                },
+                borderBottom: "1px solid rgb(27, 158, 62, .5)",
+                "&:before": {
+                  borderBottom: "1px solid rgb(27, 158, 62, .5)",
+                },
+                "&:after": {
+                  borderBottom: "2px solid rgb(27, 158, 62, .8)",
+                },
+                ":hover:not(.Mui-focused)": {
+                  "&:before": {
+                    borderBottom: "2px solid rgb(27, 158, 62, .9)",
+                  },
+                },
               },
             }}
-            onClick={handleOpenModal}
-          >
-            <AddIcon
+          />
+
+          {/* Icona per esportare */}
+          <Tooltip title="Scarica in formato Excel" enterTouchDelay={2000}>
+            <DownloadForOfflineRoundedIcon
               sx={{
+                color: "orange",
+                cursor: "pointer",
                 fontSize: {
-                  xs: "12px",
-                  sm: "14px",
-                  md: "16px",
-                  lg: "17px",
-                  xl: "18px",
+                  xs: "20px",
+                  sm: "25px",
+                  md: "30px",
+                  lg: "32px",
+                  xl: "35px",
+                },
+                "&:hover": {
+                  color: "rgba(50, 50, 50, .9)",
                 },
               }}
+              onClick={exportToExcel}
             />
-          </IconButton>
-        </Tooltip>
+          </Tooltip>
+
+          {/* Icona per aggiungere */}
+          <Tooltip title="Aggiungi un nuovo Item" enterTouchDelay={2000}>
+            <IconButton
+              sx={{
+                backgroundColor: "#108CCB",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "rgba(50, 50, 50, .89)",
+                },
+              }}
+              onClick={handleOpenModal}
+            >
+              <AddIcon
+                sx={{
+                  fontSize: {
+                    xs: "12px",
+                    sm: "13px",
+                    md: "14px",
+                    lg: "15px",
+                    xl: "16px",
+                  },
+                }}
+              />
+            </IconButton>
+          </Tooltip>
+        </Box>
       </Box>
 
-      <Box sx={{ width: "99%", mt: "2rem" }}>
+      <Box sx={{ width: "99%", mt: "1rem" }}>
         <AppTable
           ref={ref}
           columns={columnDefs}
-          rows={projectItemsData || []}
+          rows={filteredData || []}
           onDeleteRow={handleDeleteRow}
           onEditRow={handleEditRow}
           useChips={true}

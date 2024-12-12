@@ -275,7 +275,7 @@ const AppTable = ({
         gap: "0.5rem",
       }}
     >
-      <Tooltip title="Modifica">
+      <Tooltip title="Modifica" enterTouchDelay={2000}>
         <IconButton
           sx={{
             backgroundColor: "#108CCB",
@@ -308,7 +308,7 @@ const AppTable = ({
           />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Elimina">
+      <Tooltip title="Elimina" enterTouchDelay={2000}>
         <IconButton
           sx={{
             backgroundColor: "red",
@@ -424,7 +424,7 @@ const AppTable = ({
       );
     } else {
       return (
-        <Tooltip title="Nessuna richiesta pendente">
+        <Tooltip title="Nessuna richiesta pendente" enterTouchDelay={2000}>
           <Box
             sx={{
               display: "flex",
@@ -504,7 +504,7 @@ const AppTable = ({
             />
           )}
           {enableExcelExport && (
-            <Tooltip title="Scarica in formato Excel">
+            <Tooltip title="Scarica in formato Excel" enterTouchDelay={2000}>
               <DownloadForOfflineRoundedIcon
                 sx={{
                   color: "orange",
@@ -634,7 +634,7 @@ const AppTable = ({
           columns={updatedColumns.map((col) => ({
             ...col,
             renderCell: (params) => (
-              <Tooltip title={params.value || ""} arrow>
+              <Tooltip title={params.value || ""} enterTouchDelay={3000}>
                 <div
                   style={{
                     display: "flex",
