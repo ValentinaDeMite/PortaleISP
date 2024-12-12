@@ -34,6 +34,7 @@ import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import DownloadForOfflineRoundedIcon from "@mui/icons-material/DownloadForOfflineRounded";
 import * as XLSX from "xlsx";
+import { format } from "date-fns";
 
 const api = new ApiRest();
 const ProjectItems = () => {
@@ -714,7 +715,10 @@ const ProjectItems = () => {
               fontFamily: "Poppins!important",
             }}
           >
-            Ultima Modifica: {project[5]}
+            Ultima Modifica:{" "}
+            {project[5]
+              ? format(new Date(project[5]), "dd-MM-yyyy HH:mm")
+              : "N/A"}
           </Typography>
           <Typography
             variant="body2"
@@ -1027,7 +1031,7 @@ const ProjectItems = () => {
           justifyContent: "space-between",
           alignItems: "center",
           width: "99%",
-          margin: "3rem 0 1rem  0 ",
+          margin: "3rem 0 2rem  0 ",
         }}
       >
         <Typography
