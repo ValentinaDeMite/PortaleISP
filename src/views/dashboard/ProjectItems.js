@@ -654,6 +654,7 @@ const ProjectItems = () => {
               },
               fontFamily: "Poppins!important",
               marginRight: "1rem",
+              paddingY: "1rem",
             }}
           >
             {project[8]}
@@ -676,37 +677,7 @@ const ProjectItems = () => {
                 sm: "0.5rem",
                 md: "0.6rem",
                 lg: "0.7rem",
-                xl: "0.8rem",
-              },
-              fontFamily: "Poppins!important",
-            }}
-          >
-            Creato il: {project[3]}
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{
-              fontSize: {
-                xs: "0.5rem",
-                sm: "0.5rem",
-                md: "0.6rem",
-                lg: "0.7rem",
-                xl: "0.8rem",
-              },
-              fontFamily: "Poppins!important",
-            }}
-          >
-            Creato da: {project[4]}
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{
-              fontSize: {
-                xs: "0.5rem",
-                sm: "0.5rem",
-                md: "0.6rem",
-                lg: "0.7rem",
-                xl: "0.8rem",
+                xl: "0.9rem",
               },
               fontFamily: "Poppins!important",
             }}
@@ -721,7 +692,7 @@ const ProjectItems = () => {
                 sm: "0.5rem",
                 md: "0.6rem",
                 lg: "0.7rem",
-                xl: "0.8rem",
+                xl: "0.9rem",
               },
               fontFamily: "Poppins!important",
             }}

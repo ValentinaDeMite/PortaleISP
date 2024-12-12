@@ -38,22 +38,24 @@ const Layout = () => {
           backgroundColor: "white",
           borderRadius: "15px",
           boxSizing: "border-box",
+          padding: "2% 2%",
+          gap: "5%",
         }}
       >
         {/* AppHeader */}
         <Box
           sx={{
             flexShrink: 0,
-            height: "10%",
-            paddingX: "2%",
-            paddingTop: "2%",
+            height: "5%",
+            paddingBottom: "0.7%",
+            boxShadow: "0px 6px 6px -6px rgba(0, 0, 0, 0.2)", // Ombra SOLO sotto
           }}
         >
           <AppHeader />
         </Box>
 
         {/* AppContent with Outlet for nested routes */}
-        <Box sx={{ flexGrow: 1, overflowY: "auto", padding: "2% 2%" }}>
+        <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
           <AppContent>
             <Outlet /> {/* Le route figlie saranno renderizzate qui */}
           </AppContent>

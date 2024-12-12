@@ -204,14 +204,15 @@ const AppTable = ({
     setOpenDialog(false);
     setSelectedRow(null);
   };
-
-  const sizeChangeTable = (pagination) => {
+  {
+    /* const sizeChangeTable = (pagination) => {
     if (pagination.pageSize == 10) {
       setTableHeight("auto");
     } else {
       setTableHeight("80%");
     }
-  };
+  }; */
+  }
   const renderStatusChip = (params) => {
     let chipColor;
     let label;
@@ -526,10 +527,10 @@ const AppTable = ({
         </Box>
       )}
 
-      <Box sx={{ height: tableHeight, width: "100%" }}>
+      <Box sx={{ height: "auto", width: "100%" }}>
         <StripedDataGrid
           apiRef={apiRef}
-          rowHeight={isSmallScreen ? 35 : 40}
+          rowHeight={isSmallScreen ? 35 : 37}
           sx={{
             boxShadow: 2,
             "& .MuiDataGrid-columnHeaderTitle": {
@@ -662,7 +663,7 @@ const AppTable = ({
           onRowDoubleClick={onRowDoubleClick}
           getRowId={(row) => row.id || rows.indexOf(row)}
           pagination
-          onPaginationModelChange={(param) => sizeChangeTable(param)}
+          //onPaginationModelChange={(param) => sizeChangeTable(param)}
           paginationMode="client"
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           page={page}
@@ -671,9 +672,9 @@ const AppTable = ({
             pagination: { paginationModel: { pageSize: 10 } },
             rowGrouping: { model: rowGroupingModel },
           }}
-          pageSizeOptions={[10, 25, 50]}
+          pageSizeOptions={[10, 15, 20, 25]}
           sortingOrder={["asc", "desc"]}
-          checkboxSelection={!disableCheckboxSelection}
+          //checkboxSelection={!disableCheckboxSelection}
           onRowSelectionModelChange={handleRowSelectionModelChange}
           rowSelectionModel={selectedRows}
           groupRowsByColumn="status"
