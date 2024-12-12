@@ -22,8 +22,6 @@ import {
   InputAdornment,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
-import CancelIcon from "@mui/icons-material/Cancel";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import AppTable from "../../components/AppTable";
 import AppModalTable from "../../components/AppModalTable";
@@ -35,6 +33,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import DownloadForOfflineRoundedIcon from "@mui/icons-material/DownloadForOfflineRounded";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
+import CloseIcon from "@mui/icons-material/Close";
 
 const api = new ApiRest();
 const ProjectItems = () => {
@@ -1069,6 +1068,22 @@ const ProjectItems = () => {
               startAdornment: (
                 <InputAdornment position="start">
                   <SearchIcon sx={{ color: "rgb(27, 158, 62, .9)" }} />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setSearchText("")}
+                    fontSize="small"
+                    sx={{
+                      color: searchText
+                        ? "rgb(27, 158, 62, .9)"
+                        : "rgba(0, 0, 0, 0.26)",
+                    }}
+                    disabled={!searchText}
+                  >
+                    <CloseIcon />
+                  </IconButton>
                 </InputAdornment>
               ),
             }}

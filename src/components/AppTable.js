@@ -24,6 +24,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import DownloadForOfflineRoundedIcon from "@mui/icons-material/DownloadForOfflineRounded";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
+import CloseIcon from "@mui/icons-material/Close";
 
 const ODD_COLOR = "rgba(217, 217, 217, 0.7)";
 const EVEN_COLOR = "rgba(255, 255, 255, 1)";
@@ -371,8 +372,6 @@ const AppTable = ({
         renderCell: (params) => renderRichiestePendingIcon(params),
       };
     }
-
-    // Aggiungi la logica per le colonne che contengono date
     if (
       col.type === "D" ||
       col.headerName.includes("Data") ||
@@ -383,13 +382,12 @@ const AppTable = ({
         headerAlign: "center",
         flex: 1,
         renderCell: (params) => {
-          if (!params.value) return ""; // Evita errori con valori null o undefined
+          if (!params.value) return "";
           try {
-            // Usa il formato "DD-MM-YY HH:mm"
             return format(new Date(params.value), "dd-MM-yy HH:mm");
           } catch (error) {
             console.error("Errore nel formattare la data:", error);
-            return params.value; // Restituisci il valore originale in caso di errore
+            return params.value;
           }
         },
       };
@@ -500,6 +498,22 @@ const AppTable = ({
                 startAdornment: (
                   <InputAdornment position="start">
                     <SearchIcon sx={{ color: "rgb(27, 158, 62, .9)" }} />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setSearchText("")}
+                      fontSize="small"
+                      sx={{
+                        color: searchText
+                          ? "rgb(27, 158, 62, .9)"
+                          : "rgba(0, 0, 0, 0.26)",
+                      }}
+                      disabled={!searchText}
+                    >
+                      <CloseIcon />
+                    </IconButton>
                   </InputAdornment>
                 ),
               }}

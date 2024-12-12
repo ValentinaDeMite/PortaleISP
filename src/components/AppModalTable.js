@@ -6,6 +6,7 @@ import {
   Typography,
   Tooltip,
   InputAdornment,
+  IconButton,
 } from "@mui/material";
 import { DataGridPremium, useGridApiRef } from "@mui/x-data-grid-premium";
 import { alpha, styled } from "@mui/material/styles";
@@ -13,6 +14,7 @@ import Chip from "@mui/material/Chip";
 import SearchIcon from "@mui/icons-material/Search";
 import DownloadForOfflineRoundedIcon from "@mui/icons-material/DownloadForOfflineRounded";
 import * as XLSX from "xlsx";
+import CloseIcon from "@mui/icons-material/Close";
 
 const ODD_COLOR = "rgba(217, 217, 217, 0.7)";
 const EVEN_COLOR = "rgba(255, 255, 255, 1)";
@@ -188,24 +190,46 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon sx={{ color: "rgb(75, 168, 61, 0.9)" }} />
+                <SearchIcon sx={{ color: "rgb(27, 158, 62, .9)" }} />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => setSearchText("")}
+                  fontSize="small"
+                  sx={{
+                    color: searchText
+                      ? "rgb(27, 158, 62, .9)"
+                      : "rgba(0, 0, 0, 0.26)",
+                  }}
+                  disabled={!searchText}
+                >
+                  <CloseIcon />
+                </IconButton>
               </InputAdornment>
             ),
           }}
           sx={{
             width: "20%",
             "& .MuiInput-root": {
-              fontSize: "0.9rem",
-              borderBottom: "1px solid rgb(75, 168, 61, 0.5)",
+              fontSize: {
+                xs: "0.7rem",
+                sm: "0.75rem",
+                md: "0.8rem",
+                lg: "0.8rem",
+                xl: "0.9rem",
+              },
+              borderBottom: "1px solid rgb(27, 158, 62, .5)",
               "&:before": {
-                borderBottom: "1px solid rgb(75, 168, 61, 0.5)",
+                borderBottom: "1px solid rgb(27, 158, 62, .5)",
               },
               "&:after": {
-                borderBottom: "2px solid rgb(75, 168, 61, 0.8)",
+                borderBottom: "2px solid rgb(27, 158, 62, .8)",
               },
               ":hover:not(.Mui-focused)": {
                 "&:before": {
-                  borderBottom: "2px solid rgb(75, 168, 61, 0.9)",
+                  borderBottom: "2px solid rgb(27, 158, 62, .9)",
                 },
               },
             },
