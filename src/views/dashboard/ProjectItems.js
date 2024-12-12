@@ -1089,7 +1089,7 @@ const ProjectItems = () => {
           />
 
           {/* Icona per esportare */}
-          <Tooltip title="Scarica in formato Excel" enterTouchDelay={2000}>
+          <Tooltip title="Scarica in formato Excel" enterTouchDelay={7000}>
             <DownloadForOfflineRoundedIcon
               sx={{
                 color: "orange",
@@ -1110,7 +1110,7 @@ const ProjectItems = () => {
           </Tooltip>
 
           {/* Icona per aggiungere */}
-          <Tooltip title="Aggiungi un nuovo Item" enterTouchDelay={2000}>
+          <Tooltip title="Aggiungi un nuovo Item" enterTouchDelay={7000}>
             <IconButton
               sx={{
                 backgroundColor: "#108CCB",

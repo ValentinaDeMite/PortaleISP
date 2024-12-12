@@ -275,7 +275,7 @@ const AppTable = ({
         gap: "0.5rem",
       }}
     >
-      <Tooltip title="Modifica" enterTouchDelay={2000}>
+      <Tooltip title="Modifica" enterTouchDelay={7000}>
         <IconButton
           sx={{
             backgroundColor: "#108CCB",
@@ -308,7 +308,7 @@ const AppTable = ({
           />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Elimina" enterTouchDelay={2000}>
+      <Tooltip title="Elimina" enterTouchDelay={7000}>
         <IconButton
           sx={{
             backgroundColor: "red",
@@ -394,37 +394,39 @@ const AppTable = ({
   const renderRichiestePendingIcon = (params) => {
     if (params.value > "0") {
       return (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100%",
-          }}
-        >
-          <NotificationImportantIcon
+        <Tooltip title={`Pending: ${params.value}`} enterTouchDelay={7000}>
+          <Box
             sx={{
-              color: "#d32f2f",
-              fontSize: {
-                xs: "16px",
-                sm: "18px",
-                md: "20px",
-                lg: "22px",
-                xl: "24px",
-              },
-              cursor: "pointer",
-              transition: "transform 0.3s ease-in-out",
-              "&:hover": {
-                transform: "scale(1.2)",
-              },
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
             }}
-            onClick={() => alert(`Richieste Pending ID: ${params.row.id}`)}
-          />
-        </Box>
+          >
+            <NotificationImportantIcon
+              sx={{
+                color: "#d32f2f",
+                fontSize: {
+                  xs: "16px",
+                  sm: "18px",
+                  md: "20px",
+                  lg: "22px",
+                  xl: "24px",
+                },
+                cursor: "pointer",
+                transition: "transform 0.3s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.2)",
+                },
+              }}
+              onClick={() => alert(`Richieste Pending ID: ${params.row.id}`)}
+            />
+          </Box>
+        </Tooltip>
       );
     } else {
       return (
-        <Tooltip title="Nessuna richiesta pendente" enterTouchDelay={2000}>
+        <Tooltip title="Nessuna richiesta pendente" enterTouchDelay={7000}>
           <Box
             sx={{
               display: "flex",
@@ -504,7 +506,7 @@ const AppTable = ({
             />
           )}
           {enableExcelExport && (
-            <Tooltip title="Scarica in formato Excel" enterTouchDelay={2000}>
+            <Tooltip title="Scarica in formato Excel" enterTouchDelay={7000}>
               <DownloadForOfflineRoundedIcon
                 sx={{
                   color: "orange",
@@ -633,31 +635,40 @@ const AppTable = ({
           rows={filteredRows || []}
           columns={updatedColumns.map((col) => ({
             ...col,
-            renderCell: (params) => (
-              <Tooltip title={params.value || ""} enterTouchDelay={3000}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "100%",
-                    height: "100%",
-                  }}
+            renderCell: (params) => {
+              const excludedColumns = ["Azioni", "Richieste Pending"];
+              if (excludedColumns.includes(params.colDef.headerName)) {
+                return col.renderCell ? col.renderCell(params) : params.value;
+              }
+              return (
+                <Tooltip
+                  title={`${params.colDef.headerName}: ${params.value}`}
+                  enterTouchDelay={7000}
                 >
-                  <span
+                  <div
                     style={{
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                      display: "block",
-                      maxWidth: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "100%",
+                      height: "100%",
                     }}
                   >
-                    {col.renderCell ? col.renderCell(params) : params.value}
-                  </span>
-                </div>
-              </Tooltip>
-            ),
+                    <span
+                      style={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        display: "block",
+                        maxWidth: "100%",
+                      }}
+                    >
+                      {col.renderCell ? col.renderCell(params) : params.value}
+                    </span>
+                  </div>
+                </Tooltip>
+              );
+            },
           }))}
           pageSize={10}
           onRowDoubleClick={onRowDoubleClick}
