@@ -373,7 +373,11 @@ const AppTable = ({
     }
 
     // Aggiungi la logica per le colonne che contengono date
-    if (col.type === "D" || col.headerName.includes("Data")) {
+    if (
+      col.type === "D" ||
+      col.headerName.includes("Data") ||
+      col.headerName.includes("Update")
+    ) {
       return {
         ...col,
         headerAlign: "center",
