@@ -1072,18 +1072,17 @@ const ProjectItems = () => {
               ),
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton
+                  <CloseIcon
                     onClick={() => setSearchText("")}
                     fontSize="small"
+                    cursor="pointer"
                     sx={{
                       color: searchText
                         ? "rgb(27, 158, 62, .9)"
                         : "rgba(0, 0, 0, 0.26)",
                     }}
                     disabled={!searchText}
-                  >
-                    <CloseIcon />
-                  </IconButton>
+                  />
                 </InputAdornment>
               ),
             }}
@@ -1114,7 +1113,20 @@ const ProjectItems = () => {
           />
 
           {/* Icona per esportare */}
-          <Tooltip title="Scarica in formato Excel" enterTouchDelay={7000}>
+          <Tooltip
+            title="Scarica in formato Excel"
+            enterTouchDelay={7000}
+            PopperProps={{
+              modifiers: [
+                {
+                  name: "offset",
+                  options: {
+                    offset: [0, -14],
+                  },
+                },
+              ],
+            }}
+          >
             <DownloadForOfflineRoundedIcon
               sx={{
                 color: "orange",
@@ -1135,7 +1147,20 @@ const ProjectItems = () => {
           </Tooltip>
 
           {/* Icona per aggiungere */}
-          <Tooltip title="Aggiungi un nuovo Item" enterTouchDelay={7000}>
+          <Tooltip
+            title="Aggiungi un nuovo Item"
+            enterTouchDelay={7000}
+            PopperProps={{
+              modifiers: [
+                {
+                  name: "offset",
+                  options: {
+                    offset: [0, -14],
+                  },
+                },
+              ],
+            }}
+          >
             <IconButton
               sx={{
                 backgroundColor: "#108CCB",

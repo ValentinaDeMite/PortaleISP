@@ -277,7 +277,20 @@ const AppTable = ({
         gap: "0.5rem",
       }}
     >
-      <Tooltip title="Modifica" enterTouchDelay={7000}>
+      <Tooltip
+        title="Modifica"
+        enterTouchDelay={7000}
+        PopperProps={{
+          modifiers: [
+            {
+              name: "offset",
+              options: {
+                offset: [0, -14],
+              },
+            },
+          ],
+        }}
+      >
         <IconButton
           sx={{
             backgroundColor: "#108CCB",
@@ -310,7 +323,20 @@ const AppTable = ({
           />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Elimina" enterTouchDelay={7000}>
+      <Tooltip
+        title="Elimina"
+        enterTouchDelay={7000}
+        PopperProps={{
+          modifiers: [
+            {
+              name: "offset",
+              options: {
+                offset: [0, -14],
+              },
+            },
+          ],
+        }}
+      >
         <IconButton
           sx={{
             backgroundColor: "red",
@@ -416,7 +442,20 @@ const AppTable = ({
   const renderRichiestePendingIcon = (params) => {
     if (params.value > "0") {
       return (
-        <Tooltip title={`Richieste: ${params.value}`} enterTouchDelay={7000}>
+        <Tooltip
+          title={`Richieste: ${params.value}`}
+          enterTouchDelay={7000}
+          PopperProps={{
+            modifiers: [
+              {
+                name: "offset",
+                options: {
+                  offset: [0, -14],
+                },
+              },
+            ],
+          }}
+        >
           <Box
             sx={{
               display: "flex",
@@ -448,7 +487,20 @@ const AppTable = ({
       );
     } else {
       return (
-        <Tooltip title="Nessuna richiesta pendente" enterTouchDelay={7000}>
+        <Tooltip
+          title="Nessuna richiesta pendente"
+          enterTouchDelay={7000}
+          PopperProps={{
+            modifiers: [
+              {
+                name: "offset",
+                options: {
+                  offset: [0, -14],
+                },
+              },
+            ],
+          }}
+        >
           <Box
             sx={{
               display: "flex",
@@ -502,7 +554,7 @@ const AppTable = ({
                 ),
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton
+                    <CloseIcon
                       onClick={() => setSearchText("")}
                       fontSize="small"
                       sx={{
@@ -510,10 +562,9 @@ const AppTable = ({
                           ? "rgb(27, 158, 62, .9)"
                           : "rgba(0, 0, 0, 0.26)",
                       }}
+                      cursor="pointer"
                       disabled={!searchText}
-                    >
-                      <CloseIcon />
-                    </IconButton>
+                    />
                   </InputAdornment>
                 ),
               }}
@@ -544,7 +595,20 @@ const AppTable = ({
             />
           )}
           {enableExcelExport && (
-            <Tooltip title="Scarica in formato Excel" enterTouchDelay={7000}>
+            <Tooltip
+              title="Scarica in formato Excel"
+              enterTouchDelay={7000}
+              PopperProps={{
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [0, -14],
+                    },
+                  },
+                ],
+              }}
+            >
               <DownloadForOfflineRoundedIcon
                 sx={{
                   color: "orange",
@@ -682,6 +746,16 @@ const AppTable = ({
                 <Tooltip
                   title={`${params.colDef.headerName}: ${params.value}`}
                   enterTouchDelay={7000}
+                  PopperProps={{
+                    modifiers: [
+                      {
+                        name: "offset",
+                        options: {
+                          offset: [0, -14],
+                        },
+                      },
+                    ],
+                  }}
                 >
                   <div
                     style={{

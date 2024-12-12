@@ -141,21 +141,38 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
   };
 
   const updatedColumns = columns.map((col) => {
-    if (
-      col.headerName === "Stato" ||
-      col.headerName === "Stato singolo Item "
-    ) {
-      return {
-        ...col,
-        headerAlign: "center",
-        renderCell: (params) => <Chip label={params.value} color="success" />,
-      };
-    }
-
     return {
       ...col,
       headerAlign: "center",
       flex: 1,
+      renderCell: (params) => (
+        <Tooltip
+          title={`${col.headerName}: ${params.value}`}
+          enterTouchDelay={700}
+          PopperProps={{
+            modifiers: [
+              {
+                name: "offset",
+                options: {
+                  offset: [0, -14],
+                },
+              },
+            ],
+          }}
+        >
+          <Box
+            sx={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              width: "100%",
+              textAlign: "center",
+            }}
+          >
+            {params.value}
+          </Box>
+        </Tooltip>
+      ),
     };
   });
 
@@ -237,7 +254,20 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
         />
 
         {/* Export Icon */}
-        <Tooltip title="Esporta in Excel" enterDelay={2000}>
+        <Tooltip
+          title="Esporta in Excel"
+          enterTouchDelay={7000}
+          PopperProps={{
+            modifiers: [
+              {
+                name: "offset",
+                options: {
+                  offset: [0, -14],
+                },
+              },
+            ],
+          }}
+        >
           <DownloadForOfflineRoundedIcon
             sx={{
               color: "orange",
