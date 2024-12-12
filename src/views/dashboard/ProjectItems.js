@@ -450,20 +450,26 @@ const ProjectItems = () => {
     });
   };
 
-  const exportToExcel = (data) => {
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "ProjectItems");
-    XLSX.writeFile(workbook, "ProjectItems.xlsx");
-  };
-
-  // Filtra i dati in base al testo di ricerca
-  const handleSearch = (rows) => {
-    return rows.filter((row) =>
-      Object.values(row).some((value) =>
-        String(value).toLowerCase().includes(searchText.toLowerCase())
+  const filteredItems = Array.isArray(projectItemsData)
+    ? projectItemsData.filter((item) =>
+        Object.values(item).some((value) =>
+          String(value).toLowerCase().includes(searchText.toLowerCase())
+        )
       )
-    );
+    : [];
+  const exportToExcel = () => {
+    const filteredForExport = filteredItems.map((item) => {
+      const entries = Object.entries(item).filter(
+        ([key, value], index) => index !== 20 && index !== 21
+      );
+
+      return Object.fromEntries(entries);
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(filteredForExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Articoli");
+    XLSX.writeFile(workbook, "lista_articoli_progetto.xlsx");
   };
 
   const getFieldLabel = (field) => {
