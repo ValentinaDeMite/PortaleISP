@@ -22,7 +22,6 @@ import {
   InputAdornment,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import AppTable from "../../components/AppTable";
 import AppModalTable from "../../components/AppModalTable";
 import StockData from "../../service-API/stock.json";
@@ -30,10 +29,14 @@ import ApiRest from "../../service-API/ApiRest";
 import { Snackbar, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
-import DownloadForOfflineRoundedIcon from "@mui/icons-material/DownloadForOfflineRounded";
+import DownloadIcon from "@mui/icons-material/Download";
+import DeleteForeverTwoToneIcon from "@mui/icons-material/DeleteForeverTwoTone";
+import DeleteIcon from "@mui/icons-material/Delete";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
 import CloseIcon from "@mui/icons-material/Close";
+import CheckIcon from "@mui/icons-material/Check";
+import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
 
 const api = new ApiRest();
 const ProjectItems = () => {
@@ -691,6 +694,39 @@ const ProjectItems = () => {
           >
             {project[8]}
           </Typography>
+
+          <Tooltip
+            title="Elimina Progetto"
+            enterTouchDelay={7000}
+            disableInteractive
+            PopperProps={{
+              modifiers: [
+                {
+                  name: "offset",
+                  options: {
+                    offset: [0, -14],
+                  },
+                },
+              ],
+            }}
+          >
+            <DeleteForeverTwoToneIcon
+              sx={{
+                color: "red",
+                fontSize: {
+                  xs: "0.5rem",
+                  sm: "1rem",
+                  md: "1.2rem",
+                  lg: "1.5rem",
+                  xl: "1.8rem",
+                },
+                "&:hover": { color: "rgba(244, 67, 54, .7)" },
+                cursor: "pointer",
+              }}
+              aria-label="delete"
+              onClick={() => ""}
+            />
+          </Tooltip>
         </Box>
         <Box
           sx={{
@@ -886,102 +922,116 @@ const ProjectItems = () => {
               )}
             </Stack>
 
-            <Stack spacing={2} direction="row" alignItems="flex-start">
-              <TextField
-                label="Richiesta Iniziale"
-                value={project[15] || "Nessuna richiesta iniziale"}
-                InputProps={{ readOnly: true }}
-                fullWidth
-                multiline
-                rows={1}
-                sx={{
-                  backgroundColor: "#D8D8D8",
-                  borderRadius: "8px",
-                }}
-              />
+            <Stack
+              spacing={2}
+              direction="row"
+              alignItems="center"
+              sx={{
+                width: "100%",
+                justifyContent: "space-between",
+              }}
+            >
               <TextField
                 label="Richieste Pendenti"
                 value={pendingRequests.join("\n")}
-                fullWidth
                 multiline
                 sx={{
                   borderRadius: "8px",
+                  width: "80%",
                 }}
               />
-            </Stack>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginTop: 2,
-                gap: "15px",
-              }}
-            >
-              <Button
-                variant="contained"
-                sx={{
-                  backgroundColor: "#FF8C00",
-                  color: "white",
-                  fontSize: {
-                    xs: "0.5rem",
-                    sm: "0.5rem",
-                    md: "0.6rem",
-                    lg: "0.7rem",
-                    xl: "0.8rem",
-                  },
-                  fontFamily: "Poppins!important",
-                  "&:hover": {
-                    backgroundColor: "rgbA(50, 50, 50, .89)",
-                  },
-                }}
-                onClick={handleConfirm}
-              >
-                Conferma
-              </Button>
-              <Button
-                variant="contained"
-                sx={{
-                  backgroundColor: "#108CCB",
-                  color: "white",
-                  fontSize: {
-                    xs: "0.5rem",
-                    sm: "0.5rem",
-                    md: "0.6rem",
-                    lg: "0.7rem",
-                    xl: "0.8rem",
-                  },
-                  fontFamily: "Poppins!important",
-                  "&:hover": {
-                    backgroundColor: "rgbA(50, 50, 50, .89)",
-                  },
-                }}
-                onClick={handleDeleteConfirmOpen}
-              >
-                Cancella
-              </Button>
 
-              <Button
-                variant="contained"
+              <Box
                 sx={{
-                  backgroundColor: "red",
-                  color: "white",
-                  fontSize: {
-                    xs: "0.5rem",
-                    sm: "0.5rem",
-                    md: "0.6rem",
-                    lg: "0.7rem",
-                    xl: "0.8rem",
-                  },
-                  fontFamily: "Poppins!important",
-                  "&:hover": {
-                    backgroundColor: "rgbA(50, 50, 50, .89)",
-                  },
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: "1.5rem",
                 }}
-                onClick={handleOpenDeleteProjectDialog}
               >
-                Elimina Progetto
-              </Button>
-            </Box>
+                <Tooltip
+                  title="Conferma"
+                  enterTouchDelay={7000}
+                  disableInteractive
+                  PopperProps={{
+                    modifiers: [
+                      {
+                        name: "offset",
+                        options: {
+                          offset: [0, -14],
+                        },
+                      },
+                    ],
+                  }}
+                >
+                  <IconButton
+                    sx={{
+                      backgroundColor: "#FF8C00",
+                      color: "white",
+
+                      fontFamily: "Poppins!important",
+                      "&:hover": {
+                        backgroundColor: "rgba(50, 50, 50, .89)",
+                      },
+                    }}
+                    onClick={handleConfirm}
+                  >
+                    <CheckIcon
+                      sx={{
+                        fontSize: {
+                          xs: "20px",
+                          sm: "22px",
+                          md: "24px",
+                          lg: "26px",
+                          xl: "28px",
+                        },
+                      }}
+                    />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip
+                  title="Annulla"
+                  enterTouchDelay={7000}
+                  disableInteractive
+                  PopperProps={{
+                    modifiers: [
+                      {
+                        name: "offset",
+                        options: {
+                          offset: [0, -14],
+                        },
+                      },
+                    ],
+                  }}
+                >
+                  <IconButton
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "#108CCB",
+                      color: "white",
+
+                      fontFamily: "Poppins!important",
+                      "&:hover": {
+                        backgroundColor: "rgba(50, 50, 50, .89)",
+                      },
+                    }}
+                    onClick={handleOpenDeleteProjectDialog}
+                  >
+                    <CloseIcon
+                      sx={{
+                        fontSize: {
+                          xs: "20px",
+                          sm: "22px",
+                          md: "24px",
+                          lg: "26px",
+                          xl: "28px",
+                        },
+                      }}
+                    />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            </Stack>
           </Box>
         </Box>
       </Box>
@@ -1058,96 +1108,107 @@ const ProjectItems = () => {
             justifyContent: "space-between",
           }}
         >
-          {/* Barra di ricerca */}
-          <TextField
-            variant="standard"
-            placeholder="Cerca"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ color: "rgb(27, 158, 62, .9)" }} />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  <CloseIcon
-                    onClick={() => setSearchText("")}
-                    fontSize="small"
-                    cursor="pointer"
-                    sx={{
-                      color: searchText ? "red" : "rgba(0, 0, 0, 0.26)",
-                    }}
-                    disabled={!searchText}
-                  />
-                </InputAdornment>
-              ),
-            }}
+          {/* Contenitore per barra di ricerca e icona export */}
+          <Box
             sx={{
-              width: "70%",
-              "& .MuiInput-root": {
-                fontSize: {
-                  xs: "0.7rem",
-                  sm: "0.75rem",
-                  md: "0.8rem",
-                  lg: "0.8rem",
-                  xl: "0.9rem",
-                },
-                borderBottom: "1px solid rgb(27, 158, 62, .5)",
-                "&:before": {
-                  borderBottom: "1px solid rgb(27, 158, 62, .5)",
-                },
-                "&:after": {
-                  borderBottom: "2px solid rgb(27, 158, 62, .8)",
-                },
-                ":hover:not(.Mui-focused)": {
-                  "&:before": {
-                    borderBottom: "2px solid rgb(27, 158, 62, .9)",
-                  },
-                },
-              },
-            }}
-          />
-
-          {/* Icona per esportare */}
-          <Tooltip
-            title="Scarica in formato Excel"
-            enterTouchDelay={7000}
-            PopperProps={{
-              modifiers: [
-                {
-                  name: "offset",
-                  options: {
-                    offset: [0, -14],
-                  },
-                },
-              ],
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
             }}
           >
-            <DownloadForOfflineRoundedIcon
+            {/* Barra di ricerca */}
+            <TextField
+              variant="standard"
+              placeholder="Cerca"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ color: "rgb(27, 158, 62, .9)" }} />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <CloseIcon
+                      onClick={() => setSearchText("")}
+                      fontSize="small"
+                      cursor="pointer"
+                      sx={{
+                        color: searchText ? "red" : "rgba(0, 0, 0, 0.26)",
+                      }}
+                      disabled={!searchText}
+                    />
+                  </InputAdornment>
+                ),
+              }}
               sx={{
-                color: "orange",
-                cursor: "pointer",
-                fontSize: {
-                  xs: "20px",
-                  sm: "25px",
-                  md: "30px",
-                  lg: "32px",
-                  xl: "35px",
-                },
-                "&:hover": {
-                  color: "rgba(50, 50, 50, .9)",
+                width: "75%",
+                "& .MuiInput-root": {
+                  fontSize: {
+                    xs: "0.7rem",
+                    sm: "0.75rem",
+                    md: "0.8rem",
+                    lg: "0.8rem",
+                    xl: "0.9rem",
+                  },
+                  borderBottom: "1px solid rgb(27, 158, 62, .5)",
+                  "&:before": {
+                    borderBottom: "1px solid rgb(27, 158, 62, .5)",
+                  },
+                  "&:after": {
+                    borderBottom: "2px solid rgb(27, 158, 62, .8)",
+                  },
+                  ":hover:not(.Mui-focused)": {
+                    "&:before": {
+                      borderBottom: "2px solid rgb(27, 158, 62, .9)",
+                    },
+                  },
                 },
               }}
-              onClick={exportToExcel}
             />
-          </Tooltip>
 
-          {/* Icona per aggiungere */}
+            {/* Icona export */}
+            <Tooltip
+              title="Scarica in formato Excel"
+              enterTouchDelay={7000}
+              disableInteractive
+              PopperProps={{
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [0, -14],
+                    },
+                  },
+                ],
+              }}
+            >
+              <ArrowCircleDownIcon
+                sx={{
+                  color: "green",
+                  cursor: "pointer",
+                  fontSize: {
+                    xs: "20px",
+                    sm: "25px",
+                    md: "30px",
+                    lg: "32px",
+                    xl: "35px",
+                  },
+                  "&:hover": {
+                    color: "rgba(50, 50, 50, .9)",
+                  },
+                }}
+                onClick={exportToExcel}
+              />
+            </Tooltip>
+          </Box>
+
+          {/* Tasto aggiungi */}
           <Tooltip
             title="Aggiungi un nuovo Item"
             enterTouchDelay={7000}
+            disableInteractive
             PopperProps={{
               modifiers: [
                 {
@@ -1172,11 +1233,11 @@ const ProjectItems = () => {
               <AddIcon
                 sx={{
                   fontSize: {
-                    xs: "12px",
-                    sm: "13px",
-                    md: "14px",
-                    lg: "15px",
-                    xl: "16px",
+                    xs: "20px",
+                    sm: "22px",
+                    md: "24px",
+                    lg: "26px",
+                    xl: "28px",
                   },
                 }}
               />

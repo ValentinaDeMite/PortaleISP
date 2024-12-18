@@ -280,6 +280,7 @@ const AppTable = ({
       <Tooltip
         title="Modifica"
         enterTouchDelay={7000}
+        disableInteractive
         PopperProps={{
           modifiers: [
             {
@@ -326,6 +327,7 @@ const AppTable = ({
       <Tooltip
         title="Elimina"
         enterTouchDelay={7000}
+        disableInteractive
         PopperProps={{
           modifiers: [
             {
@@ -445,6 +447,7 @@ const AppTable = ({
         <Tooltip
           title={`Richieste: ${params.value}`}
           enterTouchDelay={7000}
+          disableInteractive
           PopperProps={{
             modifiers: [
               {
@@ -490,6 +493,7 @@ const AppTable = ({
         <Tooltip
           title="Nessuna richiesta pendente"
           enterTouchDelay={7000}
+          disableInteractive
           PopperProps={{
             modifiers: [
               {
@@ -653,6 +657,7 @@ const AppTable = ({
               return (
                 <Tooltip
                   title={`${params.colDef.headerName}: ${params.value}`}
+                  disableInteractive
                   enterTouchDelay={7000}
                   PopperProps={{
                     modifiers: [

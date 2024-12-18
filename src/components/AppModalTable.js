@@ -148,6 +148,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
       renderCell: (params) => (
         <Tooltip
           title={`${col.headerName}: ${params.value}`}
+          disableInteractive
           enterTouchDelay={700}
           PopperProps={{
             modifiers: [
@@ -253,6 +254,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
         <Tooltip
           title="Esporta in Excel"
           enterTouchDelay={7000}
+          disableInteractive
           PopperProps={{
             modifiers: [
               {
