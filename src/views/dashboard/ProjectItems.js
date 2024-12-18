@@ -1077,9 +1077,7 @@ const ProjectItems = () => {
                     fontSize="small"
                     cursor="pointer"
                     sx={{
-                      color: searchText
-                        ? "rgb(27, 158, 62, .9)"
-                        : "rgba(0, 0, 0, 0.26)",
+                      color: searchText ? "red" : "rgba(0, 0, 0, 0.26)",
                     }}
                     disabled={!searchText}
                   />

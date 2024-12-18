@@ -558,9 +558,7 @@ const AppTable = ({
                       onClick={() => setSearchText("")}
                       fontSize="small"
                       sx={{
-                        color: searchText
-                          ? "rgb(27, 158, 62, .9)"
-                          : "rgba(0, 0, 0, 0.26)",
+                        color: searchText ? "red" : "rgba(0, 0, 0, 0.26)",
                       }}
                       cursor="pointer"
                       disabled={!searchText}
@@ -737,6 +735,7 @@ const AppTable = ({
           rows={filteredRows || []}
           columns={updatedColumns.map((col) => ({
             ...col,
+            editable: false,
             renderCell: (params) => {
               const excludedColumns = ["Azioni", "Richieste Pending"];
               if (excludedColumns.includes(params.colDef.headerName)) {
@@ -807,6 +806,8 @@ const AppTable = ({
             params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
           }
           rowCountChange={console.log("ciao")}
+          disableColumnSelector={true}
+          disableColumnMenu={true}
         />
       </Box>
       <Dialog

@@ -178,7 +178,7 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
 
   updatedColumns.push({
     field: "allocate",
-    headerName: "Allocare",
+    headerName: "ALLOCARE",
     flex: 1,
     headerAlign: "center",
     renderCell: (params) => renderAllocateColumn(params),
@@ -212,18 +212,14 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
             ),
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton
+                <CloseIcon
                   onClick={() => setSearchText("")}
                   fontSize="small"
                   sx={{
-                    color: searchText
-                      ? "rgb(27, 158, 62, .9)"
-                      : "rgba(0, 0, 0, 0.26)",
+                    color: searchText ? "red" : "rgba(0, 0, 0, 0.26)",
                   }}
                   disabled={!searchText}
-                >
-                  <CloseIcon />
-                </IconButton>
+                />
               </InputAdornment>
             ),
           }}
