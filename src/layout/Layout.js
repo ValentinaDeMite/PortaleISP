@@ -39,7 +39,7 @@ const Layout = () => {
           borderRadius: "15px",
           boxSizing: "border-box",
           padding: "2% 2%",
-          gap: "5%",
+          gap: "2%",
         }}
       >
         {/* AppHeader */}

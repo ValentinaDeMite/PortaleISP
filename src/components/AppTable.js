@@ -529,107 +529,16 @@ const AppTable = ({
   };
 
   return (
-    <Box sx={{ height: "100%", width: "100%" }} ref={tableRef}>
-      {(enableSearch || enableExcelExport) && (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 2,
-            height: "15%",
-          }}
-        >
-          {enableSearch && (
-            <TextField
-              variant="standard"
-              placeholder="Cerca"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon sx={{ color: "rgb(27, 158, 62, .9)" }} />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <CloseIcon
-                      onClick={() => setSearchText("")}
-                      fontSize="small"
-                      sx={{
-                        color: searchText ? "red" : "rgba(0, 0, 0, 0.26)",
-                      }}
-                      cursor="pointer"
-                      disabled={!searchText}
-                    />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                width: "20%",
-                "& .MuiInput-root": {
-                  fontSize: {
-                    xs: "0.7rem",
-                    sm: "0.75rem",
-                    md: "0.8rem",
-                    lg: "0.8rem",
-                    xl: "0.9rem",
-                  },
-                  borderBottom: "1px solid rgb(27, 158, 62, .5)",
-                  "&:before": {
-                    borderBottom: "1px solid rgb(27, 158, 62, .5)",
-                  },
-                  "&:after": {
-                    borderBottom: "2px solid rgb(27, 158, 62, .8)",
-                  },
-                  ":hover:not(.Mui-focused)": {
-                    "&:before": {
-                      borderBottom: "2px solid rgb(27, 158, 62, .9)",
-                    },
-                  },
-                },
-              }}
-            />
-          )}
-          {enableExcelExport && (
-            <Tooltip
-              title="Scarica in formato Excel"
-              enterTouchDelay={7000}
-              PopperProps={{
-                modifiers: [
-                  {
-                    name: "offset",
-                    options: {
-                      offset: [0, -14],
-                    },
-                  },
-                ],
-              }}
-            >
-              <DownloadForOfflineRoundedIcon
-                sx={{
-                  color: "orange",
-                  cursor: "pointer",
-                  fontSize: {
-                    xs: "20px",
-                    sm: "25px",
-                    md: "30px",
-                    lg: "32px",
-                    xl: "35px",
-                  },
-                  "&:hover": {
-                    color: "rgbA(50, 50, 50, .9)",
-                  },
-                }}
-                onClick={exportToExcel}
-              />
-            </Tooltip>
-          )}
-        </Box>
-      )}
-
-      <Box sx={{ height: "auto", width: "100%" }}>
+    <Box sx={{ width: "100%", height: "100%" }} ref={tableRef}>
+      <Box
+        sx={{
+          width: "100%",
+          height: "auto",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <StripedDataGrid
           apiRef={apiRef}
           rowHeight={isSmallScreen ? 35 : 37}

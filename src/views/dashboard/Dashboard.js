@@ -12,8 +12,13 @@ import {
 } from "@mui/material";
 import projectsData from "../../service-API/projects.json";
 import { useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
+import SearchIcon from "@mui/icons-material/Search";
+import DownloadForOfflineRoundedIcon from "@mui/icons-material/DownloadForOfflineRounded";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Dashboard = (props) => {
+  const [searchText, setSearchText] = useState("");
   const [columnDefs, setColumnDefs] = useState([]);
   const [loading, setLoading] = useState(true);
   const date = useSelector((state) => state.date);
@@ -37,6 +42,28 @@ const Dashboard = (props) => {
     });
 
     navigate(`/dashboard/${projectId}`);
+  };
+
+  const filteredProjects = Array.isArray(projects)
+    ? projects.filter((item) =>
+        Object.values(item).some((value) =>
+          String(value).toLowerCase().includes(searchText.toLowerCase())
+        )
+      )
+    : [];
+  const exportToExcel = () => {
+    const filteredForExport = filteredProjects.map((item) => {
+      const entries = Object.entries(item).filter(
+        ([key, value], index) => index !== 20 && index !== 21
+      );
+
+      return Object.fromEntries(entries);
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(filteredForExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Articoli");
+    XLSX.writeFile(workbook, "lista_progetti.xlsx");
   };
 
   const convertTypeColumn = (type) => {
@@ -121,9 +148,6 @@ const Dashboard = (props) => {
       {loading && (
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
             height: "100%",
           }}
         >
@@ -134,15 +158,19 @@ const Dashboard = (props) => {
       {!loading && (
         <Box
           sx={{
-            flexShrink: 0,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "99%",
+            height: "12%",
+            margin: "2rem 0 2rem 0",
           }}
         >
+          {/* Titolo */}
           <Typography
-            variant="h5"
-            align="start"
-            gutterBottom
+            variant="h4"
             sx={{
-              fontWeight: "600",
+              fontWeight: "bold",
               fontSize: {
                 xs: "0.5rem",
                 sm: "0.8rem",
@@ -151,29 +179,110 @@ const Dashboard = (props) => {
                 xl: "1.5rem",
               },
               fontFamily: "Poppins!important",
+              fontWeight: "600",
             }}
           >
-            Dashboard - Lista di tutti i progetti
+            Dettagli articoli:
           </Typography>
+
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "1rem",
+            }}
+          >
+            {/* Barra di ricerca */}
+            <TextField
+              variant="standard"
+              placeholder="Cerca"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ color: "rgb(27, 158, 62, .9)" }} />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <CloseIcon
+                      onClick={() => setSearchText("")}
+                      fontSize="small"
+                      cursor="pointer"
+                      sx={{
+                        color: searchText ? "red" : "rgba(0, 0, 0, 0.26)",
+                      }}
+                      disabled={!searchText}
+                    />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                width: "300px", // Larghezza della barra di ricerca
+                "& .MuiInput-root": {
+                  fontSize: {
+                    xs: "0.7rem",
+                    sm: "0.75rem",
+                    md: "0.8rem",
+                    lg: "0.8rem",
+                    xl: "0.9rem",
+                  },
+                  borderBottom: "1px solid rgb(27, 158, 62, .5)",
+                  "&:before": {
+                    borderBottom: "1px solid rgb(27, 158, 62, .5)",
+                  },
+                  "&:after": {
+                    borderBottom: "2px solid rgb(27, 158, 62, .8)",
+                  },
+                  ":hover:not(.Mui-focused)": {
+                    "&:before": {
+                      borderBottom: "2px solid rgb(27, 158, 62, .9)",
+                    },
+                  },
+                },
+              }}
+            />
+
+            {/* Icona per esportare */}
+            <Tooltip title="Scarica in formato Excel">
+              <DownloadForOfflineRoundedIcon
+                sx={{
+                  color: "orange",
+                  cursor: "pointer",
+                  fontSize: "28px",
+                  "&:hover": {
+                    color: "rgba(50, 50, 50, .9)",
+                  },
+                }}
+                onClick={exportToExcel}
+              />
+            </Tooltip>
+          </Box>
         </Box>
       )}
 
       <Box
         sx={{
-          flexGrow: 1,
+          display: "flex", // Usa il layout flexbox
+          justifyContent: "center", // Centra orizzontalmente
+          alignItems: "center", // Centra verticalmente
+          height: "90%", // Altezza piena per il contenitore
+          width: "100%", // Larghezza piena per il contenitore
           overflowY: "auto",
+          boxSizing: "border-box",
         }}
       >
         {!loading && (
           <AppTable
             ref={ref}
             columns={columnDefs}
-            rows={projects || []}
+            rows={filteredProjects || []}
             useChips={true}
             onRowDoubleClick={handleRowDoubleClick}
             allowDoubleClick={true}
-            enableSearch={true}
-            enableExcelExport={true}
+            //enableSearch={true}
+            //enableExcelExport={true}
           />
         )}
       </Box>
