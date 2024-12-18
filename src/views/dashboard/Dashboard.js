@@ -16,6 +16,7 @@ import * as XLSX from "xlsx";
 import SearchIcon from "@mui/icons-material/Search";
 import DownloadForOfflineRoundedIcon from "@mui/icons-material/DownloadForOfflineRounded";
 import CloseIcon from "@mui/icons-material/Close";
+import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
 
 const Dashboard = (props) => {
   const [searchText, setSearchText] = useState("");
@@ -148,6 +149,9 @@ const Dashboard = (props) => {
       {loading && (
         <Box
           sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
             height: "100%",
           }}
         >
@@ -161,7 +165,6 @@ const Dashboard = (props) => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            width: "99%",
             height: "12%",
             margin: "2rem 0 2rem 0",
           }}
@@ -189,6 +192,7 @@ const Dashboard = (props) => {
             sx={{
               display: "flex",
               alignItems: "center",
+              justifyContent: "flex-end",
               gap: "1rem",
             }}
           >
@@ -219,7 +223,7 @@ const Dashboard = (props) => {
                 ),
               }}
               sx={{
-                width: "300px", // Larghezza della barra di ricerca
+                width: "70%",
                 "& .MuiInput-root": {
                   fontSize: {
                     xs: "0.7rem",
@@ -245,12 +249,32 @@ const Dashboard = (props) => {
             />
 
             {/* Icona per esportare */}
-            <Tooltip title="Scarica in formato Excel">
-              <DownloadForOfflineRoundedIcon
+            <Tooltip
+              title="Scarica in formato Excel"
+              enterTouchDelay={7000}
+              disableInteractive
+              PopperProps={{
+                modifiers: [
+                  {
+                    name: "offset",
+                    options: {
+                      offset: [0, -14],
+                    },
+                  },
+                ],
+              }}
+            >
+              <ArrowCircleDownIcon
                 sx={{
-                  color: "orange",
+                  color: "green",
                   cursor: "pointer",
-                  fontSize: "28px",
+                  fontSize: {
+                    xs: "20px",
+                    sm: "25px",
+                    md: "30px",
+                    lg: "32px",
+                    xl: "35px",
+                  },
                   "&:hover": {
                     color: "rgba(50, 50, 50, .9)",
                   },
