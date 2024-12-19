@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Box, CircularProgress } from "@mui/material";
 import Layout from "./layout/Layout";
 import routes from "./routes";
@@ -25,6 +25,8 @@ function App() {
         }
       >
         <Routes>
+          {/* Reindirizza automaticamente alla pagina di login */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Layout />}>
             {routes.map((route, index) => (

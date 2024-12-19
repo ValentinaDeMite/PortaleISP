@@ -9,6 +9,8 @@ import {
   InputLabel,
   FormControl,
   Typography,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import ApiRest from "../../service-API/ApiRest";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,6 +35,13 @@ const NewProject = () => {
     16: "",
     1: "OPN",
   });
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success", // "success", "error", "warning", "info"
+  });
+
   const buttonRef = useRef(null);
   const info = useSelector((state) => state.info);
   const token = useSelector((state) => state.token);
@@ -52,15 +61,17 @@ const NewProject = () => {
     event.preventDefault();
     buttonRef.current.disabled = true;
 
-    // Verifica che tutti i campi obbligatori siano completi
     if (Object.values(state).includes("") || state["16"] === "") {
-      alert("Attenzione!\nCompleta tutti i campi prima di procedere!");
+      setSnackbar({
+        open: true,
+        message: "Completa tutti i campi prima di procedere!",
+        severity: "warning",
+      });
       buttonRef.current.disabled = false;
       return;
     }
 
     try {
-      // Costruzione del payload
       const payloadObj = {
         new: {},
         edits: {},
@@ -69,40 +80,56 @@ const NewProject = () => {
 
       console.log("Payload inviato:", payloadObj);
 
-      // Chiamata API per creare il progetto
       const response = await api.iuProject(token, payloadObj);
       console.log("Risposta API:", response);
 
-      // Controlla se la risposta contiene un projectId o idprogetto
       const projectId = response.projectId || response.idprogetto;
 
       if (projectId) {
         console.log(`Progetto creato con ID: ${projectId}`);
-
         state[0] = projectId;
         const projectDetails = state;
-
-        console.log("Dettagli progetto selezionato:", projectDetails);
 
         dispatch({
           type: "setSelectedProject",
           projectDetails,
         });
-        // Navigazione diretta alla dashboard
-        navigate(`/dashboard/${projectId}`);
+
+        // Snackbar per progetto creato con successo
+        setSnackbar({
+          open: true,
+          message: "Progetto creato con successo!",
+          severity: "success",
+        });
+
+        setTimeout(() => {
+          navigate(`/dashboard/${projectId}`);
+        }, 1500); // Navigazione dopo 1,5 secondi
       } else {
         console.error("ID progetto non ricevuto.");
-        alert("Errore: ID progetto non ricevuto.");
+        setSnackbar({
+          open: true,
+          message: "Errore: ID progetto non ricevuto.",
+          severity: "error",
+        });
       }
     } catch (error) {
       console.error("Errore durante la chiamata API:", error);
 
-      // Gestione dell'errore
       const errorMessage =
         error.response?.data?.message ||
         "Errore sconosciuto. Riprova più tardi.";
-      alert(`Qualcosa è andato storto.\n${errorMessage}`);
+      setSnackbar({
+        open: true,
+        message: `Qualcosa è andato storto.\n${errorMessage}`,
+        severity: "error",
+      });
     }
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") return;
+    setSnackbar({ ...snackbar, open: false });
   };
 
   return (
@@ -114,7 +141,7 @@ const NewProject = () => {
         flexDirection: "column",
         height: "100%",
         width: "100%",
-        overflow: "hidden",
+        justifyContent: "center",
         alignItems: "center",
         "& .MuiInputBase-input ": {
           fontSize: {
@@ -138,6 +165,21 @@ const NewProject = () => {
         },
       }}
     >
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={5000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+
       <Box sx={{ width: "100%", height: "10%" }}>
         <Typography
           variant="h4"
@@ -313,8 +355,8 @@ const NewProject = () => {
                 color="primary"
                 label="Data Inizio"
                 InputLabelProps={{ shrink: true }}
-                onChange={(e) => handleOnChange(e, "12")}
-                value={state["12"]}
+                onChange={(e) => handleOnChange(e, "17")}
+                value={state["17"]}
                 fullWidth
                 required
               />
@@ -324,8 +366,8 @@ const NewProject = () => {
                 color="primary"
                 label="Data Fine"
                 InputLabelProps={{ shrink: true }}
-                onChange={(e) => handleOnChange(e, "13")}
-                value={state["13"]}
+                onChange={(e) => handleOnChange(e, "18")}
+                value={state["18"]}
                 fullWidth
                 required
               />

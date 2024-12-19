@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Typography,
@@ -42,6 +42,7 @@ const api = new ApiRest();
 const ProjectItems = () => {
   const [searchText, setSearchText] = useState("");
   const ref = useRef();
+  const dispatch = useDispatch(); // Aggiunto il dispatch
   const navigate = useNavigate();
   const project = useSelector((state) => state.selectedProject);
   const token = useSelector((state) => state.token);
@@ -724,10 +725,30 @@ const ProjectItems = () => {
                 cursor: "pointer",
               }}
               aria-label="delete"
-              onClick={() => ""}
+              onClick={handleOpenDeleteProjectDialog}
             />
           </Tooltip>
         </Box>
+        <Dialog
+          open={openDeleteProjectDialog}
+          onClose={handleCloseDeleteProjectDialog}
+        >
+          <DialogTitle>Conferma Eliminazione</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Sei sicuro di voler eliminare questo progetto? Questa azione non
+              può essere annullata.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDeleteProjectDialog} color="primary">
+              Annulla
+            </Button>
+            <Button onClick={handleDeleteProject} color="error" autoFocus>
+              Conferma
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Box
           sx={{
             backgroundColor: "#F5F5F5",
@@ -1015,7 +1036,7 @@ const ProjectItems = () => {
                         backgroundColor: "rgba(50, 50, 50, .89)",
                       },
                     }}
-                    onClick={handleOpenDeleteProjectDialog}
+                    onClick={handleDeleteConfirmOpen}
                   >
                     <CloseIcon
                       sx={{
@@ -1049,27 +1070,6 @@ const ProjectItems = () => {
           </Button>
           <Button onClick={handleDelete} color="error" autoFocus>
             Elimina
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={openDeleteProjectDialog}
-        onClose={handleCloseDeleteProjectDialog}
-      >
-        <DialogTitle>Conferma Eliminazione</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Sei sicuro di voler eliminare questo progetto? Questa azione non può
-            essere annullata.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteProjectDialog} color="primary">
-            Annulla
-          </Button>
-          <Button onClick={handleDeleteProject} color="error" autoFocus>
-            Conferma
           </Button>
         </DialogActions>
       </Dialog>

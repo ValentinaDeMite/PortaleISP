@@ -1,7 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import ApiRest from "../service-API/ApiRest";
-import AppTable from "../components/AppTable";
 import {
   Box,
   Typography,
@@ -10,36 +7,23 @@ import {
   Tooltip,
   InputAdornment,
 } from "@mui/material";
-import StockData from "../service-API/stock.json";
-import * as XLSX from "xlsx";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
+import AppTable from "../components/AppTable";
+import ApiRest from "../service-API/ApiRest";
+import StockData from "../service-API/stock.json";
+import * as XLSX from "xlsx";
+import { useDispatch, useSelector } from "react-redux";
 
 const Stock = (props) => {
   const [columnDefs, setColumnDefs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const date = useSelector((state) => state.date);
-  const stock = useSelector((state) => state.stock || StockData.values);
-  const token = useSelector((state) => state.token);
-  const dispatch = useDispatch();
-  const ref = useRef();
   const [searchText, setSearchText] = useState("");
-
-  const convertTypeColumn = (type) => {
-    switch (type) {
-      case "T":
-        return "text";
-      case "N":
-        return "number";
-      case "D":
-        return "date";
-      case "B":
-        return "button";
-      default:
-        return "text";
-    }
-  };
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.token);
+  const stock = useSelector((state) => state.stock || StockData.values);
+  const ref = useRef();
 
   const filteredStock = Array.isArray(stock)
     ? stock.filter((item) =>
@@ -48,12 +32,12 @@ const Stock = (props) => {
         )
       )
     : [];
+
   const exportToExcel = () => {
     const filteredForExport = filteredStock.map((item) => {
       const entries = Object.entries(item).filter(
         ([key, value], index) => index !== 20 && index !== 21
       );
-
       return Object.fromEntries(entries);
     });
 
@@ -72,23 +56,16 @@ const Stock = (props) => {
           field: fieldData.forcount.toString(),
           headerName: fieldData.name,
           width: fieldData.type === "N" ? 60 : props.isModal ? 200 : 250,
-          hide: !fieldData.show,
-          type: convertTypeColumn(fieldData.type),
+          type: fieldData.type === "N" ? "number" : "text",
           editable: fieldData.editable,
-          renderCell: (params) => {
-            if (
-              fieldData.type === "N" &&
-              ((typeof params.value === "number" && params.value < 0) ||
-                String(params.value).includes("-"))
-            ) {
-              return (
-                <Box sx={{ color: "red", fontWeight: "bold" }}>
-                  {params.value}
-                </Box>
-              );
-            }
-            return params.value;
-          },
+          renderCell: (params) =>
+            fieldData.type === "N" && params.value < 0 ? (
+              <Box sx={{ color: "red", fontWeight: "bold" }}>
+                {params.value}
+              </Box>
+            ) : (
+              params.value
+            ),
         };
       });
   };
@@ -102,20 +79,15 @@ const Stock = (props) => {
         dispatch({ type: "set", stock: data.values });
         const columns = setColumns(data.fields);
         setColumnDefs(columns);
-        dispatch({ type: "set", fieldsStock: columns });
       } catch (error) {
-        console.error("API error, using mocked data", error);
+        console.error("Errore API, utilizzo dati mockati", error);
         const columns = setColumns(StockData.fields);
         setColumnDefs(columns);
-        dispatch({
-          type: "set",
-          payload: { stock: StockData.values, fieldsStock: columns },
-        });
+        dispatch({ type: "set", stock: StockData.values });
       } finally {
         setLoading(false);
       }
     };
-
     getStock();
   }, [dispatch, token]);
 
@@ -129,159 +101,131 @@ const Stock = (props) => {
         overflow: "hidden",
       }}
     >
-      {loading && (
+      {loading ? (
         <Box
           sx={{
-            height: "60%",
-            margin: "auto",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
           }}
         >
           <CircularProgress />
         </Box>
-      )}
-
-      {!loading && (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            height: "12%",
-            margin: "2rem 0 2rem 0",
-          }}
-        >
-          {/* Titolo */}
-          <Typography
-            variant="h4"
+      ) : (
+        <>
+          <Box
             sx={{
-              fontWeight: "bold",
-              fontSize: {
-                xs: "0.5rem",
-                sm: "0.8rem",
-                md: "1rem",
-                lg: "1.2rem",
-                xl: "1.5rem",
-              },
-              fontFamily: "Poppins!important",
-              fontWeight: "600",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              height: "12%",
+              margin: "2rem 0 2rem 0",
             }}
           >
-            Stock - Lista articoli disponibili
-          </Typography>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: "bold",
+                fontSize: {
+                  xs: "0.8rem",
+                  sm: "1rem",
+                  md: "1.2rem",
+                  lg: "1.5rem",
+                },
+                fontFamily: "Poppins!important",
+              }}
+            >
+              Stock - Lista articoli disponibili
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                gap: "1rem",
+              }}
+            >
+              <TextField
+                variant="standard"
+                placeholder="Cerca"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon sx={{ color: "rgb(27, 158, 62, .9)" }} />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <CloseIcon
+                        onClick={() => setSearchText("")}
+                        fontSize="small"
+                        sx={{
+                          color: searchText ? "red" : "rgba(0, 0, 0, 0.26)",
+                          cursor: searchText ? "pointer" : "default",
+                        }}
+                      />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  width: "70%",
+                  "& .MuiInput-root": {
+                    fontSize: "0.8rem",
+                    borderBottom: "1px solid rgb(27, 158, 62, .5)",
+                    "&:before": {
+                      borderBottom: "1px solid rgb(27, 158, 62, .5)",
+                    },
+                    "&:after": {
+                      borderBottom: "2px solid rgb(27, 158, 62, .8)",
+                    },
+                    ":hover:not(.Mui-focused)": {
+                      "&:before": {
+                        borderBottom: "2px solid rgb(27, 158, 62, .9)",
+                      },
+                    },
+                  },
+                }}
+              />
+
+              <Tooltip title="Scarica in formato Excel">
+                <ArrowCircleDownIcon
+                  sx={{
+                    color: "green",
+                    cursor: "pointer",
+                    fontSize: "30px",
+                    "&:hover": {
+                      color: "rgba(50, 50, 50, .9)",
+                    },
+                  }}
+                  onClick={exportToExcel}
+                />
+              </Tooltip>
+            </Box>
+          </Box>
 
           <Box
             sx={{
               display: "flex",
+              justifyContent: "center",
               alignItems: "center",
-              justifyContent: "flex-end",
-              gap: "1rem",
+              height: "90%",
+              width: "100%",
+              overflowY: "auto",
+              boxSizing: "border-box",
             }}
           >
-            {/* Barra di ricerca */}
-            <TextField
-              variant="standard"
-              placeholder="Cerca"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon sx={{ color: "rgb(27, 158, 62, .9)" }} />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <CloseIcon
-                      onClick={() => setSearchText("")}
-                      fontSize="small"
-                      cursor="pointer"
-                      sx={{
-                        color: searchText ? "red" : "rgba(0, 0, 0, 0.26)",
-                      }}
-                      disabled={!searchText}
-                    />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                width: "70%",
-                "& .MuiInput-root": {
-                  fontSize: {
-                    xs: "0.7rem",
-                    sm: "0.75rem",
-                    md: "0.8rem",
-                    lg: "0.8rem",
-                    xl: "0.9rem",
-                  },
-                  borderBottom: "1px solid rgb(27, 158, 62, .5)",
-                  "&:before": {
-                    borderBottom: "1px solid rgb(27, 158, 62, .5)",
-                  },
-                  "&:after": {
-                    borderBottom: "2px solid rgb(27, 158, 62, .8)",
-                  },
-                  ":hover:not(.Mui-focused)": {
-                    "&:before": {
-                      borderBottom: "2px solid rgb(27, 158, 62, .9)",
-                    },
-                  },
-                },
-              }}
+            <AppTable
+              ref={ref}
+              columns={columnDefs}
+              rows={filteredStock || []}
             />
-
-            {/* Icona per esportare */}
-            <Tooltip
-              title="Scarica in formato Excel"
-              enterTouchDelay={7000}
-              disableInteractive
-              PopperProps={{
-                modifiers: [
-                  {
-                    name: "offset",
-                    options: {
-                      offset: [0, -14],
-                    },
-                  },
-                ],
-              }}
-            >
-              <ArrowCircleDownIcon
-                sx={{
-                  color: "green",
-                  cursor: "pointer",
-                  fontSize: {
-                    xs: "20px",
-                    sm: "25px",
-                    md: "30px",
-                    lg: "32px",
-                    xl: "35px",
-                  },
-                  "&:hover": {
-                    color: "rgba(50, 50, 50, .9)",
-                  },
-                }}
-                onClick={exportToExcel}
-              />
-            </Tooltip>
           </Box>
-        </Box>
+        </>
       )}
-
-      <Box
-        sx={{
-          display: "flex", // Usa il layout flexbox
-          justifyContent: "center", // Centra orizzontalmente
-          alignItems: "center", // Centra verticalmente
-          height: "90%", // Altezza piena per il contenitore
-          width: "100%", // Larghezza piena per il contenitore
-          overflowY: "auto",
-          boxSizing: "border-box",
-        }}
-      >
-        {!loading && (
-          <AppTable ref={ref} columns={columnDefs} rows={filteredStock || []} />
-        )}
-      </Box>
     </Box>
   );
 };
