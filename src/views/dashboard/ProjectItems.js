@@ -978,10 +978,10 @@ const ProjectItems = () => {
                     <CheckIcon
                       sx={{
                         fontSize: {
-                          xs: "20px",
-                          sm: "22px",
-                          md: "24px",
-                          lg: "26px",
+                          xs: "14px",
+                          sm: "16px",
+                          md: "18px",
+                          lg: "20px",
                           xl: "28px",
                         },
                       }}
@@ -1020,10 +1020,10 @@ const ProjectItems = () => {
                     <CloseIcon
                       sx={{
                         fontSize: {
-                          xs: "20px",
-                          sm: "22px",
-                          md: "24px",
-                          lg: "26px",
+                          xs: "14px",
+                          sm: "16px",
+                          md: "18px",
+                          lg: "20px",
                           xl: "28px",
                         },
                       }}
@@ -1233,10 +1233,10 @@ const ProjectItems = () => {
               <AddIcon
                 sx={{
                   fontSize: {
-                    xs: "20px",
-                    sm: "22px",
-                    md: "24px",
-                    lg: "26px",
+                    xs: "14px",
+                    sm: "16px",
+                    md: "18px",
+                    lg: "20px",
                     xl: "28px",
                   },
                 }}
