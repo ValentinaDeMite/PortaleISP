@@ -123,9 +123,21 @@ const RequestList = (props) => {
     getRequests();
   }, [dispatch, token]);
 
-  const handleRowClick = (params) => {
+  const handleRowClick = async (params) => {
     const projectId = params.row[0];
-    console.log(projectId);
+
+    const api = new ApiRest();
+    const data = await api.getProjects(token);
+
+    console.log("Risposta API - Dati dei progetti:", data.values);
+    const projectDetails = data.values.find((item) => item["0"] == projectId);
+
+    dispatch({
+      type: "setSelectedProject",
+      projectDetails,
+    });
+
+    console.log(projectDetails);
     if (projectId) {
       navigate(`/dashboard/${projectId}`);
     }

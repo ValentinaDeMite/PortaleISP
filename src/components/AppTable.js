@@ -719,7 +719,7 @@ const AppTable = ({
           getRowClassName={(params) =>
             params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
           }
-          rowCountChange={console.log("ciao")}
+          //  rowCountChange={}
           disableColumnSelector={true}
           disableColumnMenu={true}
         />
