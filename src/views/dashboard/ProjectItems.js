@@ -85,6 +85,13 @@ const ProjectItems = () => {
     )
   );
 
+  const [modalQuantities, setModalQuantities] = useState({});
+
+  // Callback per gestire le quantità nella modale
+  const handleUpdateQuantities = (updatedQuantities) => {
+    setModalQuantities(updatedQuantities);
+  };
+
   // Delete
 
   const handleDeleteRow = (deletedRow) => {
@@ -1315,6 +1322,7 @@ const ProjectItems = () => {
               rows={modalStockData}
               onAdd={handleAddStockItemFromModal}
               handleCloseModal={handleCloseModal}
+              onUpdateQuantities={handleUpdateQuantities}
             />
           )}
         </Box>

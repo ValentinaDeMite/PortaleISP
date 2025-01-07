@@ -185,7 +185,7 @@ const Dashboard = (props) => {
               fontWeight: "600",
             }}
           >
-            Dettagli articoli:
+            Dettagli Progetti:
           </Typography>
 
           <Box

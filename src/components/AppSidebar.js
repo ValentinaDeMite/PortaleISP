@@ -172,6 +172,9 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                         xl: "1rem",
                       },
                       fontFamily: "Poppins!important",
+                      "&:hover": {
+                        color: "white !important",
+                      },
                     }}
                   >
                     Home
@@ -221,18 +224,34 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                           xl: "1rem",
                         },
                         fontFamily: "Poppins!important",
+                        "&:hover": {
+                          color: "white !important",
+                        },
                       }}
                     >
                       Dashboard
                     </Typography>
                     {isDropdownOpen ? (
                       <KeyboardArrowUpIcon
-                        sx={{ color: "white", cursor: "pointer", margin: 0 }}
+                        sx={{
+                          color: "white",
+                          cursor: "pointer",
+                          margin: 0,
+                          "&:hover": {
+                            color: "white !important",
+                          },
+                        }}
                         onClick={() => setDropdownOpen(!isDropdownOpen)}
                       />
                     ) : (
                       <KeyboardArrowDownIcon
-                        sx={{ color: "white", cursor: "pointer" }}
+                        sx={{
+                          color: "white",
+                          cursor: "pointer",
+                          "&:hover": {
+                            color: "white !important",
+                          },
+                        }}
                         onClick={() => setDropdownOpen(!isDropdownOpen)}
                       />
                     )}
@@ -269,6 +288,9 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                           xl: "1rem",
                         },
                         fontFamily: "Poppins!important",
+                        "&:hover": {
+                          color: "white !important",
+                        },
                       }}
                     >
                       Nuovo Progetto
@@ -306,6 +328,9 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                         xl: "1rem",
                       },
                       fontFamily: "Poppins!important",
+                      "&:hover": {
+                        color: "white !important",
+                      },
                     }}
                   >
                     Richieste
@@ -342,6 +367,9 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                         xl: "1rem",
                       },
                       fontFamily: "Poppins!important",
+                      "&:hover": {
+                        color: "white !important",
+                      },
                     }}
                   >
                     Stock
@@ -392,6 +420,9 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                       xl: "1rem",
                     },
                     fontFamily: "Poppins!important",
+                    "&:hover": {
+                      color: "white !important",
+                    },
                   }}
                 >
                   Contatti

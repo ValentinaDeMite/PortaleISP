@@ -15,7 +15,6 @@ const Layout = () => {
         width: "98vw",
         height: "95vh",
         margin: "auto",
-        background: "#4BA83D",
       }}
     >
       {/* Sidebar */}
