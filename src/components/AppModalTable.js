@@ -376,7 +376,11 @@ const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
           columns={updatedColumns}
           pageSize={pageSize}
           onCellClick={(params) => {
-            console.log("Cella cliccata:", params); // Debug dell'evento
+            // Ignora il doppio clic sulla colonna con headerName "ALLOCARE"
+            if (params.colDef.headerName === "ALLOCARE") {
+              return; // Non fare nulla se la colonna è "ALLOCARE"
+            }
+            // Altrimenti esegui la funzione di doppio clic
             if (onRowDoubleClick) onRowDoubleClick(params);
           }}
           getRowId={(row) => row["0"]}
