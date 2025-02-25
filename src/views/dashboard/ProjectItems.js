@@ -184,7 +184,7 @@ const ProjectItems = () => {
       ...prevPayload,
       edits: {
         ...prevPayload.edits,
-        [editedRow[9]]: [+editedRow[12], +editedRow[13]],
+        [editedRow[9]]: [+editedRow[12], +editedRow[12]],
       },
     }));
 
