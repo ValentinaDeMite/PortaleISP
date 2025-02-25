@@ -21,9 +21,9 @@ const inputs = [
   { key: "9", name: "Description", type: "text" },
   { key: "1", name: "Status", type: "select" },
   { key: "10", name: "Note", type: "text" },
-  { key: "16", name: "Project Manager", type: "select-pms" },
-  { key: "12", name: "Date Begin", type: "date" },
-  { key: "13", name: "Date End", type: "date" },
+  { key: "17", name: "Project Manager", type: "select-pms" },
+  { key: "13", name: "Date Begin", type: "date" },
+  { key: "14", name: "Date End", type: "date" },
 ];
 
 const NewProject = () => {
@@ -32,7 +32,7 @@ const NewProject = () => {
     8: "",
     9: "",
     10: "",
-    16: "",
+    17: "",
     1: "OPN",
   });
 
@@ -61,7 +61,7 @@ const NewProject = () => {
     event.preventDefault();
     buttonRef.current.disabled = true;
 
-    if (Object.values(state).includes("") || state["16"] === "") {
+    if (Object.values(state).includes("") || state["17"] === "") {
       setSnackbar({
         open: true,
         message: "Completa tutti i campi prima di procedere!",
@@ -335,8 +335,8 @@ const NewProject = () => {
                 <InputLabel>Project Manager</InputLabel>
                 <Select
                   label="Project Manager"
-                  value={state["16"]}
-                  onChange={(e) => handleOnChange(e, "16")}
+                  value={state["17"]}
+                  onChange={(e) => handleOnChange(e, "17")}
                   fullWidth
                   required
                 >
@@ -355,8 +355,8 @@ const NewProject = () => {
                 color="primary"
                 label="Data Inizio"
                 InputLabelProps={{ shrink: true }}
-                onChange={(e) => handleOnChange(e, "17")}
-                value={state["17"]}
+                onChange={(e) => handleOnChange(e, "18")}
+                value={state["18"]}
                 fullWidth
                 required
               />
@@ -366,8 +366,8 @@ const NewProject = () => {
                 color="primary"
                 label="Data Fine"
                 InputLabelProps={{ shrink: true }}
-                onChange={(e) => handleOnChange(e, "18")}
-                value={state["18"]}
+                onChange={(e) => handleOnChange(e, "19")}
+                value={state["19"]}
                 fullWidth
                 required
               />

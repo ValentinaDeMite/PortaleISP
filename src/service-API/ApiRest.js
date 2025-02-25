@@ -98,6 +98,36 @@ class ApiRest {
     }
   }
 
+  //allocation data
+
+  async getItemAllocation(pnCliente, token) {
+    const url =
+      this.env === "LOCAL"
+        ? `${this.url}/getItemAllocation`
+        : `${this.url}/extapp/ispprj/getItemAllocation?pcid=${pnCliente}`;
+    //const url =`${this.url}/extapp/ispprj/getItemAllocation?pcid=${pnCliente}`
+
+    console.log("Chiamata API getItemAllocation:", url);
+    console.log("Dati inviati:", { pnCliente, token });
+
+    try {
+      const response = await axios.post(url, {
+        data: {
+          pnCliente,
+          token,
+        },
+      });
+      const { data } = response;
+      return data;
+    } catch (error) {
+      console.error(
+        "Errore in getItemAllocation:",
+        error.response ? error.response.data : error
+      );
+      throw error;
+    }
+  }
+
   //update a project item details
   async updateProjectItem(item) {
     const url = `${this.url}/extapp/hpprj/uItem`;

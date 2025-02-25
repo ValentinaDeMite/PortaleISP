@@ -52,7 +52,7 @@ const StripedDataGrid = styled(DataGridPremium)(({ theme }) => ({
   },
 }));
 
-const AppModalTable = ({ columns, rows = [], onAdd }) => {
+const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [searchText, setSearchText] = useState("");
@@ -375,7 +375,10 @@ const AppModalTable = ({ columns, rows = [], onAdd }) => {
           rows={filteredRows}
           columns={updatedColumns}
           pageSize={pageSize}
-          onRowDoubleClick={(params) => console.log(params.row)}
+          onCellClick={(params) => {
+            console.log("Cella cliccata:", params); // Debug dell'evento
+            if (onRowDoubleClick) onRowDoubleClick(params);
+          }}
           getRowId={(row) => row["0"]}
           pagination
           paginationMode="client"

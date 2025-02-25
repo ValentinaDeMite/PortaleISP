@@ -3,7 +3,10 @@
         "CARICA BATTERIE NOTEBOOK HP": 10
     },
     "edits": {
-        "CARICA BATTERIE NOTEBOOK HP": 18,
+         "CARICA BATTERIE NOTEBOOK HP":[18,20],
+         "CARICA BererATTERIE NOTEBOOK HP":[18,20],
+         "CARICA BerererATTERIE NOTEBOOK HP":[18,20],
+        
         "APPLE 20W USB-C POWER ADAPTER": "DELETED"
     },
     "project": {

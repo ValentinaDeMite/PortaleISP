@@ -47,7 +47,7 @@ const Layout = () => {
             flexShrink: 0,
             height: "5%",
             paddingBottom: "0.7%",
-            boxShadow: "0px 6px 6px -6px rgba(0, 0, 0, 0.2)", // Ombra SOLO sotto
+            boxShadow: "0px 6px 6px -6px rgba(0, 0, 0, 0.2)",
           }}
         >
           <AppHeader />

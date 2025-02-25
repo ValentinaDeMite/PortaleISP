@@ -145,7 +145,7 @@ const AppTable = ({
   const handleEditConfirm = (params) => {
     if (onEditRow) {
       const updatedRow = { ...editedRow };
-      updatedRow[12] = editedRow.allocato;
+      updatedRow[13] = editedRow.allocato;
       onEditRow(updatedRow);
     }
     setOpenEditDialog(false);
@@ -156,8 +156,8 @@ const AppTable = ({
     setSelectedRow(params.row);
     setEditedRow({
       ...params.row,
-      allocato: params.row["allocato"] || Object.values(params.row)[12],
-      residuo: params.row["residuo"] || Object.values(params.row)[17],
+      allocato: params.row["allocato"] || Object.values(params.row)[13],
+      residuo: params.row["residuo"] || Object.values(params.row)[18],
     });
     setOpenEditDialog(true);
   };
@@ -178,7 +178,7 @@ const AppTable = ({
         updatedRow.residuo =
           parseInt(prev.residuo) + parseInt(value) - parseInt(prev.allocato);
         updatedRow["allocato"] = value;
-        updatedRow[12] = value;
+        updatedRow[13] = value;
       }
 
       return updatedRow;
@@ -788,7 +788,7 @@ const AppTable = ({
                 label="Evaso"
                 fullWidth
                 margin="normal"
-                value={selectedRow ? Object.values(selectedRow)[16] : ""}
+                value={selectedRow ? Object.values(selectedRow)[17] : ""}
                 InputProps={{ readOnly: true }}
                 sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />

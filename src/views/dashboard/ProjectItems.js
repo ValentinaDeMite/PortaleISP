@@ -10,16 +10,16 @@ import {
   IconButton,
   Tooltip,
   Modal,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
   InputAdornment,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import AppTable from "../../components/AppTable";
@@ -52,9 +52,9 @@ const ProjectItems = () => {
     projectName: project[8],
     projectDescription: project[9],
     projectNotes: project[10],
-    projectManager: project[16],
-    startDate: project[17]?.split(" ")[0] || "",
-    endDate: project[18]?.split(" ")[0] || "",
+    projectManager: project[17],
+    startDate: project[18]?.split(" ")[0] || "",
+    endDate: project[19]?.split(" ")[0] || "",
   });
   const [initialData] = useState({ ...editableData });
   const [pendingRequests, setPendingRequests] = useState([]);
@@ -75,9 +75,71 @@ const ProjectItems = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [refreshKey, setRefreshKey] = useState(0);
   const [openDeleteProjectDialog, setOpenDeleteProjectDialog] = useState(false);
-
+  const [allocationModalOpen, setAllocationModalOpen] = useState(false);
+  const [pnCliente, setPnCliente] = useState(null);
+  const [allocationData, setAllocationData] = useState([]);
+  const [allocationColumns, setAllocationColumns] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const info = useSelector((state) => state.info);
   let isSupervisor = info.ruolo === "Supervisor";
+  const [loading, setLoading] = useState(true);
+
+  const handleRowDoubleClick = (params) => {
+    const selectedPnCliente = params.row["1"];
+    console.log("pnCliente selezionato:", selectedPnCliente);
+
+    if (!selectedPnCliente) {
+      console.warn("⚠️ Nessun pnCliente trovato!");
+      return;
+    }
+
+    setPnCliente(selectedPnCliente);
+    setAllocationModalOpen(true);
+  };
+
+  useEffect(() => {
+    if (!pnCliente || !token) return;
+
+    const getItemAllocation = async () => {
+      const api = new ApiRest();
+      try {
+        const allocationData = await api.getItemAllocation(pnCliente, token);
+        console.log("Fetched allocationData:", allocationData);
+
+        setAllocationData(allocationData.values || []);
+        setAllocationColumns(setColumnsAllocatedItems(allocationData.fields));
+      } catch (error) {
+        console.error("Error fetching allocation data:", error);
+      } finally {
+        setLoading(false); // Assicurati di impostare loading su false quando i dati sono caricati
+      }
+    };
+
+    getItemAllocation();
+  }, [pnCliente, token]);
+
+  // Funzione per chiudere la seconda modale
+  const handleCloseAllocationModal = () => {
+    setAllocationModalOpen(false);
+    setPnCliente(null);
+    setAllocationData([]);
+  };
+
+  const setColumnsAllocatedItems = (fields) => {
+    return fields
+      .filter((field) => Object.values(field)[0].show)
+      .map((field) => {
+        const fieldData = Object.values(field)[0];
+        return {
+          field: fieldData.forcount.toString(),
+          headerName: fieldData.name,
+          width: fieldData.type === "N" ? 100 : 250,
+          type: fieldData.type === "N" ? "number" : "text",
+          editable: fieldData.editable,
+        };
+      });
+  };
 
   const filteredData = projectItemsData.filter((row) =>
     Object.values(row).some((value) =>
@@ -122,13 +184,13 @@ const ProjectItems = () => {
       ...prevPayload,
       edits: {
         ...prevPayload.edits,
-        [editedRow[9]]: +editedRow[12],
+        [editedRow[9]]: +editedRow[13],
       },
     }));
 
     setPendingRequests((prevRequests, prevEditedRows) => [
       ...prevRequests,
-      `Modifica articolo [${editedRow[9]}] nuovo allocato: ${editedRow[12]}`,
+      `Modifica articolo [${editedRow[9]}] nuovo allocato: ${editedRow[13]}`,
     ]);
   };
 
@@ -324,7 +386,7 @@ const ProjectItems = () => {
     const handleReqItems = () => {
       if (projectItemsData.length > 0) {
         const reqItems = projectItemsData.filter(
-          (item) => (item[2] === "REQ" || item[19]) && item[19]
+          (item) => (item[2] === "REQ" || item[20]) && item[19]
         );
 
         let deleteProjectRequestLogged = false;
@@ -333,8 +395,8 @@ const ProjectItems = () => {
         const newPendingRequests = reqItems
           .map((item) => {
             const partNumber = item[9];
-            const description = item[19];
-            const pendingQuantity = Number(item[13]);
+            const description = item[20];
+            const pendingQuantity = Number(item[14]);
 
             if (description.includes("Elimina articolo")) {
               return `Elimina articolo [${partNumber}];`;
@@ -379,8 +441,8 @@ const ProjectItems = () => {
 
           reqItems.forEach((item) => {
             const partNumber = item[9];
-            const description = item[19];
-            const pendingQuantity = Number(item[13]);
+            const description = item[20];
+            const pendingQuantity = Number(item[14]);
 
             if (description.includes("Elimina articolo")) {
               newEdits[partNumber] = "DELETED";
@@ -471,7 +533,7 @@ const ProjectItems = () => {
   const exportToExcel = () => {
     const filteredForExport = filteredItems.map((item) => {
       const entries = Object.entries(item).filter(
-        ([key, value], index) => index !== 20 && index !== 21
+        ([key, value], index) => index !== 21 && index !== 22
       );
 
       return Object.fromEntries(entries);
@@ -508,9 +570,9 @@ const ProjectItems = () => {
     project[8] = editableData.projectName;
     project[9] = editableData.projectDescription;
     project[10] = editableData.projectNotes;
-    project[16] = editableData.projectManager;
-    project[17] = editableData.startDate;
-    project[18] = editableData.endDate;
+    project[17] = editableData.projectManager;
+    project[18] = editableData.startDate;
+    project[19] = editableData.endDate;
 
     const updatedPayload = {
       new: payloadObj.new || {},
@@ -566,9 +628,9 @@ const ProjectItems = () => {
       project[8] = editableData.projectName;
       project[9] = editableData.projectDescription;
       project[10] = editableData.projectNotes;
-      project[16] = editableData.projectManager;
-      project[17] = editableData.startDate;
-      project[18] = editableData.endDate;
+      project[17] = editableData.projectManager;
+      project[18] = editableData.startDate;
+      project[19] = editableData.endDate;
 
       const updatedPayload = {
         new: payloadObj.new || {},
@@ -667,7 +729,6 @@ const ProjectItems = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-
       <Box
         sx={{
           width: "100%",
@@ -800,7 +861,6 @@ const ProjectItems = () => {
           </Typography>
         </Box>
       </Box>
-
       <Box sx={{ width: "100%", height: "auto" }}>
         <Box
           sx={{
@@ -843,8 +903,8 @@ const ProjectItems = () => {
                 { label: "ID Progetto", value: project[0] },
                 { label: "Stato", value: project[1] },
                 { label: "Allocato", value: project[12] },
-                { label: "Evaso", value: project[13] },
-                { label: "Residuo", value: project[14] },
+                { label: "Evaso", value: project[14] },
+                { label: "Residuo", value: project[15] },
               ].map((item, index) => (
                 <TextField
                   key={index}
@@ -1063,7 +1123,6 @@ const ProjectItems = () => {
           </Box>
         </Box>
       </Box>
-
       <Dialog open={openDeleteConfirm} onClose={handleDeleteConfirmClose}>
         <DialogTitle>Conferma Eliminazione</DialogTitle>
         <DialogContent>
@@ -1080,7 +1139,6 @@ const ProjectItems = () => {
           </Button>
         </DialogActions>
       </Dialog>
-
       <Box
         sx={{
           display: "flex",
@@ -1252,7 +1310,6 @@ const ProjectItems = () => {
           </Tooltip>
         </Box>
       </Box>
-
       <Box sx={{ width: "99%", mt: "1rem" }}>
         <AppTable
           ref={ref}
@@ -1266,7 +1323,6 @@ const ProjectItems = () => {
           onRowDoubleClick={() => {}}
         />
       </Box>
-
       <Modal
         open={openModal}
         onClose={handleCloseModal}
@@ -1323,7 +1379,46 @@ const ProjectItems = () => {
               onAdd={handleAddStockItemFromModal}
               handleCloseModal={handleCloseModal}
               onUpdateQuantities={handleUpdateQuantities}
+              onRowDoubleClick={(params) => {
+                console.log(
+                  "🖱️ Doppio click sulla riga ricevuto in AppTable:",
+                  params
+                );
+                handleRowDoubleClick(params);
+              }}
             />
+          )}
+        </Box>
+      </Modal>
+
+      <Modal
+        open={allocationModalOpen}
+        onClose={() => handleCloseAllocationModal()}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          sx={{
+            padding: "2rem",
+            backgroundColor: "white",
+            width: "80%",
+            margin: "auto",
+          }}
+        >
+          <Typography variant="h6">
+            Dati Allocazione per: {pnCliente}
+          </Typography>
+          {loading ? (
+            <CircularProgress />
+          ) : allocationData.length === 0 ? (
+            <Typography variant="body1" color="textSecondary">
+              Non ci sono progetti per questo articolo.
+            </Typography>
+          ) : (
+            <AppTable columns={allocationColumns} rows={allocationData || []} />
           )}
         </Box>
       </Modal>

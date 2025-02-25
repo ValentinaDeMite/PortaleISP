@@ -55,7 +55,7 @@ const Dashboard = (props) => {
   const exportToExcel = () => {
     const filteredForExport = filteredProjects.map((item) => {
       const entries = Object.entries(item).filter(
-        ([key, value], index) => index !== 20 && index !== 21
+        ([key, value], index) => index !== 21 && index !== 22
       );
 
       return Object.fromEntries(entries);
