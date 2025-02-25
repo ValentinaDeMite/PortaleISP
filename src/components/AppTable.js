@@ -146,6 +146,7 @@ const AppTable = ({
     if (onEditRow) {
       const updatedRow = { ...editedRow };
       updatedRow[13] = editedRow.allocato;
+      updatedRow[12] = editedRow.forecast;
       onEditRow(updatedRow);
     }
     setOpenEditDialog(false);
@@ -156,6 +157,7 @@ const AppTable = ({
     setSelectedRow(params.row);
     setEditedRow({
       ...params.row,
+      forecast: params.row["forecast"] || Object.values(params.row)[12],
       allocato: params.row["allocato"] || Object.values(params.row)[13],
       residuo: params.row["residuo"] || Object.values(params.row)[18],
     });
@@ -179,6 +181,10 @@ const AppTable = ({
           parseInt(prev.residuo) + parseInt(value) - parseInt(prev.allocato);
         updatedRow["allocato"] = value;
         updatedRow[13] = value;
+      }
+      if (field === "forecast") {
+        updatedRow.forecast = value;
+        updatedRow[12] = value;
       }
 
       return updatedRow;
@@ -769,7 +775,7 @@ const AppTable = ({
                 sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
               <TextField
-                label="Nome Prodotto"
+                label="Part Number"
                 fullWidth
                 margin="normal"
                 value={selectedRow ? Object.values(selectedRow)[10] : ""}
@@ -785,7 +791,7 @@ const AppTable = ({
                 sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
               <TextField
-                label="Evaso"
+                label="Spedito"
                 fullWidth
                 margin="normal"
                 value={selectedRow ? Object.values(selectedRow)[17] : ""}
@@ -803,6 +809,17 @@ const AppTable = ({
                 InputProps={{ readOnly: true }}
                 sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
+              <TextField
+                label="Forecast"
+                type="number"
+                fullWidth
+                margin="normal"
+                value={editedRow.forecast} // Usa editedRow per il valore
+                onChange={(e) =>
+                  handleEditFieldChange("forecast", e.target.value)
+                } // Modifica forecast
+              />
+
               <TextField
                 label="Allocato"
                 type="number"

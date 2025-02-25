@@ -902,9 +902,10 @@ const ProjectItems = () => {
               {[
                 { label: "ID Progetto", value: project[0] },
                 { label: "Stato", value: project[1] },
-                { label: "Allocato", value: project[12] },
+                { label: "Allocato", value: project[13] },
                 { label: "Evaso", value: project[14] },
                 { label: "Residuo", value: project[15] },
+                { label: "Forecast", value: project[12] },
               ].map((item, index) => (
                 <TextField
                   key={index}

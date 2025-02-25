@@ -506,6 +506,10 @@ const Stock = (props) => {
                 </Typography>
                 {loading ? (
                   <CircularProgress />
+                ) : allocationData.length === 0 ? (
+                  <Typography variant="body1" color="textSecondary">
+                    Non ci sono progetti per questo articolo.
+                  </Typography>
                 ) : (
                   <AppTable
                     columns={allocationColumns}
