@@ -78,17 +78,34 @@ const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
   };
 
   const handleEditFieldChange = (row, newQuantity) => {
-    const id = row[1];
-    const max = row[8];
+    const id = row[1]; // Assumi che l'ID sia in posizione 1
+    const max = row[8]; // Assumi che il massimo sia in posizione 8
 
-    if (newQuantity > max) {
+    if (!id) {
+      console.error("Errore: ID non valido per la riga", row);
+      return;
+    }
+
+    const numericQuantity = Number(newQuantity);
+
+    if (isNaN(numericQuantity) || numericQuantity < 0) {
+      alert("Inserisci un numero valido");
+      return;
+    }
+
+    if (numericQuantity > max) {
       alert(
         `Quantità non disponibile. Disponibilità massima per l'articolo ${id}: ${max}`
       );
       return;
     }
 
-    setQuantities((prev) => ({ ...prev, [id]: newQuantity }));
+    console.log(`Aggiornando quantità per ${id}: ${numericQuantity}`);
+
+    setQuantities((prev) => ({
+      ...prev,
+      [id]: numericQuantity,
+    }));
   };
 
   const renderAllocateColumn = (params) => {
@@ -106,8 +123,8 @@ const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
         <TextField
           size="small"
           type="number"
-          value={quantity}
-          onBlur={(e) => handleEditFieldChange(params.row, e.target.value)}
+          value={quantities[params.row[1]] || ""}
+          onChange={(e) => handleEditFieldChange(params.row, e.target.value)}
           sx={{
             width: "50%",
             "& input": {
@@ -408,25 +425,23 @@ const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
             },
           }}
           onClick={() => {
-            console.log(quantities);
-
-            const validQnts = Object.values(quantities)
-              .map((value) => Number(value))
-              .some((value) => value > 0);
-
-            if (!validQnts) {
-              alert("Inserisci almeno una quantità valida");
-              return;
-            }
+            console.log("Pulsante cliccato"); // Debug
+            console.log("Quantities prima del filtro:", quantities);
 
             const filteredQnt = Object.entries(quantities)
-              .filter(([key, value]) => Number(value) > 0)
+              .filter(([key, value]) => Number(value) > 0) // ✅ Filtra gli 0
               .reduce((acc, [key, value]) => {
                 acc[key] = Number(value);
                 return acc;
               }, {});
 
-            console.log(filteredQnt);
+            console.log("Quantities filtrate:", filteredQnt);
+
+            if (Object.keys(filteredQnt).length === 0) {
+              alert("Inserisci almeno una quantità valida");
+              return;
+            }
+
             onAdd(filteredQnt);
           }}
         >

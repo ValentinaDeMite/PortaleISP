@@ -690,6 +690,11 @@ const ProjectItems = () => {
             navigate("/dashboard");
           }, 3000);
         }
+        if (updatedPayload.edits) {
+          setTimeout(() => {
+            navigate(`/dashboard/${project[0]}`);
+          }, 3000);
+        }
       })
       .catch((error) => {
         console.error("Errore durante l'invio del payload:", error);
