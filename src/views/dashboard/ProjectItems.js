@@ -45,6 +45,7 @@ const ProjectItems = () => {
   const dispatch = useDispatch(); // Aggiunto il dispatch
   const navigate = useNavigate();
   const project = useSelector((state) => state.selectedProject);
+
   const token = useSelector((state) => state.token);
   const [openModal, setOpenModal] = useState(false);
   const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
@@ -84,9 +85,12 @@ const ProjectItems = () => {
   const info = useSelector((state) => state.info);
   let isSupervisor = info.ruolo === "Supervisor";
   const [loading, setLoading] = useState(true);
+  const [description, setDescription] = useState("");
 
   const handleRowDoubleClick = (params) => {
     const selectedPnCliente = params.row["1"];
+    const descriptionValue = params.row["2"];
+
     console.log("pnCliente selezionato:", selectedPnCliente);
 
     if (!selectedPnCliente) {
@@ -95,6 +99,8 @@ const ProjectItems = () => {
     }
 
     setPnCliente(selectedPnCliente);
+    setDescription(descriptionValue);
+
     setAllocationModalOpen(true);
   };
 
@@ -174,25 +180,109 @@ const ProjectItems = () => {
     ]);
   };
 
-  // Edit
+  // Editpen
 
   const handleEditRow = (editedRow) => {
-    setEditedRows((prevEditedRows) => [...prevEditedRows, editedRow]);
-    console.log("Riga eliminata:", editedRow);
+    console.log("edited row:", editedRow);
+    console.log("payload", payloadObj);
+    console.log("edited rows:", editedRows);
+    console.log("filteredItems", filteredItems);
+
+    let originalEditRow = filteredItems.filter(
+      (row) => row[1] == editedRow[1]
+    )[0];
+    filteredItems.filter((row) => row[1] == editedRow[1])[0][2] = "REQ";
+    console.log("originalEditRow", originalEditRow);
+    let newPendingValue = editedRow[14];
+    let newValueForecast = editedRow[12];
+    let newQty = editedRow[13];
+
+    let originalPendingValue = originalEditRow[14];
+    let originalForecastValue = originalEditRow[12];
+    let originalQty = originalEditRow[13];
+
+    let isNewPending = false;
+    let isNewForecast = false;
+
+    let rowDescId = editedRow[10];
+
+    // Se nessun valore è cambiato, chiudi la modale e interrompi l'esecuzione
+    if (
+      originalPendingValue == newPendingValue &&
+      originalForecastValue == newValueForecast &&
+      originalQty == newQty
+    ) {
+      return;
+    }
+
+    if (originalQty != newQty && newQty != 0) {
+      isNewPending = true;
+    }
+    if (originalForecastValue != newValueForecast) {
+      isNewForecast = true;
+    }
+
+    // if (newPendingValue != 0 && originalQty != newPendingValue) {
+    //   // originalPending = pending;
+    // } else {
+    //   originalPendingValue = originalQty;
+    // }
+
+    console.log("originalPending:", originalPendingValue);
+    console.log("newPendingValue:", newPendingValue);
+    console.log("originalQty:", originalQty);
+    console.log("newlQty:", newQty);
+
+    let editDescriptionQty = `Modifica articolo [${rowDescId}] Nuova Quantità Allocata: ${originalQty} -> ${newQty} \n`;
+
+    let editDescriptionForecast = `Modifica articolo [${rowDescId}] Forecast: ${originalForecastValue} -> ${newValueForecast} \n`;
+
+    const rowEditValue = [
+      isNewForecast
+        ? parseInt(newValueForecast)
+        : parseInt(originalForecastValue),
+      isNewPending ? parseInt(newQty) : parseInt(originalQty),
+    ]; // Nuovi valori
+
+    setPendingRequests((prevRequests) => {
+      let updatedEdits = [...prevRequests];
+
+      let editIndex = updatedEdits.findIndex((desc) =>
+        desc.includes(
+          `Modifica articolo [${rowDescId}] Nuova Quantità Allocata:`
+        )
+      );
+
+      let editIndexForecast = updatedEdits.findIndex((desc) =>
+        desc.includes(`Modifica articolo [${rowDescId}] Forecast`)
+      );
+
+      if (isNewPending) {
+        editIndex !== -1
+          ? (updatedEdits[editIndex] = editDescriptionQty)
+          : updatedEdits.push(editDescriptionQty);
+      }
+
+      if (isNewForecast) {
+        editIndexForecast !== -1
+          ? (updatedEdits[editIndexForecast] = editDescriptionForecast)
+          : updatedEdits.push(editDescriptionForecast);
+      }
+
+      return updatedEdits;
+    });
 
     setPayloadObj((prevPayload) => ({
       ...prevPayload,
       edits: {
         ...prevPayload.edits,
-        [editedRow[9]]: [+editedRow[12], +editedRow[12]],
+        [editedRow[9]]: rowEditValue,
       },
     }));
 
-    setPendingRequests((prevRequests, prevEditedRows) => [
-      ...prevRequests,
-      `Modifica articolo [${editedRow[9]}] nuovo allocato: ${editedRow[13]}`,
-      `Modifica articolo [${editedRow[9]}] nuovo forecast: ${editedRow[12]}`,
-    ]);
+    originalEditRow[14] = newQty;
+    originalEditRow[12] = newValueForecast;
+    setEditedRows(originalEditRow);
   };
 
   // Delete Project
@@ -444,14 +534,14 @@ const ProjectItems = () => {
             const partNumber = item[9];
             const description = item[20];
             const pendingQuantity = Number(item[14]);
-
+            const forecastNumber = Number(item[12]);
             if (description.includes("Elimina articolo")) {
               newEdits[partNumber] = "DELETED";
             } else if (
               description.includes("Modifica articolo") &&
               !isNaN(pendingQuantity)
             ) {
-              newEdits[partNumber] = pendingQuantity;
+              newEdits[partNumber] = [forecastNumber, pendingQuantity];
             } else if (
               description.includes("Aggiunto articolo") &&
               !isNaN(pendingQuantity)
@@ -607,7 +697,55 @@ const ProjectItems = () => {
         setSnackbarSeverity("error");
         setOpenSnackbar(true);
       });
+
+    //TODO: aggiungere getDashboard e refresh dati proj
   };
+
+  // const handleConfirm = async () => {
+  //   project[8] = editableData.projectName;
+  //   project[9] = editableData.projectDescription;
+  //   project[10] = editableData.projectNotes;
+  //   project[17] = editableData.projectManager;
+  //   project[18] = editableData.startDate;
+  //   project[19] = editableData.endDate;
+
+  //   const updatedPayload = {
+  //     new: payloadObj.new || {},
+  //     edits: payloadObj.edits || {},
+  //     project: project,
+  //     cancelRequests: false,
+  //     deleteProject: payloadObj.deleteProject || false,
+  //   };
+
+  //   const api = new ApiRest();
+
+  //   try {
+  //     await api.iuProject(token, updatedPayload);
+  //     setSnackbarMessage(
+  //       isSupervisor
+  //         ? "Tutte le richieste sono state accettate"
+  //         : "La tua richiesta è stata inviata correttamente"
+  //     );
+  //     setSnackbarSeverity("success");
+  //     setOpenSnackbar(true);
+  //     setRefreshKey((prevKey) => prevKey + 1);
+
+  //     if (updatedPayload.deleteProject) {
+  //       setTimeout(() => {
+  //         navigate("/dashboard");
+  //       }, 3000);
+  //       return;
+  //     }
+
+  //     // Refresh the project data
+  //     await refreshProjectData();
+  //   } catch (error) {
+  //     console.error("Errore durante l'invio del payload:", error);
+  //     setSnackbarMessage("Errore durante l'invio delle richieste");
+  //     setSnackbarSeverity("error");
+  //     setOpenSnackbar(true);
+  //   }
+  // };
 
   useEffect(() => {
     console.log("PayloadObj after state update:", payloadObj);
@@ -621,6 +759,33 @@ const ProjectItems = () => {
     }
     setOpenSnackbar(false);
   };
+
+  // const refreshProjectData = async () => {
+  //   try {
+  //     const api = new ApiRest();
+  //     const data = await api.getProjects(token);
+
+  //     console.log("📢 Project data refreshed:", data.values);
+
+  //     let updatedProject = data.values.find((p) => p[0] == project[0]);
+
+  //     if (updatedProject) {
+  //       dispatch({
+  //         type: "setSelectedProject",
+  //         updatedProject,
+  //       });
+  //       setProject(updatedProject);
+  //       // dispatch({ type: "UPDATE_PROJECT", payload: updatedProject }); // If using Redux
+  //     } else {
+  //       console.warn("⚠️ Nessun aggiornamento trovato per il progetto.");
+  //     }
+  //   } catch (error) {
+  //     console.error(
+  //       "❌ Errore durante l'aggiornamento dei dati del progetto:",
+  //       error
+  //     );
+  //   }
+  // };
 
   // Elimina Richieste
 
@@ -842,7 +1007,7 @@ const ProjectItems = () => {
           >
             Ultima Modifica:{" "}
             {project[5]
-              ? format(new Date(project[5]), "dd-MM-yyyy HH:mm")
+              ? format(new Date(project[5]), "dd/MM/yyyy HH:mm")
               : "N/A"}
           </Typography>
           <Typography
@@ -1023,7 +1188,7 @@ const ProjectItems = () => {
             >
               <TextField
                 label="Richieste Pendenti"
-                value={pendingRequests.join("\n")}
+                value={pendingRequests.join("")}
                 multiline
                 sx={{
                   borderRadius: "8px",
@@ -1406,12 +1571,13 @@ const ProjectItems = () => {
           sx={{
             padding: "2rem",
             backgroundColor: "white",
-            width: "80%",
+            width: "50%",
             margin: "auto",
+            borderRadius: "5px",
           }}
         >
-          <Typography variant="h6">
-            Dati Allocazione per: {pnCliente}
+          <Typography variant="h6" sx={{ marginBottom: "1rem" }}>
+            Dati allocazione per: "{description}"
           </Typography>
           {loading ? (
             <CircularProgress />

@@ -408,6 +408,8 @@ const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
             },
           }}
           onClick={() => {
+            console.log(quantities);
+
             const validQnts = Object.values(quantities)
               .map((value) => Number(value))
               .some((value) => value > 0);

@@ -42,6 +42,8 @@ const Dashboard = (props) => {
       projectDetails,
     });
 
+    localStorage.setItem("selectedProjectId", projectId);
+
     navigate(`/dashboard/${projectId}`);
   };
 
@@ -146,7 +148,7 @@ const Dashboard = (props) => {
         overflow: "hidden",
       }}
     >
-      {loading && (
+      {loading ? (
         <Box
           sx={{
             display: "flex",
@@ -155,11 +157,9 @@ const Dashboard = (props) => {
             height: "100%",
           }}
         >
-          <CircularProgress />
+          <CircularProgress size={50} color="secondary" />
         </Box>
-      )}
-
-      {!loading && (
+      ) : (
         <Box
           sx={{
             display: "flex",

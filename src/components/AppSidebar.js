@@ -458,7 +458,7 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                   },
                 }}
               >
-                MVS Italy © 2024
+                MVS Italy © 2025
               </Typography>
             </MenuItem>
           </Menu>

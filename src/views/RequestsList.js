@@ -162,7 +162,7 @@ const RequestList = (props) => {
             height: "100%",
           }}
         >
-          <CircularProgress />
+          <CircularProgress size={50} color="secondary" />
         </Box>
       )}
 

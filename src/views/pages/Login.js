@@ -1,28 +1,37 @@
-import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Card, CardContent, CircularProgress, InputAdornment } from '@mui/material';
-import LockIcon from '@mui/icons-material/Lock';
-import PersonIcon from '@mui/icons-material/Person';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import logoIntesa from '../../assets/img/intesa-sanpaolo.png';
-import logoMvs from '../../assets/img/logo-MVS.png';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import ApiRest from '../../service-API/ApiRest';
-import Cookies from 'js-cookie';
+import React, { useState } from "react";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  InputAdornment,
+} from "@mui/material";
+import LockIcon from "@mui/icons-material/Lock";
+import PersonIcon from "@mui/icons-material/Person";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import logoIntesa from "../../assets/img/intesa-sanpaolo.png";
+import logoMvs from "../../assets/img/logo-MVS.png";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import ApiRest from "../../service-API/ApiRest";
+import Cookies from "js-cookie";
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    if (username === '' || password === '') {
-      setErrorMessage('Username e Password sono obbligatori');
+    if (username === "" || password === "") {
+      setErrorMessage("Username e Password sono obbligatori");
       return;
     }
     try {
@@ -31,59 +40,77 @@ const Login = () => {
       const response = await request.login(username, password);
 
       if (!response.token) {
-        setErrorMessage('ID utente o password errati');
+        setErrorMessage("ID utente o password errati");
         setIsLoading(false);
         return;
       }
 
-      dispatch({ type: 'set', user: response.user });
-      dispatch({ type: 'set', token: response.token });
-      navigate('/homepage');
+      dispatch({ type: "set", user: response.user });
+      dispatch({ type: "set", token: response.token });
+      localStorage.setItem("selectedProjectId", "");
+      navigate("/homepage");
     } catch (error) {
-      setErrorMessage('ID utente o password errati');
+      setErrorMessage("ID utente o password errati");
       setIsLoading(false);
     }
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
+      }}
+    >
       <Box
         sx={{
-          width: '100vw',
-          height: '50vh',
-          display: 'flex',
-          justifyContent: 'space-evenly',
-          alignItems: 'center',
-          backgroundColor: '#4BA83D',
+          width: "100vw",
+          height: "50vh",
+          display: "flex",
+          justifyContent: "space-evenly",
+          alignItems: "center",
+          backgroundColor: "#4BA83D",
         }}
       >
-        <img src={logoIntesa} alt="logo intesa" style={{ flex: 1, maxWidth: '40%', height: 'auto' }} />
-        <img src={logoMvs} alt="mvs logo" style={{ flex: 1, maxWidth: '30%', height: '30%' }} />
+        <img
+          src={logoIntesa}
+          alt="logo intesa"
+          style={{ flex: 1, maxWidth: "40%", height: "auto" }}
+        />
+        <img
+          src={logoMvs}
+          alt="mvs logo"
+          style={{ flex: 1, maxWidth: "30%", height: "30%" }}
+        />
       </Box>
 
       <Box
         sx={{
-          width: '100vw',
-          height: '50vh',
-          backgroundColor: '#f5f5f5',
+          width: "100vw",
+          height: "50vh",
+          backgroundColor: "#f5f5f5",
         }}
       />
 
       <Card
         elevation={3}
         sx={{
-          maxWidth: '400px',
-          width: '90%',
-          borderRadius: '12px',
-          textAlign: 'center',
-          padding: '2rem',
-          position: 'absolute',
-          top: '60%',
-          transform: 'translateY(-50%)',
+          maxWidth: "400px",
+          width: "90%",
+          borderRadius: "12px",
+          textAlign: "center",
+          padding: "2rem",
+          position: "absolute",
+          top: "60%",
+          transform: "translateY(-50%)",
         }}
       >
         <CardContent>
-          <Typography variant="h6" gutterBottom sx={{ fontFamily: 'Poppins' }}>
+          <Typography variant="h6" gutterBottom sx={{ fontFamily: "Poppins" }}>
             Inserisci la tua Email e Password
           </Typography>
 
@@ -107,7 +134,7 @@ const Login = () => {
             variant="outlined"
             margin="normal"
             label="Password"
-            type={showPassword ? 'text' : 'password'} 
+            type={showPassword ? "text" : "password"}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -116,8 +143,11 @@ const Login = () => {
               ),
               endAdornment: (
                 <InputAdornment position="end">
-                  <Button onClick={() => setShowPassword(!showPassword)} color="inherit">
-                    {showPassword ? <VisibilityOff /> : <Visibility />} 
+                  <Button
+                    onClick={() => setShowPassword(!showPassword)}
+                    color="inherit"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
                   </Button>
                 </InputAdornment>
               ),
@@ -126,12 +156,15 @@ const Login = () => {
           />
 
           {errorMessage && (
-            <Typography color="error" sx={{ marginTop: '0.5rem', fontSize: '0.875rem' }}>
+            <Typography
+              color="error"
+              sx={{ marginTop: "0.5rem", fontSize: "0.875rem" }}
+            >
               {errorMessage}
             </Typography>
           )}
 
-          <Box sx={{ marginTop: '1.5rem' }}>
+          <Box sx={{ marginTop: "1.5rem" }}>
             <Button
               variant="contained"
               color="warning"
@@ -139,22 +172,31 @@ const Login = () => {
               onClick={handleLogin}
               disabled={isLoading}
               sx={{
-                paddingY: '0.75rem',
-                fontWeight: 'bold',
-                fontSize: '1rem',
-                borderRadius: '8px',
-                width: '40%',
-                fontFamily: 'Poppins'
+                paddingY: "0.75rem",
+                fontWeight: "bold",
+                fontSize: "1rem",
+                borderRadius: "8px",
+                width: "40%",
+                fontFamily: "Poppins",
               }}
             >
-              {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
+              {isLoading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Login"
+              )}
             </Button>
           </Box>
         </CardContent>
       </Card>
 
-      <Typography variant="body2" align="center" color="textSecondary" sx={{ position: 'absolute', bottom: '1rem', fontFamily: 'Poppins' }}>
-        MVS Italy © 2024
+      <Typography
+        variant="body2"
+        align="center"
+        color="textSecondary"
+        sx={{ position: "absolute", bottom: "1rem", fontFamily: "Poppins" }}
+      >
+        MVS Italy © 2025
       </Typography>
     </Box>
   );

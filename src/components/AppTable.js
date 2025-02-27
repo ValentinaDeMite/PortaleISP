@@ -112,6 +112,23 @@ const AppTable = ({
     };
   }, []);
 
+  //TODO per mettere colore al selezionato
+  // useEffect(() => {
+  //   console.log("ciao");
+
+  //   let idProj = localStorage.getItem("selectedProjectId");
+  //   if (idProj) {
+  //     const selectedRow = rows.find(
+  //       (row) => row[Object.keys(row)[0]] === idProj
+  //     );
+  //     console.log(selectedRow);
+
+  //     if (selectedRow) {
+  //       setRowSelectionModel([selectedRow[0]]); // Ensure 'id' exists in the row data
+  //     }
+  //   }
+  // }, [rows]);
+
   const filteredRows = Array.isArray(rows)
     ? rows.filter((item) =>
         Object.values(item).some((value) =>
@@ -158,7 +175,7 @@ const AppTable = ({
     setEditedRow({
       ...params.row,
       forecast: params.row["forecast"] || Object.values(params.row)[12],
-      allocato: params.row["allocato"] || Object.values(params.row)[13],
+      allocato: params.row["allocato"] || Object.values(params.row)[14],
       residuo: params.row["residuo"] || Object.values(params.row)[18],
     });
     setOpenEditDialog(true);
@@ -169,25 +186,42 @@ const AppTable = ({
     setSelectedRow(null);
   };
 
+  // const handleEditFieldChange = (field, value) => {
+  //   setEditedRow((prev) => {
+  //     const updatedRow = {
+  //       ...prev,
+  //       [field]: value,
+  //     };
+
+  //     // if (field === "allocato") {
+  //     //   updatedRow.residuo =
+  //     //     parseInt(prev.residuo) + parseInt(value) - parseInt(prev.allocato);
+  //     //   updatedRow["allocato"] = value;
+  //     //   updatedRow[13] = value;
+  //     // }
+  //     // if (field === "forecast") {
+  //     //   updatedRow.forecast = value;
+  //     //   updatedRow[12] = value;
+  //     // }
+
+  //     return updatedRow;
+  //   });
+  // };
+
   const handleEditFieldChange = (field, value) => {
     setEditedRow((prev) => {
-      const updatedRow = {
-        ...prev,
-        [field]: value,
-      };
-
-      if (field === "allocato") {
-        updatedRow.residuo =
-          parseInt(prev.residuo) + parseInt(value) - parseInt(prev.allocato);
-        updatedRow["allocato"] = value;
-        updatedRow[13] = value;
+      if (typeof field === "number") {
+        // Se field è un numero, aggiorna l'array immutabilmente
+        const updatedRow = [...prev];
+        updatedRow[field] = value;
+        return updatedRow;
+      } else {
+        // Se field è una stringa, aggiorna l'oggetto normalmente
+        return {
+          ...prev,
+          [field]: value,
+        };
       }
-      if (field === "forecast") {
-        updatedRow.forecast = value;
-        updatedRow[12] = value;
-      }
-
-      return updatedRow;
     });
   };
 
@@ -418,7 +452,7 @@ const AppTable = ({
         renderCell: (params) => {
           if (!params.value) return "";
           try {
-            return format(new Date(params.value), "dd-MM-yy HH:mm");
+            return format(new Date(params.value), "dd/MM/yy HH:mm");
           } catch (error) {
             console.error("Errore nel formattare la data:", error);
             return params.value;
@@ -722,9 +756,12 @@ const AppTable = ({
           groupRowsByColumn="status"
           rowGroupingModel={rowGroupingModel}
           onRowGroupingModelChange={setRowGroupingModel}
-          getRowClassName={(params) =>
-            params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
-          }
+          getRowClassName={(params) => {
+            if (params.row[0] === rowSelectionModel[0]) {
+              return "Mui-selected"; // Apply the same selected-row styling
+            }
+            return params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd";
+          }}
           //  rowCountChange={}
           disableColumnSelector={true}
           disableColumnMenu={true}
@@ -810,18 +847,25 @@ const AppTable = ({
                 sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
               <TextField
+                label="Allocato Confermato"
+                fullWidth
+                margin="normal"
+                value={selectedRow ? Object.values(selectedRow)[13] : ""}
+                InputProps={{ readOnly: true }}
+                sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
+              />
+              <TextField
                 label="Forecast"
                 type="number"
                 fullWidth
                 margin="normal"
-                value={editedRow.forecast} // Usa editedRow per il valore
+                value={editedRow.forecast}
                 onChange={(e) =>
                   handleEditFieldChange("forecast", e.target.value)
-                } // Modifica forecast
+                }
               />
-
               <TextField
-                label="Allocato"
+                label="Nuova allocazione"
                 type="number"
                 fullWidth
                 margin="normal"
