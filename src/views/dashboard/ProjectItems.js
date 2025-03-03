@@ -20,6 +20,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Autocomplete,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import AppTable from "../../components/AppTable";
@@ -688,13 +689,14 @@ const ProjectItems = () => {
         if (updatedPayload.deleteProject) {
           setTimeout(() => {
             navigate("/dashboard");
-          }, 3000);
+          }, 500);
         }
-        if (updatedPayload.edits) {
-          setTimeout(() => {
-            navigate(`/dashboard/${project[0]}`);
-          }, 3000);
-        }
+
+        // Step 1: Store the updated project ID in sessionStorage
+        sessionStorage.setItem("autoOpenProject", project[0]);
+
+        // Step 2: Navigate to Dashboard
+        navigate("/dashboard");
       })
       .catch((error) => {
         console.error("Errore durante l'invio del payload:", error);
@@ -705,6 +707,53 @@ const ProjectItems = () => {
 
     //TODO: aggiungere getDashboard e refresh dati proj
   };
+
+  // useEffect(() => {
+  //   const projectId = sessionStorage.getItem("refreshProject");
+
+  //   if (projectId) {
+  //     console.log(
+  //       "📢 Refresh rilevato! Aggiorno i dati per il progetto:",
+  //       projectId
+  //     );
+
+  //     const fetchUpdatedProject = async () => {
+  //       try {
+  //         const api = new ApiRest();
+  //         const dashboardData = await api.getProjects(token);
+
+  //         console.log(dashboardData);
+
+  //         const updatedProject = dashboardData.values.find(
+  //           (p) => String(p["0"]) === String(projectId)
+  //         );
+
+  //         console.log(updatedProject);
+
+  //         if (updatedProject) {
+  //           dispatch({ type: "setSelectedProject", payload: updatedProject });
+
+  //           console.log("✅ Dati aggiornati dopo il reload:", updatedProject);
+  //            navigate(`/dashboard/${projectId}`);
+  //         } else {
+  //           console.warn(
+  //             "⚠️ Nessun aggiornamento trovato per il progetto dopo il reload."
+  //           );
+  //         }
+
+  //         // 🔄 Rimuove il flag dopo il refresh
+  //         sessionStorage.removeItem("refreshProject");
+  //       } catch (error) {
+  //         console.error(
+  //           "❌ Errore nel recupero della dashboard dopo il reload:",
+  //           error
+  //         );
+  //       }
+  //     };
+
+  //     fetchUpdatedProject();
+  //   }
+  // }, []);
 
   // const handleConfirm = async () => {
   //   project[8] = editableData.projectName;
@@ -1125,13 +1174,51 @@ const ProjectItems = () => {
                         ))}
                     </Select>
                   </FormControl>
+                ) : field === "projectName" ? (
+                  <Autocomplete
+                    freeSolo
+                    options={
+                      info.projects
+                        ? info.projects.split(";").map((p) => p.trim())
+                        : []
+                    }
+                    value={editableData["projectName"] || ""}
+                    onChange={(event, newValue) =>
+                      handleInputChange(
+                        { target: { value: newValue } },
+                        "projectName"
+                      )
+                    }
+                    onInputChange={(event, newValue) =>
+                      handleInputChange(
+                        { target: { value: newValue } },
+                        "projectName"
+                      )
+                    }
+                    sx={{
+                      minWidth: "400px",
+                      maxWidth: "100%",
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Nome Progetto"
+                        fullWidth
+                        size="medium"
+                        InputLabelProps={{ shrink: true }}
+                        sx={{
+                          borderRadius: "8px",
+                          minWidth: "400px",
+                          fontSize: "1.1rem",
+                        }}
+                      />
+                    )}
+                  />
                 ) : (
                   <TextField
                     key={index}
                     label={
-                      field === "projectName"
-                        ? "Nome Progetto"
-                        : field === "projectDescription"
+                      field === "projectDescription"
                         ? "Descrizione Progetto"
                         : field === "projectNotes"
                         ? "Note Progetto"
@@ -1193,11 +1280,12 @@ const ProjectItems = () => {
             >
               <TextField
                 label="Richieste Pendenti"
-                value={pendingRequests.join("")}
+                value={pendingRequests.join("\n")}
                 multiline
                 sx={{
                   borderRadius: "8px",
                   width: "80%",
+                  whiteSpace: "pre-line",
                 }}
               />
 

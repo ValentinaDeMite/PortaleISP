@@ -757,10 +757,13 @@ const AppTable = ({
           rowGroupingModel={rowGroupingModel}
           onRowGroupingModelChange={setRowGroupingModel}
           getRowClassName={(params) => {
-            if (params.row[0] === rowSelectionModel[0]) {
-              return "Mui-selected"; // Apply the same selected-row styling
-            }
-            return params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd";
+            const baseClass =
+              params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd";
+
+            const selectedClass =
+              params.row[0] === rowSelectionModel[0] ? "Mui-selected" : "";
+
+            return `${baseClass} ${selectedClass} data-project-id-${params.row[0]}`.trim();
           }}
           //  rowCountChange={}
           disableColumnSelector={true}

@@ -11,6 +11,7 @@ import {
   Typography,
   Snackbar,
   Alert,
+  Autocomplete,
 } from "@mui/material";
 import ApiRest from "../../service-API/ApiRest";
 import { useDispatch, useSelector } from "react-redux";
@@ -255,20 +256,36 @@ const NewProject = () => {
             }}
           >
             <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
-              <TextField
-                type="text"
-                variant="outlined"
-                color="primary"
-                label="Nome Progetto"
-                onChange={(e) => handleOnChange(e, "8")}
-                value={state["8"]}
-                fullWidth
-                required
-                sx={{
-                  borderColor: "#999",
-                  "& .MuiOutlinedInput-root": { borderRadius: "8px" },
-                }}
+              <Autocomplete
+                freeSolo
+                options={
+                  info.projects
+                    ? info.projects.split(";").map((project) => project.trim())
+                    : []
+                }
+                value={state["8"] || ""}
+                onChange={(event, newValue) =>
+                  handleOnChange({ target: { value: newValue } }, "8")
+                }
+                onInputChange={(event, newValue) =>
+                  handleOnChange({ target: { value: newValue } }, "8")
+                } // Aggiorna lo stato anche durante la digitazione
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    color="primary"
+                    label="Nome Progetto"
+                    fullWidth
+                    required
+                    sx={{
+                      borderColor: "#999",
+                      "& .MuiOutlinedInput-root": { borderRadius: "8px" },
+                    }}
+                  />
+                )}
               />
+
               <TextField
                 type="text"
                 variant="outlined"

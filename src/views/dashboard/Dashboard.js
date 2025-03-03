@@ -116,6 +116,30 @@ const Dashboard = (props) => {
   };
 
   useEffect(() => {
+    const projectId = sessionStorage.getItem("autoOpenProject");
+
+    if (projectId) {
+      console.log("📢 Auto-opening project:", projectId);
+
+      setTimeout(() => {
+        const projectRow = document.querySelector(
+          `.data-project-id-${projectId}`
+        );
+        if (projectRow) {
+          projectRow.dispatchEvent(
+            new MouseEvent("dblclick", { bubbles: true })
+          );
+          console.log("✅ Double-click simulated for project ID:", projectId);
+        } else {
+          console.warn("⚠️ Project row not found.");
+        }
+      }, 1000);
+
+      sessionStorage.removeItem("autoOpenProject"); // Cleanup
+    }
+  }, []);
+
+  useEffect(() => {
     const getDashboard = async () => {
       setLoading(true);
       try {
