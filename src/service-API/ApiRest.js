@@ -87,6 +87,7 @@ class ApiRest {
         data: {
           id,
           token,
+          details: true,
         },
       });
       const { data } = response;

@@ -47,6 +47,7 @@ const ProjectItems = () => {
   const navigate = useNavigate();
   const project = useSelector((state) => state.selectedProject);
   let arrowIcon = "\u2192";
+  const [details, setDetails] = useState({});
 
   const token = useSelector((state) => state.token);
   const [openModal, setOpenModal] = useState(false);
@@ -434,6 +435,9 @@ const ProjectItems = () => {
         const items = await api.getItems(token, project[0]);
         setProjectItemsData(items.values);
 
+        if (items.details) {
+          setDetails(items.details);
+        }
         const columns = items.fields
           .filter((field) => {
             const fieldKey = Object.keys(field)[0];
@@ -692,17 +696,17 @@ const ProjectItems = () => {
         setSnackbarSeverity("success");
         setOpenSnackbar(true);
         setRefreshKey((prevKey) => prevKey + 1);
-        if (updatedPayload.deleteProject) {
-          setTimeout(() => {
-            navigate("/dashboard");
-          }, 1000);
-        }
+        // if (updatedPayload.deleteProject) {
+        //   setTimeout(() => {
+        //     navigate("/dashboard");
+        //   }, 1000);
+        // }
 
-        // Step 1: Store the updated project ID in sessionStorage
-        sessionStorage.setItem("autoOpenProject", project[0]);
+        // // Step 1: Store the updated project ID in sessionStorage
+        // sessionStorage.setItem("autoOpenProject", project[0]);
 
-        // Step 2: Navigate to Dashboard
-        navigate("/dashboard");
+        // // Step 2: Navigate to Dashboard
+        // navigate("/dashboard");
       })
       .catch((error) => {
         console.error("Errore durante l'invio del payload:", error);
@@ -1126,12 +1130,12 @@ const ProjectItems = () => {
           >
             <Stack spacing={2} direction="row">
               {[
-                { label: "ID Progetto", value: project[0] },
-                { label: "Stato", value: project[1] },
-                { label: "Allocato", value: project[13] },
-                { label: "Evaso", value: project[14] },
-                { label: "Residuo", value: project[15] },
-                { label: "Forecast", value: project[12] },
+                { label: "ID Progetto", value: details["0"] || "N/A" },
+                { label: "Stato", value: details["1"] || "N/A" },
+                { label: "Allocato", value: details["13"] || "0" },
+                { label: "Evaso", value: details["14"] || "0" },
+                { label: "Residuo", value: details["15"] || "0" },
+                { label: "Forecast", value: details["12"] || "0" },
               ].map((item, index) => (
                 <TextField
                   key={index}
