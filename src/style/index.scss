@@ -4,7 +4,7 @@
 
 html,
 #root,
-body{
+body {
   margin: 0;
   width: 100vw;
   height: 100vh;
@@ -14,10 +14,10 @@ body{
   box-sizing: border-box;
   background-color: $color_primary;
   display: grid;
-      place-items: center;
+  place-items: center;
 }
 
-.app{
+.app {
   display: flex;
   position: relative;
 }
@@ -25,75 +25,94 @@ body{
 /* Scrollbar principale */
 /* Scrollbar principale */
 ::-webkit-scrollbar {
-  width: 8px; /* Larghezza del scrollbar */
-  height: 8px; /* Altezza del scrollbar (se usato orizzontalmente) */
+  width: 8px;
+  /* Larghezza del scrollbar */
+  height: 8px;
+  /* Altezza del scrollbar (se usato orizzontalmente) */
 }
 
 /* Track (sfondo della scrollbar) */
 ::-webkit-scrollbar-track {
-  background: rgba(240, 240, 240, 0.8); /* Sfondo chiaro per contrasto */
-  border-radius: 10px; /* Arrotondamento del track */
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1); /* Effetto leggero di profondità */
+  background: rgba(240, 240, 240, 0.8);
+  /* Sfondo chiaro per contrasto */
+  border-radius: 10px;
+  /* Arrotondamento del track */
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+  /* Effetto leggero di profondità */
 }
 
 /* Thumb (parte che si muove) */
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(90deg, #4CAF50, #2E7D32); /* Gradient per un look moderno */
-  border-radius: 10px; /* Arrotondamento */
-  border: 2px solid rgba(240, 240, 240, 0.8); /* Bordo per separare il thumb dal track */
-  transition: background-color 0.3s ease, transform 0.3s ease; /* Transizioni per animazioni */
+  background: linear-gradient(90deg, #4CAF50, #2E7D32);
+  /* Gradient per un look moderno */
+  border-radius: 10px;
+  /* Arrotondamento */
+  border: 2px solid rgba(240, 240, 240, 0.8);
+  /* Bordo per separare il thumb dal track */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  /* Transizioni per animazioni */
 }
 
 /* Hover del Thumb */
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(90deg, #66BB6A, #388E3C); /* Colore più chiaro al passaggio del mouse */
-  transform: scale(1.1); /* Leggero ingrandimento al passaggio del mouse */
+  background: linear-gradient(90deg, #66BB6A, #388E3C);
+  /* Colore più chiaro al passaggio del mouse */
+  transform: scale(1.1);
+  /* Leggero ingrandimento al passaggio del mouse */
 }
 
 /* Active (quando il thumb è in uso) */
 ::-webkit-scrollbar-thumb:active {
-  background: linear-gradient(90deg, #2E7D32, #1B5E20); /* Colore più scuro durante l'interazione */
+  background: linear-gradient(90deg, #2E7D32, #1B5E20);
+  /* Colore più scuro durante l'interazione */
 }
 
 
 
 
-.layout{
- margin: auto;
+.layout {
+  margin: auto;
   width: 98vw;
   height: 95vh;
-  border: 1px solid  lightblue;
-  display: flex;   
+  border: 1px solid lightblue;
+  display: flex;
   font-size: 26px;
-  
-  & > * {
-    flex: 1; 
+
+  &>* {
+    flex: 1;
   }
+
   .AppMain {
     width: 700px;
-    background-color: white; 
-    padding: 20px;    
+    background-color: white;
+    padding: 20px;
   }
+
   .AppSidebar {
-    flex-grow: 1;         
-    flex-shrink: 0;    
-    background-color: lightgray;  
+    flex-grow: 1;
+    flex-shrink: 0;
+    background-color: lightgray;
   }
-  
-  
+
+
 }
 
-.css-rizt0-MuiTypography-root{
-    font-family: 'Poppins'!important;
+.css-rizt0-MuiTypography-root {
+  font-family: 'Poppins' !important;
 
-  }
+}
 
-.contentBox{
-  height:80vh;
+.contentBox {
+  height: 80vh;
   width: 100%;
-  padding:'30px 40px'
+  padding: '30px 40px'
 }
 
-.App{
+.App {
   width: 100vw;
+}
+
+.MuiDataGrid-row {
+  cursor: pointer !important;
+
 }
