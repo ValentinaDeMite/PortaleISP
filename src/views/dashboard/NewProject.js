@@ -281,6 +281,8 @@ const NewProject = () => {
                     sx={{
                       borderColor: "#999",
                       "& .MuiOutlinedInput-root": { borderRadius: "8px" },
+                      minWidth: "400px",
+                      maxWidth: "100%",
                     }}
                   />
                 )}

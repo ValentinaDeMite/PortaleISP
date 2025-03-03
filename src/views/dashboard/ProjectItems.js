@@ -46,6 +46,7 @@ const ProjectItems = () => {
   const dispatch = useDispatch(); // Aggiunto il dispatch
   const navigate = useNavigate();
   const project = useSelector((state) => state.selectedProject);
+  let arrowIcon = "\u2192";
 
   const token = useSelector((state) => state.token);
   const [openModal, setOpenModal] = useState(false);
@@ -234,9 +235,9 @@ const ProjectItems = () => {
     console.log("originalQty:", originalQty);
     console.log("newlQty:", newQty);
 
-    let editDescriptionQty = `Modifica articolo [${rowDescId}] Nuova Quantità Allocata: ${originalQty} -> ${newQty} \n`;
+    let editDescriptionQty = `Modifica articolo [${rowDescId}] Nuova Quantità Allocata: ${originalQty} ${arrowIcon} ${newQty} \n`;
 
-    let editDescriptionForecast = `Modifica articolo [${rowDescId}] Forecast: ${originalForecastValue} -> ${newValueForecast} \n`;
+    let editDescriptionForecast = `Modifica articolo [${rowDescId}] Forecast: ${originalForecastValue} ${arrowIcon} ${newValueForecast} \n`;
 
     const rowEditValue = [
       isNewForecast
@@ -577,11 +578,13 @@ const ProjectItems = () => {
   // Form
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target || e; // Per supportare Autocomplete
+
     setEditableData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
+
     setPayloadObj((prevPayload) => ({
       ...prevPayload,
       project: {
@@ -594,12 +597,14 @@ const ProjectItems = () => {
       const updatedRequests = prevRequests.filter(
         (req) => !req.startsWith(`${getFieldLabel(name)} aggiornato:`)
       );
+
       if (value) {
         updatedRequests.push(`${getFieldLabel(name)} aggiornato: ${value}`);
       }
       return updatedRequests;
     });
-    console.log("Payload aggiornato:", payloadObj);
+
+    console.log("✅ Payload aggiornato:", payloadObj);
   };
 
   const handleCancelChange = (field) => {
@@ -665,6 +670,7 @@ const ProjectItems = () => {
     project[17] = editableData.projectManager;
     project[18] = editableData.startDate;
     project[19] = editableData.endDate;
+    console.log(editableData);
 
     const updatedPayload = {
       new: payloadObj.new || {},
@@ -689,7 +695,7 @@ const ProjectItems = () => {
         if (updatedPayload.deleteProject) {
           setTimeout(() => {
             navigate("/dashboard");
-          }, 500);
+          }, 1000);
         }
 
         // Step 1: Store the updated project ID in sessionStorage
@@ -1182,18 +1188,18 @@ const ProjectItems = () => {
                         ? info.projects.split(";").map((p) => p.trim())
                         : []
                     }
-                    value={editableData["projectName"] || ""}
+                    value={editableData.projectName || ""}
                     onChange={(event, newValue) =>
-                      handleInputChange(
-                        { target: { value: newValue } },
-                        "projectName"
-                      )
+                      handleInputChange({
+                        name: "projectName",
+                        value: newValue,
+                      })
                     }
                     onInputChange={(event, newValue) =>
-                      handleInputChange(
-                        { target: { value: newValue } },
-                        "projectName"
-                      )
+                      handleInputChange({
+                        name: "projectName",
+                        value: newValue,
+                      })
                     }
                     sx={{
                       minWidth: "400px",
@@ -1208,7 +1214,7 @@ const ProjectItems = () => {
                         InputLabelProps={{ shrink: true }}
                         sx={{
                           borderRadius: "8px",
-                          minWidth: "400px",
+                          minWidth: "350px",
                           fontSize: "1.1rem",
                         }}
                       />
