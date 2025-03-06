@@ -15,6 +15,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import DownloadForOfflineRoundedIcon from "@mui/icons-material/DownloadForOfflineRounded";
 import * as XLSX from "xlsx";
 import CloseIcon from "@mui/icons-material/Close";
+import { Snackbar, Alert } from "@mui/material";
 
 const ODD_COLOR = "rgba(217, 217, 217, 0.7)";
 const EVEN_COLOR = "rgba(255, 255, 255, 1)";
@@ -56,11 +57,20 @@ const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const [searchText, setSearchText] = useState("");
-
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const apiRef = useGridApiRef();
   const [quantities, setQuantities] = useState(
     rows.reduce((acc, row) => ({ ...acc, [row[0]]: 0 }), {})
   );
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
 
   // Filtra le righe in base alla ricerca
   const filteredRows = rows.filter((row) =>
@@ -89,14 +99,22 @@ const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
     const numericQuantity = Number(newQuantity);
 
     if (isNaN(numericQuantity) || numericQuantity < 0) {
-      alert("Inserisci un numero valido");
+      setSnackbarMessage("Inserisci un numero valido");
+      setSnackbarSeverity("warning");
+      setOpenSnackbar(true);
+      // alert("Inserisci un numero valido");
       return;
     }
 
     if (numericQuantity > max) {
-      alert(
+      setSnackbarMessage(
         `Quantità non disponibile. Disponibilità massima per l'articolo ${id}: ${max}`
       );
+      setSnackbarSeverity("warning");
+      setOpenSnackbar(true);
+      // alert(
+      //   `Quantità non disponibile. Disponibilità massima per l'articolo ${id}: ${max}`
+      // );
       return;
     }
 
@@ -208,6 +226,20 @@ const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
   return (
     <Box sx={{ height: "100%", width: "100%" }}>
       {/* Search Bar e Export */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={5000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
       <Box
         sx={{
           display: "flex",

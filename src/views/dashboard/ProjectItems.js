@@ -43,7 +43,7 @@ const api = new ApiRest();
 const ProjectItems = () => {
   const [searchText, setSearchText] = useState("");
   const ref = useRef();
-  const dispatch = useDispatch(); // Aggiunto il dispatch
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const project = useSelector((state) => state.selectedProject);
   let arrowIcon = "\u2192";
@@ -89,12 +89,14 @@ const ProjectItems = () => {
   let isSupervisor = info.ruolo === "Supervisor";
   const [loading, setLoading] = useState(true);
   const [description, setDescription] = useState("");
+  const [isConfirmDisabled, setIsConfirmDisabled] = useState(true);
 
   const handleRowDoubleClick = (params) => {
     const selectedPnCliente = params.row["1"];
     const descriptionValue = params.row["2"];
 
     console.log("pnCliente selezionato:", selectedPnCliente);
+    console.log(info.ruolo);
 
     if (!selectedPnCliente) {
       console.warn("⚠️ Nessun pnCliente trovato!");
@@ -121,7 +123,7 @@ const ProjectItems = () => {
       } catch (error) {
         console.error("Error fetching allocation data:", error);
       } finally {
-        setLoading(false); // Assicurati di impostare loading su false quando i dati sono caricati
+        setLoading(false);
       }
     };
 
@@ -288,6 +290,14 @@ const ProjectItems = () => {
     setEditedRows(originalEditRow);
   };
 
+  useEffect(() => {
+    if (!pendingRequests || pendingRequests.length === 0) {
+      setIsConfirmDisabled(true);
+    } else {
+      setIsConfirmDisabled(false);
+    }
+  }, [pendingRequests]);
+
   // Delete Project
 
   const handleDeleteProject = async () => {
@@ -315,8 +325,11 @@ const ProjectItems = () => {
       .catch((error) => {
         console.error("Errore durante l'invio del payload:", error);
         setSnackbarMessage("Errore durante l'invio delle richieste");
+
+        console.log("✅ Snackbar aperta:", openSnackbar);
         setSnackbarSeverity("error");
         setOpenSnackbar(true);
+        console.log("❌ Snackbar aperta in errore:", openSnackbar);
       });
     setOpenDeleteProjectDialog(false);
     navigate("/dashboard");
@@ -718,99 +731,6 @@ const ProjectItems = () => {
     //TODO: aggiungere getDashboard e refresh dati proj
   };
 
-  // useEffect(() => {
-  //   const projectId = sessionStorage.getItem("refreshProject");
-
-  //   if (projectId) {
-  //     console.log(
-  //       "📢 Refresh rilevato! Aggiorno i dati per il progetto:",
-  //       projectId
-  //     );
-
-  //     const fetchUpdatedProject = async () => {
-  //       try {
-  //         const api = new ApiRest();
-  //         const dashboardData = await api.getProjects(token);
-
-  //         console.log(dashboardData);
-
-  //         const updatedProject = dashboardData.values.find(
-  //           (p) => String(p["0"]) === String(projectId)
-  //         );
-
-  //         console.log(updatedProject);
-
-  //         if (updatedProject) {
-  //           dispatch({ type: "setSelectedProject", payload: updatedProject });
-
-  //           console.log("✅ Dati aggiornati dopo il reload:", updatedProject);
-  //            navigate(`/dashboard/${projectId}`);
-  //         } else {
-  //           console.warn(
-  //             "⚠️ Nessun aggiornamento trovato per il progetto dopo il reload."
-  //           );
-  //         }
-
-  //         // 🔄 Rimuove il flag dopo il refresh
-  //         sessionStorage.removeItem("refreshProject");
-  //       } catch (error) {
-  //         console.error(
-  //           "❌ Errore nel recupero della dashboard dopo il reload:",
-  //           error
-  //         );
-  //       }
-  //     };
-
-  //     fetchUpdatedProject();
-  //   }
-  // }, []);
-
-  // const handleConfirm = async () => {
-  //   project[8] = editableData.projectName;
-  //   project[9] = editableData.projectDescription;
-  //   project[10] = editableData.projectNotes;
-  //   project[17] = editableData.projectManager;
-  //   project[18] = editableData.startDate;
-  //   project[19] = editableData.endDate;
-
-  //   const updatedPayload = {
-  //     new: payloadObj.new || {},
-  //     edits: payloadObj.edits || {},
-  //     project: project,
-  //     cancelRequests: false,
-  //     deleteProject: payloadObj.deleteProject || false,
-  //   };
-
-  //   const api = new ApiRest();
-
-  //   try {
-  //     await api.iuProject(token, updatedPayload);
-  //     setSnackbarMessage(
-  //       isSupervisor
-  //         ? "Tutte le richieste sono state accettate"
-  //         : "La tua richiesta è stata inviata correttamente"
-  //     );
-  //     setSnackbarSeverity("success");
-  //     setOpenSnackbar(true);
-  //     setRefreshKey((prevKey) => prevKey + 1);
-
-  //     if (updatedPayload.deleteProject) {
-  //       setTimeout(() => {
-  //         navigate("/dashboard");
-  //       }, 3000);
-  //       return;
-  //     }
-
-  //     // Refresh the project data
-  //     await refreshProjectData();
-  //   } catch (error) {
-  //     console.error("Errore durante l'invio del payload:", error);
-  //     setSnackbarMessage("Errore durante l'invio delle richieste");
-  //     setSnackbarSeverity("error");
-  //     setOpenSnackbar(true);
-  //   }
-  // };
-
   useEffect(() => {
     console.log("PayloadObj after state update:", payloadObj);
   }, [payloadObj]);
@@ -823,33 +743,6 @@ const ProjectItems = () => {
     }
     setOpenSnackbar(false);
   };
-
-  // const refreshProjectData = async () => {
-  //   try {
-  //     const api = new ApiRest();
-  //     const data = await api.getProjects(token);
-
-  //     console.log("📢 Project data refreshed:", data.values);
-
-  //     let updatedProject = data.values.find((p) => p[0] == project[0]);
-
-  //     if (updatedProject) {
-  //       dispatch({
-  //         type: "setSelectedProject",
-  //         updatedProject,
-  //       });
-  //       setProject(updatedProject);
-  //       // dispatch({ type: "UPDATE_PROJECT", payload: updatedProject }); // If using Redux
-  //     } else {
-  //       console.warn("⚠️ Nessun aggiornamento trovato per il progetto.");
-  //     }
-  //   } catch (error) {
-  //     console.error(
-  //       "❌ Errore durante l'aggiornamento dei dati del progetto:",
-  //       error
-  //     );
-  //   }
-  // };
 
   // Elimina Richieste
 
@@ -947,7 +840,6 @@ const ProjectItems = () => {
       <Snackbar
         open={openSnackbar}
         autoHideDuration={5000}
-        a
         onClose={handleSnackbarClose}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
@@ -1323,15 +1215,20 @@ const ProjectItems = () => {
                 >
                   <IconButton
                     sx={{
-                      backgroundColor: "#FF8C00",
-                      color: "white",
+                      backgroundColor: isConfirmDisabled
+                        ? "gray !important"
+                        : "#FF8C00",
+                      color: "white  !important",
 
                       fontFamily: "Poppins!important",
                       "&:hover": {
-                        backgroundColor: "rgba(50, 50, 50, .89)",
+                        backgroundColor: isConfirmDisabled
+                          ? "gray  !important"
+                          : "rgba(50, 50, 50, .89)",
                       },
                     }}
                     onClick={handleConfirm}
+                    disabled={isConfirmDisabled} // 👈 Disable button if no pending requests
                   >
                     <CheckIcon
                       sx={{
@@ -1365,15 +1262,20 @@ const ProjectItems = () => {
                   <IconButton
                     variant="contained"
                     sx={{
-                      backgroundColor: "#108CCB",
-                      color: "white",
+                      backgroundColor: isConfirmDisabled
+                        ? "gray !important"
+                        : "#108CCB",
+                      color: "white !important",
 
                       fontFamily: "Poppins!important",
                       "&:hover": {
-                        backgroundColor: "rgba(50, 50, 50, .89)",
+                        backgroundColor: isConfirmDisabled
+                          ? "gray  !important"
+                          : "rgba(50, 50, 50, .89)",
                       },
                     }}
                     onClick={handleDeleteConfirmOpen}
+                    disabled={isConfirmDisabled}
                   >
                     <CloseIcon
                       sx={{

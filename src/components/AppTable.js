@@ -93,6 +93,8 @@ const AppTable = ({
   const isSmallScreen = useMediaQuery("(max-width: 1600px)");
   const [searchText, setSearchText] = useState("");
   const [tableHeight, setTableHeight] = useState("auto");
+  const [isDeleteDisabled, setIsDeleteDisabled] = useState(true);
+  const [isEditDisabled, setIsEditDisabled] = useState(true);
 
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
     setRowSelectionModel(newRowSelectionModel);
@@ -307,112 +309,233 @@ const AppTable = ({
     );
   };
 
-  const renderActionButtons = (params) => (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "space-evenly",
-        alignItems: "center",
-        height: "100%",
-        gap: "0.5rem",
-      }}
-    >
-      <Tooltip
-        title="Modifica"
-        enterTouchDelay={7000}
-        disableInteractive
-        PopperProps={{
-          modifiers: [
-            {
-              name: "offset",
-              options: {
-                offset: [0, -14],
-              },
-            },
-          ],
+  // const renderActionButtons = (params) => (
+  //   <Box
+  //     sx={{
+  //       display: "flex",
+  //       justifyContent: "space-evenly",
+  //       alignItems: "center",
+  //       height: "100%",
+  //       gap: "0.5rem",
+  //     }}
+  //   >
+  //     <Tooltip
+  //       title="Modifica"
+  //       enterTouchDelay={7000}
+  //       disableInteractive
+  //       PopperProps={{
+  //         modifiers: [
+  //           {
+  //             name: "offset",
+  //             options: {
+  //               offset: [0, -14],
+  //             },
+  //           },
+  //         ],
+  //       }}
+  //     >
+  //       <IconButton
+  //         sx={{
+  //           backgroundColor: "#108CCB",
+  //           color: "white",
+  //           "&:hover": { backgroundColor: "#6CACFF" },
+  //           padding: {
+  //             xs: "2px",
+  //             sm: "3px",
+  //             md: "4px",
+  //             lg: "5px",
+  //             xl: "6px",
+  //           },
+  //           display: "flex",
+  //           alignItems: "center",
+  //           justifyContent: "center",
+  //         }}
+  //         aria-label="edit"
+  //         onClick={() => handleEditClick(params)}
+  //       >
+  //         <EditIcon
+  //           sx={{
+  //             fontSize: {
+  //               xs: "12px",
+  //               sm: "14px",
+  //               md: "14px",
+  //               lg: "15px",
+  //               xl: "18px",
+  //             },
+  //           }}
+  //         />
+  //       </IconButton>
+  //     </Tooltip>
+  //     <Tooltip
+  //       title="Elimina"
+  //       enterTouchDelay={7000}
+  //       disableInteractive
+  //       PopperProps={{
+  //         modifiers: [
+  //           {
+  //             name: "offset",
+  //             options: {
+  //               offset: [0, -14],
+  //             },
+  //           },
+  //         ],
+  //       }}
+  //     >
+  //       <IconButton
+  //         sx={{
+  //           backgroundColor: "red",
+  //           color: "white",
+  //           "&:hover": { backgroundColor: "rgba(244, 67, 54, .7)" },
+  //           padding: {
+  //             xs: "2px",
+  //             sm: "3px",
+  //             md: "4px",
+  //             lg: "5px",
+  //             xl: "6px",
+  //           },
+  //           display: "flex",
+  //           alignItems: "center",
+  //           justifyContent: "center",
+  //         }}
+  //         aria-label="delete"
+  //         onClick={() => handleDeleteClick(params)}
+  //       >
+  //         <DeleteIcon
+  //           sx={{
+  //             fontSize: {
+  //               xs: "12px",
+  //               sm: "14px",
+  //               md: "14px",
+  //               lg: "15px",
+  //               xl: "18px",
+  //             },
+  //           }}
+  //         />
+  //       </IconButton>
+  //     </Tooltip>
+  //   </Box>
+  // );
+  const renderActionButtons = (params) => {
+    const isPending = params.row[2] === "REQ";
+    console.log(params.row);
+    const isDeleted = params.row[20].includes("Elimina");
+
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-evenly",
+          alignItems: "center",
+          height: "100%",
+          gap: "0.5rem",
         }}
       >
-        <IconButton
-          sx={{
-            backgroundColor: "#108CCB",
-            color: "white",
-            "&:hover": { backgroundColor: "#6CACFF" },
-            padding: {
-              xs: "2px",
-              sm: "3px",
-              md: "4px",
-              lg: "5px",
-              xl: "6px",
-            },
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+        <Tooltip
+          title="Modifica"
+          enterTouchDelay={7000}
+          disableInteractive
+          PopperProps={{
+            modifiers: [
+              {
+                name: "offset",
+                options: {
+                  offset: [0, -14],
+                },
+              },
+            ],
           }}
-          aria-label="edit"
-          onClick={() => handleEditClick(params)}
         >
-          <EditIcon
+          <IconButton
             sx={{
-              fontSize: {
-                xs: "12px",
-                sm: "14px",
-                md: "14px",
-                lg: "15px",
-                xl: "18px",
+              backgroundColor: isDeleted ? "gray !important" : "#108CCB",
+              color: "white !important",
+              "&:hover": {
+                backgroundColor: isDeleted ? "gray !important" : "#6CACFF",
               },
+              padding: {
+                xs: "2px",
+                sm: "3px",
+                md: "4px",
+                lg: "5px",
+                xl: "6px",
+              },
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
-          />
-        </IconButton>
-      </Tooltip>
-      <Tooltip
-        title="Elimina"
-        enterTouchDelay={7000}
-        disableInteractive
-        PopperProps={{
-          modifiers: [
-            {
-              name: "offset",
-              options: {
-                offset: [0, -14],
+            aria-label="edit"
+            onClick={() => handleEditClick(params)}
+            disabled={isDeleted} // 🔹 Disable button if status is "REQ"
+          >
+            <EditIcon
+              sx={{
+                fontSize: {
+                  xs: "12px",
+                  sm: "14px",
+                  md: "14px",
+                  lg: "15px",
+                  xl: "18px",
+                },
+              }}
+            />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip
+          title="Elimina"
+          enterTouchDelay={7000}
+          disableInteractive
+          PopperProps={{
+            modifiers: [
+              {
+                name: "offset",
+                options: {
+                  offset: [0, -14],
+                },
               },
-            },
-          ],
-        }}
-      >
-        <IconButton
-          sx={{
-            backgroundColor: "red",
-            color: "white",
-            "&:hover": { backgroundColor: "rgba(244, 67, 54, .7)" },
-            padding: {
-              xs: "2px",
-              sm: "3px",
-              md: "4px",
-              lg: "5px",
-              xl: "6px",
-            },
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            ],
           }}
-          aria-label="delete"
-          onClick={() => handleDeleteClick(params)}
         >
-          <DeleteIcon
+          <IconButton
             sx={{
-              fontSize: {
-                xs: "12px",
-                sm: "14px",
-                md: "14px",
-                lg: "15px",
-                xl: "18px",
+              backgroundColor: isPending ? "gray !important" : "red",
+              color: "white !important",
+              "&:hover": {
+                backgroundColor: isPending
+                  ? "gray !important"
+                  : "rgba(244, 67, 54, .7)",
               },
+              padding: {
+                xs: "2px",
+                sm: "3px",
+                md: "4px",
+                lg: "5px",
+                xl: "6px",
+              },
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
-          />
-        </IconButton>
-      </Tooltip>
-    </Box>
-  );
+            aria-label="delete"
+            onClick={() => handleDeleteClick(params)}
+            disabled={isPending} // 🔹 Disable button if status is "REQ"
+          >
+            <DeleteIcon
+              sx={{
+                fontSize: {
+                  xs: "12px",
+                  sm: "14px",
+                  md: "14px",
+                  lg: "15px",
+                  xl: "18px",
+                },
+              }}
+            />
+          </IconButton>
+        </Tooltip>
+      </Box>
+    );
+  };
 
   const filteredColumns = columns.filter(
     (col) => col.headerName !== "Delete row" && col.headerName !== "Edit"
