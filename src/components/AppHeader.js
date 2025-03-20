@@ -5,6 +5,8 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Link from "@mui/material/Link";
 import { useLocation, Link as RouterLink, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import ApiRest from "../service-API/ApiRest";
+import { useDispatch, useSelector } from "react-redux";
 
 function AppHeader() {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -14,6 +16,8 @@ function AppHeader() {
   const navigate = useNavigate();
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
+  const token = useSelector((state) => state.token);
+  const dispatch = useDispatch();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -50,9 +54,20 @@ function AppHeader() {
       .replace(/\b\w/g, (char) => char.toUpperCase());
   };
 
-  const handleLogout = () => {
-    Cookies.remove("LtpaToken", { path: "", domain: ".mvsitaly.com" });
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      const api = new ApiRest();
+      await api.logout(token); // Effettua la chiamata API per il logout
+    } catch (error) {
+      console.error("Errore durante il logout:", error);
+    } finally {
+      // Rimuove i dati dallo stato Redux
+      dispatch({ type: "set", info: "" });
+
+      Cookies.remove("LtpaToken", { path: "", domain: ".mvsitaly.com" });
+
+      navigate("/login");
+    }
   };
 
   return (

@@ -12,6 +12,8 @@ import {
   Button,
   TextField,
   InputAdornment,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { DataGridPremium, useGridApiRef } from "@mui/x-data-grid-premium";
 import { alpha, styled } from "@mui/material/styles";
@@ -73,6 +75,8 @@ const AppTable = ({
   rows = [],
   onRowDoubleClick,
   showActions = false,
+  fetchDisponibile,
+  disponibile,
   disableCheckboxSelection,
   onDeleteRow,
   onEditRow,
@@ -95,6 +99,7 @@ const AppTable = ({
   const [tableHeight, setTableHeight] = useState("auto");
   const [isDeleteDisabled, setIsDeleteDisabled] = useState(true);
   const [isEditDisabled, setIsEditDisabled] = useState(true);
+  const [openAlert, setOpenAlert] = useState(false); // 🔥 Controlla l'alert
 
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
     setRowSelectionModel(newRowSelectionModel);
@@ -180,6 +185,15 @@ const AppTable = ({
       allocato: params.row["allocato"] || Object.values(params.row)[14],
       residuo: params.row["residuo"] || Object.values(params.row)[18],
     });
+
+    // Estrai il PN (Part Number)
+    const pn = params.row["9"];
+
+    // Chiama la funzione passata da ProjectItems
+    if (fetchDisponibile) {
+      fetchDisponibile(pn);
+    }
+
     setOpenEditDialog(true);
   };
 
@@ -309,112 +323,6 @@ const AppTable = ({
     );
   };
 
-  // const renderActionButtons = (params) => (
-  //   <Box
-  //     sx={{
-  //       display: "flex",
-  //       justifyContent: "space-evenly",
-  //       alignItems: "center",
-  //       height: "100%",
-  //       gap: "0.5rem",
-  //     }}
-  //   >
-  //     <Tooltip
-  //       title="Modifica"
-  //       enterTouchDelay={7000}
-  //       disableInteractive
-  //       PopperProps={{
-  //         modifiers: [
-  //           {
-  //             name: "offset",
-  //             options: {
-  //               offset: [0, -14],
-  //             },
-  //           },
-  //         ],
-  //       }}
-  //     >
-  //       <IconButton
-  //         sx={{
-  //           backgroundColor: "#108CCB",
-  //           color: "white",
-  //           "&:hover": { backgroundColor: "#6CACFF" },
-  //           padding: {
-  //             xs: "2px",
-  //             sm: "3px",
-  //             md: "4px",
-  //             lg: "5px",
-  //             xl: "6px",
-  //           },
-  //           display: "flex",
-  //           alignItems: "center",
-  //           justifyContent: "center",
-  //         }}
-  //         aria-label="edit"
-  //         onClick={() => handleEditClick(params)}
-  //       >
-  //         <EditIcon
-  //           sx={{
-  //             fontSize: {
-  //               xs: "12px",
-  //               sm: "14px",
-  //               md: "14px",
-  //               lg: "15px",
-  //               xl: "18px",
-  //             },
-  //           }}
-  //         />
-  //       </IconButton>
-  //     </Tooltip>
-  //     <Tooltip
-  //       title="Elimina"
-  //       enterTouchDelay={7000}
-  //       disableInteractive
-  //       PopperProps={{
-  //         modifiers: [
-  //           {
-  //             name: "offset",
-  //             options: {
-  //               offset: [0, -14],
-  //             },
-  //           },
-  //         ],
-  //       }}
-  //     >
-  //       <IconButton
-  //         sx={{
-  //           backgroundColor: "red",
-  //           color: "white",
-  //           "&:hover": { backgroundColor: "rgba(244, 67, 54, .7)" },
-  //           padding: {
-  //             xs: "2px",
-  //             sm: "3px",
-  //             md: "4px",
-  //             lg: "5px",
-  //             xl: "6px",
-  //           },
-  //           display: "flex",
-  //           alignItems: "center",
-  //           justifyContent: "center",
-  //         }}
-  //         aria-label="delete"
-  //         onClick={() => handleDeleteClick(params)}
-  //       >
-  //         <DeleteIcon
-  //           sx={{
-  //             fontSize: {
-  //               xs: "12px",
-  //               sm: "14px",
-  //               md: "14px",
-  //               lg: "15px",
-  //               xl: "18px",
-  //             },
-  //           }}
-  //         />
-  //       </IconButton>
-  //     </Tooltip>
-  //   </Box>
-  // );
   const renderActionButtons = (params) => {
     const isPending = params.row[2] === "REQ";
     console.log(params.row);
@@ -954,6 +862,21 @@ const AppTable = ({
                 sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
               <TextField
+                label="Disponibile"
+                fullWidth
+                margin="normal"
+                value={
+                  disponibile !== null
+                    ? disponibile
+                    : selectedRow
+                    ? Object.values(selectedRow)[17]
+                    : ""
+                }
+                InputProps={{ readOnly: true }}
+                sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
+              />
+
+              <TextField
                 label="Spedito"
                 fullWidth
                 margin="normal"
@@ -995,11 +918,51 @@ const AppTable = ({
                 type="number"
                 fullWidth
                 margin="normal"
-                value={editedRow.allocato}
-                onChange={(e) =>
-                  handleEditFieldChange("allocato", e.target.value)
-                }
+                value={editedRow.allocato === 0 ? "" : editedRow.allocato}
+                onChange={(e) => {
+                  let newValue = e.target.value;
+
+                  if (newValue === "") {
+                    handleEditFieldChange("allocato", "");
+                    return;
+                  }
+
+                  newValue = Number(newValue);
+
+                  if (newValue < 0) {
+                    newValue = 0;
+                  }
+
+                  if (newValue > disponibile) {
+                    newValue = disponibile;
+                    setOpenAlert(false);
+                    setTimeout(() => {
+                      setOpenAlert(true);
+                    }, 100);
+                  }
+
+                  handleEditFieldChange("allocato", newValue);
+                }}
+                inputProps={{ min: 0, max: disponibile }}
+                sx={{
+                  backgroundColor: disponibile === 0 ? "#f5f5f5" : "white",
+                }}
               />
+
+              <Snackbar
+                open={openAlert}
+                autoHideDuration={3000}
+                onClose={() => setOpenAlert(false)}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+              >
+                <Alert
+                  onClose={() => setOpenAlert(false)}
+                  severity="warning"
+                  sx={{ fontSize: "1rem", fontWeight: "bold" }}
+                >
+                  Il valore massimo disponibile è {disponibile}.
+                </Alert>
+              </Snackbar>
             </Box>
           )}
         </DialogContent>

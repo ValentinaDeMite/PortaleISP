@@ -16,7 +16,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import logoIntesa from "../../assets/img/intesa-sanpaolo.png";
 import logoMvs from "../../assets/img/logo-MVS.png";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ApiRest from "../../service-API/ApiRest";
 import Cookies from "js-cookie";
 
@@ -188,6 +188,20 @@ const Login = () => {
             </Button>
           </Box>
         </CardContent>
+        <Box sx={{ textAlign: "center", marginTop: "1rem" }}>
+          <Link
+            to="https://ws.mvsitaly.com/?changepassword&redirectto=https://portale-isp.mvsitaly.com/#/login"
+            style={{
+              fontSize: 15,
+              color: "#1976d2",
+              fontFamily: "Poppins",
+            }}
+            onMouseEnter={(e) => (e.target.style.textDecoration = "underline")}
+            onMouseLeave={(e) => (e.target.style.textDecoration = "none")}
+          >
+            Cambia Password
+          </Link>
+        </Box>
       </Card>
 
       <Typography

@@ -129,6 +129,26 @@ class ApiRest {
     }
   }
 
+  async getDisponibile(token, pn) {
+    const url =
+      this.env === "LOCAL"
+        ? `${this.url}/getDisponibile`
+        : `${this.url}/extapp/ispprj/getStock?pn=${pn}&onlydispo=true`;
+    console.log("Chiamata API getItemAllocation:", url);
+    console.log("Dati inviati:", { pn, token });
+
+    try {
+      const response = await axios.post(url, {
+        data: { token, pn },
+      });
+      const { data } = response;
+      return data;
+    } catch (error) {
+      console.log("getStock error: " + error);
+      throw error;
+    }
+  }
+
   //update a project item details
   async updateProjectItem(item) {
     const url = `${this.url}/extapp/hpprj/uItem`;

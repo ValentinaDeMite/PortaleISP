@@ -48,6 +48,7 @@ const ProjectItems = () => {
   const project = useSelector((state) => state.selectedProject);
   let arrowIcon = "\u2192";
   const [details, setDetails] = useState({});
+  const [disponibile, setDisponibile] = useState();
 
   const token = useSelector((state) => state.token);
   const [openModal, setOpenModal] = useState(false);
@@ -184,6 +185,29 @@ const ProjectItems = () => {
       `Articolo da eliminare: ${deletedRow[9]}`,
     ]);
   };
+  const handleFetchDisponibile = async (pn) => {
+    if (!pn || !token) return;
+
+    try {
+      const disponibileData = await api.getDisponibile(token, pn);
+      if (disponibileData && disponibileData.dispo !== undefined) {
+        console.log(
+          "✅ Dati ricevuti da getDisponibile:",
+          disponibileData.dispo
+        );
+        setDisponibile(parseInt(disponibileData.dispo));
+      } else {
+        console.warn("⚠️ Nessun dato disponibile per pn:", pn);
+        setDisponibile(0);
+      }
+    } catch (error) {
+      console.error(
+        "❌ Errore nel recupero dei dati da getDisponibile:",
+        error
+      );
+      setDisponibile(0);
+    }
+  };
 
   // Editpen
 
@@ -201,6 +225,7 @@ const ProjectItems = () => {
     let newPendingValue = editedRow[14];
     let newValueForecast = editedRow[12];
     let newQty = editedRow[13];
+    const pn = editedRow["9"];
 
     let originalPendingValue = originalEditRow[14];
     let originalForecastValue = originalEditRow[12];
@@ -1493,6 +1518,8 @@ const ProjectItems = () => {
           showActions={true}
           disableCheckboxSelection={true}
           onRowDoubleClick={() => {}}
+          fetchDisponibile={handleFetchDisponibile}
+          disponibile={disponibile}
         />
       </Box>
       <Modal
