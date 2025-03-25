@@ -10,7 +10,7 @@ class ApiRest {
         : process.env.REACT_APP_DOMINO_URL_DEV || "err";
   }
 
-  //login method
+  //login method ok
   async login(username, password) {
     const url =
       this.env === "LOCAL" ? `${this.url}/login` : `${this.url}/auth/login`;
