@@ -3,11 +3,11 @@ import axios from "axios";
 class ApiRest {
   constructor() {
     this.env = process.env.REACT_APP_ENV || "err";
-    this.url = process.env.REACT_APP_DOMINO_URL_DEV;
-    // this.url =
-    //   this.env === "LOCAL"
-    //     ? process.env.REACT_APP_DOMINO_URL_LOCAL || "err"
-    //     : process.env.REACT_APP_DOMINO_URL_DEV || "err";
+    // this.url = process.env.REACT_APP_DOMINO_URL_DEV;
+    this.url =
+      this.env === "LOCAL"
+        ? process.env.REACT_APP_DOMINO_URL_LOCAL || "err"
+        : process.env.REACT_APP_DOMINO_URL_DEV || "err";
   }
 
   //login method
