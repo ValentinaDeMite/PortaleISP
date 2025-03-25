@@ -13,6 +13,7 @@ import CircleIcon from "@mui/icons-material/Circle";
 import mvs_nobg from "../assets/img/mvs_nobg.png";
 import logo_intesa_san_paolo_2 from "../assets/img/logo_intesa_san_paolo_2.png";
 import logo_s_isp from "../assets/img/logo_s_isp.png";
+import logo from "../assets/img/il-tuo-logo-qui-150x150-removebg-preview.png";
 
 const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -70,7 +71,7 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
           }}
         >
           {/* Logo */}
-          <Box
+          {/* <Box
             display="flex"
             alignItems="center"
             justifyContent={isCollapsed ? "center" : "flex-start"}
@@ -135,8 +136,76 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 }}
               />
             </a>
-          </Box>
+          </Box> */}
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent={isCollapsed ? "center" : "flex-start"}
+            sx={{
+              height: "15%",
+              width: "100%",
+              transition: "height .8s ease",
+            }}
+          >
+            <a
+              href="https://www.intesasanpaolo.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                //src={logo_s_isp}
+                src={logo}
+                alt="Logo ISP"
+                style={{
+                  display: isCollapsed ? "block" : "none",
+                  width: "70px",
+                  height: "70px",
+                  "@media (max-width: 1200px)": {
+                    width: "50px",
+                    height: "50px",
+                  },
+                  "@media (max-width: 900px)": {
+                    width: "40px",
+                    height: "40px",
+                  },
+                  "@media (max-width: 600px)": {
+                    width: "35px",
+                    height: "35px",
+                  },
+                }}
+              />
+            </a>
 
+            <a
+              //href="https://www.intesasanpaolo.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                //src={logo_intesa_san_paolo_2}
+                src={logo}
+                alt="Logo ISP"
+                style={{
+                  display: isCollapsed ? "none" : "block",
+                  width: "180px",
+                  //height: "90px",
+                  height: "130px",
+                  "@media (max-width: 1200px)": {
+                    width: "140px",
+                    height: "70px",
+                  },
+                  "@media (max-width: 900px)": {
+                    width: "120px",
+                    height: "60px",
+                  },
+                  "@media (max-width: 600px)": {
+                    width: "100px",
+                    height: "50px",
+                  },
+                }}
+              />
+            </a>
+          </Box>
           <Menu iconShape="square">
             <Box sx={{ height: "100%", transition: "width 0.3s ease" }}>
               <MenuItem
@@ -459,6 +528,24 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 }}
               >
                 MVS Italy © 2025
+              </Typography>
+              <Typography
+                sx={{
+                  opacity: isCollapsed ? 0 : 1,
+                  visibility: isCollapsed ? "hidden" : "visible",
+                  height: "15px",
+                  transition: "opacity 0.5s ease, visibility 0.5s ease",
+                  fontWeight: "200",
+                  fontSize: {
+                    xs: "0.65rem",
+                    sm: "0.7rem",
+                    md: "0.75rem",
+                    lg: "0.8rem",
+                    xl: "0.9rem",
+                  },
+                }}
+              >
+                Versione Demo
               </Typography>
             </MenuItem>
           </Menu>

@@ -7,6 +7,7 @@ import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid2";
 import logo_intesa from "../assets/img/logo_s_isp.png";
+import logo from "../assets/img/il-tuo-logo-qui-150x150-removebg-preview.png";
 import Cookies from "js-cookie";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -127,7 +128,7 @@ const Homepage = () => {
         alignItems="center"
         justifyContent="center"
       >
-        <Item>
+        {/* <Item>
           <Box
             component="img"
             sx={{
@@ -148,6 +149,29 @@ const Homepage = () => {
             }}
             alt="Logo"
             src={logo_intesa}
+          />
+        </Item> */}
+        <Item>
+          <Box
+            component="img"
+            sx={{
+              height: {
+                xs: "150px",
+                sm: "200px",
+                md: "250px",
+                lg: "300px",
+                xl: "400px",
+              },
+              width: {
+                xs: "150px",
+                sm: "200px",
+                md: "250px",
+                lg: "300px",
+                xl: "400px",
+              },
+            }}
+            alt="Logo"
+            src={logo}
           />
         </Item>
       </Grid>

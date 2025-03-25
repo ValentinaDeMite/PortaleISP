@@ -19,6 +19,7 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import ApiRest from "../../service-API/ApiRest";
 import Cookies from "js-cookie";
+import logo from "../../assets/img/il-tuo-logo-qui-150x150-removebg-preview.png";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -76,10 +77,15 @@ const Login = () => {
           backgroundColor: "#4BA83D",
         }}
       >
-        <img
+        {/* <img
           src={logoIntesa}
           alt="logo intesa"
           style={{ flex: 1, maxWidth: "40%", height: "auto" }}
+        /> */}
+        <img
+          src={logo}
+          alt="logo intesa"
+          style={{ flex: 1, maxWidth: "20%", height: "auto" }}
         />
         <img
           src={logoMvs}

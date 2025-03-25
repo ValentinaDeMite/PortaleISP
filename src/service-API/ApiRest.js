@@ -3,10 +3,11 @@ import axios from "axios";
 class ApiRest {
   constructor() {
     this.env = process.env.REACT_APP_ENV || "err";
-    this.url =
-      this.env === "LOCAL"
-        ? process.env.REACT_APP_DOMINO_URL_LOCAL || "err"
-        : process.env.REACT_APP_DOMINO_URL_DEV || "err";
+    this.url = process.env.REACT_APP_DOMINO_URL_DEV;
+    // this.url =
+    //   this.env === "LOCAL"
+    //     ? process.env.REACT_APP_DOMINO_URL_LOCAL || "err"
+    //     : process.env.REACT_APP_DOMINO_URL_DEV || "err";
   }
 
   //login method
@@ -82,17 +83,15 @@ class ApiRest {
         ? `${this.url}/getProjectItems`
         : `${this.url}/extapp/ispprj/getProjectItems?projectid=${id}`;
     console.log(url);
+
+    const payload =
+      this.env === "LOCAL"
+        ? { data: { id, token, details: true } }
+        : { id, token, details: true };
+
     try {
-      const response = await axios.post(url, {
-        data: {
-          id,
-          token,
-          details: true,
-        },
-      });
-      const { data } = response;
-      // console.log('getProjectItems response: ' + JSON.stringify(data))
-      return data;
+      const response = await axios.post(url, payload);
+      return response.data;
     } catch (error) {
       console.log("getProjectItems error: " + error);
       throw error;
