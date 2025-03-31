@@ -776,12 +776,12 @@ const ProjectItems = () => {
 
   const handleDelete = () => {
     if (isSupervisor) {
-      project[8] = editableData.projectName;
-      project[9] = editableData.projectDescription;
-      project[10] = editableData.projectNotes;
-      project[17] = editableData.projectManager;
-      project[18] = editableData.startDate;
-      project[19] = editableData.endDate;
+      details[8] = editableData.projectName;
+      details[9] = editableData.projectDescription;
+      details[10] = editableData.projectNotes;
+      details[17] = editableData.projectManager;
+      details[18] = editableData.startDate;
+      details[19] = editableData.endDate;
 
       const updatedPayload = {
         new: payloadObj.new || {},
@@ -911,7 +911,7 @@ const ProjectItems = () => {
               paddingY: "1rem",
             }}
           >
-            {project[8]}
+            {details["8"]}
           </Typography>
 
           <Tooltip
@@ -990,8 +990,8 @@ const ProjectItems = () => {
             }}
           >
             Ultima Modifica:{" "}
-            {project[5]
-              ? format(new Date(project[5]), "dd/MM/yyyy HH:mm")
+            {details["5"]
+              ? format(new Date(details["5"]), "dd/MM/yyyy HH:mm")
               : "N/A"}
           </Typography>
           <Typography
@@ -1007,7 +1007,7 @@ const ProjectItems = () => {
               fontFamily: "Poppins!important",
             }}
           >
-            Modificato da: {project[6]}
+            Modificato da: {details["6"]}
           </Typography>
         </Box>
       </Box>
