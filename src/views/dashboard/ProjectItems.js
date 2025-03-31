@@ -53,15 +53,20 @@ const ProjectItems = () => {
   const token = useSelector((state) => state.token);
   const [openModal, setOpenModal] = useState(false);
   const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
-  const [editableData, setEditableData] = useState({
-    projectName: project[8],
-    projectDescription: project[9],
-    projectNotes: project[10],
-    projectManager: project[17],
-    startDate: project[18]?.split(" ")[0] || "",
-    endDate: project[19]?.split(" ")[0] || "",
-  });
-  const [initialData] = useState({ ...editableData });
+  // const [editableData, setEditableData] = useState({
+  //   projectName: project[8],
+  //   projectDescription: project[9],
+  //   projectNotes: project[10],
+  //   projectManager: project[17],
+  //   startDate: project[18]?.split(" ")[0] || "",
+  //   endDate: project[19]?.split(" ")[0] || "",
+  // });
+  // const [editableData, setEditableData] = useState(null);
+
+  // const [initialData] = useState({ ...editableData });
+  const [editableData, setEditableData] = useState({});
+  const [initialData, setInitialData] = useState({});
+
   const [pendingRequests, setPendingRequests] = useState([]);
   const [dateError, setDateError] = useState(false);
   const [projectItemsData, setProjectItemsData] = useState([]);
@@ -471,11 +476,22 @@ const ProjectItems = () => {
     const fetchProjectItems = async () => {
       try {
         const items = await api.getItems(token, project[0]);
+
         setProjectItemsData(items.values);
 
         if (items.details) {
-          setDetails(items.details);
+          setDetails(items.details); // 💥 mantiene i dati NON editabili
+
+          setEditableData({
+            projectName: items.details[8] || "",
+            projectDescription: items.details[9] || "",
+            projectNotes: items.details[10] || "",
+            projectManager: items.details[17] || "",
+            startDate: items.details[18]?.split(" ")[0] || "",
+            endDate: items.details[19]?.split(" ")[0] || "",
+          });
         }
+
         const columns = items.fields
           .filter((field) => {
             const fieldKey = Object.keys(field)[0];
@@ -706,18 +722,18 @@ const ProjectItems = () => {
   // Conferma Richieste
 
   const handleConfirm = () => {
-    project[8] = editableData.projectName;
-    project[9] = editableData.projectDescription;
-    project[10] = editableData.projectNotes;
-    project[17] = editableData.projectManager;
-    project[18] = editableData.startDate;
-    project[19] = editableData.endDate;
-    console.log(editableData);
+    const updatedProject = { ...details };
+    updatedProject[8] = editableData.projectName;
+    updatedProject[9] = editableData.projectDescription;
+    updatedProject[10] = editableData.projectNotes;
+    updatedProject[17] = editableData.projectManager;
+    updatedProject[18] = editableData.startDate;
+    updatedProject[19] = editableData.endDate;
 
     const updatedPayload = {
       new: payloadObj.new || {},
       edits: payloadObj.edits || {},
-      project: project,
+      project: updatedProject,
       cancelRequests: false,
       deleteProject: payloadObj.deleteProject || false,
     };
@@ -734,17 +750,6 @@ const ProjectItems = () => {
         setSnackbarSeverity("success");
         setOpenSnackbar(true);
         setRefreshKey((prevKey) => prevKey + 1);
-        // if (updatedPayload.deleteProject) {
-        //   setTimeout(() => {
-        //     navigate("/dashboard");
-        //   }, 1000);
-        // }
-
-        // // Step 1: Store the updated project ID in sessionStorage
-        // sessionStorage.setItem("autoOpenProject", project[0]);
-
-        // // Step 2: Navigate to Dashboard
-        // navigate("/dashboard");
       })
       .catch((error) => {
         console.error("Errore durante l'invio del payload:", error);
@@ -752,8 +757,6 @@ const ProjectItems = () => {
         setSnackbarSeverity("error");
         setOpenSnackbar(true);
       });
-
-    //TODO: aggiungere getDashboard e refresh dati proj
   };
 
   useEffect(() => {
@@ -1091,7 +1094,7 @@ const ProjectItems = () => {
                           {editableData[field]}
                         </MenuItem>
                       )}
-                      {info.pms
+                      {(info.pms || "")
                         .split(";")
                         .filter((pm) => pm !== editableData[field])
                         .map((pm, idx) => (

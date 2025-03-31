@@ -20,12 +20,7 @@ const Layout = () => {
       {/* Sidebar */}
       <Box
         sx={{
-          width: {
-            sm: isCollapsed ? "80px" : "200px",
-            md: isCollapsed ? "100px" : "200px",
-            lg: isCollapsed ? "100px" : "220px",
-            xl: isCollapsed ? "100px" : "240px",
-          },
+          width: isCollapsed ? "100px" : "240px",
           transition: "width 0.3s ease",
           flexShrink: 0,
         }}

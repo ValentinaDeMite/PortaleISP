@@ -99,7 +99,8 @@ const AppTable = ({
   const [tableHeight, setTableHeight] = useState("auto");
   const [isDeleteDisabled, setIsDeleteDisabled] = useState(true);
   const [isEditDisabled, setIsEditDisabled] = useState(true);
-  const [openAlert, setOpenAlert] = useState(false); // 🔥 Controlla l'alert
+  const [openAlert, setOpenAlert] = useState(false);
+  const [isSaveDisabled, setIsSaveDisabled] = useState(false);
 
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
     setRowSelectionModel(newRowSelectionModel);
@@ -118,6 +119,22 @@ const AppTable = ({
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  // Tooltip per allocato
+  const disponibileValue =
+    disponibile !== null
+      ? Number(disponibile)
+      : selectedRow
+      ? Number(Object.values(selectedRow)[17])
+      : 0;
+
+  const allocatoConfermato = selectedRow
+    ? Number(Object.values(selectedRow)[13])
+    : 0;
+
+  let disponibileSumm = disponibileValue + allocatoConfermato;
+
+  const tooltipText = `Disponibile: ${disponibileValue} + Allocato già Confermato: ${allocatoConfermato}`;
 
   //TODO per mettere colore al selezionato
   // useEffect(() => {
@@ -861,20 +878,22 @@ const AppTable = ({
                 InputProps={{ readOnly: true }}
                 sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
-              <TextField
-                label="Disponibile"
-                fullWidth
-                margin="normal"
-                value={
-                  disponibile !== null
-                    ? disponibile
-                    : selectedRow
-                    ? Object.values(selectedRow)[17]
-                    : ""
-                }
-                InputProps={{ readOnly: true }}
-                sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
-              />
+              <Tooltip title={tooltipText} arrow placement="top">
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Disponibile"
+                  value={disponibileSumm}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  sx={{
+                    backgroundColor: "#D8D8D8",
+                    borderRadius: "8px",
+                    pointerEvents: "auto",
+                  }}
+                />
+              </Tooltip>
 
               <TextField
                 label="Spedito"
@@ -933,19 +952,22 @@ const AppTable = ({
                     newValue = 0;
                   }
 
-                  if (newValue > disponibile) {
-                    newValue = disponibile;
+                  if (newValue > disponibileSumm) {
                     setOpenAlert(false);
                     setTimeout(() => {
                       setOpenAlert(true);
                     }, 100);
+
+                    setIsSaveDisabled(true);
+                  } else {
+                    setIsSaveDisabled(false);
                   }
 
                   handleEditFieldChange("allocato", newValue);
                 }}
-                inputProps={{ min: 0, max: disponibile }}
+                inputProps={{ min: 0, max: disponibileSumm }}
                 sx={{
-                  backgroundColor: disponibile === 0 ? "#f5f5f5" : "white",
+                  backgroundColor: disponibileSumm === 0 ? "#f5f5f5" : "white",
                 }}
               />
 
@@ -960,7 +982,7 @@ const AppTable = ({
                   severity="warning"
                   sx={{ fontSize: "1rem", fontWeight: "bold" }}
                 >
-                  Il valore massimo disponibile è {disponibile}.
+                  Il valore massimo disponibile è {disponibileSumm}.
                 </Alert>
               </Snackbar>
             </Box>
@@ -970,7 +992,11 @@ const AppTable = ({
           <Button onClick={handleEditDialogClose} color="error">
             Annulla
           </Button>
-          <Button onClick={handleEditConfirm} color="primary">
+          <Button
+            onClick={handleEditConfirm}
+            color="primary"
+            disabled={isSaveDisabled}
+          >
             Salva
           </Button>
         </DialogActions>

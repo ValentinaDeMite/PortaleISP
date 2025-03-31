@@ -15,6 +15,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import DownloadForOfflineRoundedIcon from "@mui/icons-material/DownloadForOfflineRounded";
 import * as XLSX from "xlsx";
 import CloseIcon from "@mui/icons-material/Close";
+import AddIcon from "@mui/icons-material/Add";
+
 import { Snackbar, Alert } from "@mui/material";
 
 const ODD_COLOR = "rgba(217, 217, 217, 0.7)";
@@ -65,6 +67,8 @@ const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
     rows.reduce((acc, row) => ({ ...acc, [row[0]]: 0 }), {})
   );
 
+  const [forcedAddRows, setForcedAddRows] = useState(new Set());
+
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -105,19 +109,14 @@ const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
       // alert("Inserisci un numero valido");
       return;
     }
-
     if (numericQuantity > max) {
       setSnackbarMessage(
         `Quantità non disponibile. Disponibilità massima per l'articolo ${id}: ${max}`
       );
       setSnackbarSeverity("warning");
       setOpenSnackbar(true);
-      // alert(
-      //   `Quantità non disponibile. Disponibilità massima per l'articolo ${id}: ${max}`
-      // );
       return;
     }
-
     console.log(`Aggiornando quantità per ${id}: ${numericQuantity}`);
 
     setQuantities((prev) => ({
@@ -125,9 +124,122 @@ const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
       [id]: numericQuantity,
     }));
   };
+  const [modifiedRows, setModifiedRows] = useState(new Set());
+
+  // const renderAllocateColumn = (params) => {
+  //   const row = params.row;
+  //   const id = row[1]; // ID articolo
+  //   const disponibile = row[8]; // Disponibilità
+  //   const quantity = quantities[id] ?? 0;
+
+  //   const handleAddZeroClick = (id) => {
+  //     setQuantities((prev) => ({
+  //       ...prev,
+  //       [id]: 0,
+  //     }));
+  //     setModifiedRows((prev) => new Set(prev).add(id));
+  //     setForcedAddRows((prev) => new Set(prev).add(id)); // <-- nuovo set
+  //   };
+  // const renderAllocateColumn = (params) => {
+  //   const quantity = quantities[params.row];
+  //   return (
+  //     <Box
+  //       sx={{
+  //         display: "flex",
+  //         alignItems: "center",
+  //         justifyContent: "center",
+  //         height: "100%",
+  //         gap: 1,
+  //       }}
+  //     >
+  //       {/* Campo quantità */}
+  //       <TextField
+  //         size="small"
+  //         type="number"
+  //         // value={quantity}
+  //         // onChange={(e) => handleEditFieldChange(row, e.target.value)}
+  //         value={quantities[params.row[1]] || ""}
+  //         onChange={(e) => handleEditFieldChange(params.row, e.target.value)}
+  //         sx={{
+  //           width: "50%",
+  //           "& input": {
+  //             textAlign: "center",
+  //             fontSize: {
+  //               xs: "0.5rem",
+  //               sm: "0.5rem",
+  //               md: "0.6rem",
+  //               lg: "0.7rem",
+  //               xl: "0.9rem",
+  //             },
+  //             padding: "8px 0",
+  //           },
+  //           "& .MuiOutlinedInput-root": {
+  //             height: "35px",
+  //             borderRadius: "4px",
+  //             display: "flex",
+  //             alignItems: "center",
+  //             justifyContent: "center",
+  //           },
+  //         }}
+  //         InputProps={{
+  //           inputProps: {
+  //             min: 0,
+  //             step: 1,
+  //           },
+  //         }}
+  //       />
+
+  //     </Box>
+
+  //   );
+  // };
 
   const renderAllocateColumn = (params) => {
-    const quantity = quantities[params.row];
+    const row = params.row;
+    const id = row[1]; // ID riga
+    const disponibile = row[8]; // Disponibilità
+    const quantity = quantities[id];
+
+    const handleAddClick = () => {
+      setQuantities((prev) => ({
+        ...prev,
+        [id]: 0,
+      }));
+      setModifiedRows((prev) => new Set(prev).add(id));
+    };
+
+    const handleRemoveClick = () => {
+      setQuantities((prev) => {
+        const updated = { ...prev };
+        delete updated[id];
+        return updated;
+      });
+      setModifiedRows((prev) => {
+        const updated = new Set(prev);
+        updated.delete(id);
+        return updated;
+      });
+    };
+
+    const handleChange = (e) => {
+      const value = Number(e.target.value);
+
+      if (isNaN(value) || value < 0) {
+        setSnackbarMessage("Inserisci un numero valido");
+        setSnackbarSeverity("warning");
+        setOpenSnackbar(true);
+        return;
+      }
+
+      if (disponibile === 0 && value > 0) {
+        setSnackbarMessage(`Disponibilità esaurita. Puoi inserire solo 0.`);
+        setSnackbarSeverity("warning");
+        setOpenSnackbar(true);
+        return;
+      }
+
+      handleEditFieldChange(row, value);
+    };
 
     return (
       <Box
@@ -136,41 +248,76 @@ const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
           alignItems: "center",
           justifyContent: "center",
           height: "100%",
+          gap: 1,
         }}
       >
-        <TextField
-          size="small"
-          type="number"
-          value={quantities[params.row[1]] || ""}
-          onChange={(e) => handleEditFieldChange(params.row, e.target.value)}
-          sx={{
-            width: "50%",
-            "& input": {
-              textAlign: "center",
-              fontSize: {
-                xs: "0.5rem",
-                sm: "0.5rem",
-                md: "0.6rem",
-                lg: "0.7rem",
-                xl: "0.9rem",
-              },
-              padding: "8px 0",
-            },
-            "& .MuiOutlinedInput-root": {
-              height: "35px",
-              borderRadius: "4px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            },
-          }}
-          InputProps={{
-            inputProps: {
-              min: 0,
-              step: 1,
-            },
-          }}
-        />
+        {quantity === undefined ? (
+          <Tooltip title="Aggiungi quantità" arrow placement="top">
+            <IconButton
+              size="small"
+              sx={{
+                backgroundColor: "#108CCB",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "rgba(50, 50, 50, .89)",
+                },
+              }}
+              onClick={handleAddClick}
+            >
+              <AddIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <>
+            <TextField
+              size="small"
+              type="number"
+              value={quantity}
+              onChange={handleChange}
+              sx={{
+                width: "50%",
+                "& input": {
+                  textAlign: "center",
+                  fontSize: {
+                    xs: "0.5rem",
+                    sm: "0.5rem",
+                    md: "0.6rem",
+                    lg: "0.7rem",
+                    xl: "0.9rem",
+                  },
+                  padding: "8px 0",
+                },
+                "& .MuiOutlinedInput-root": {
+                  height: "35px",
+                  borderRadius: "4px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                },
+              }}
+              InputProps={{
+                inputProps: {
+                  min: 0,
+                  step: 1,
+                },
+              }}
+            />
+            <Tooltip title="Rimuovi quantità" arrow placement="top">
+              <IconButton
+                size="small"
+                sx={{
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "rgba(244, 67, 54, .7)",
+                  },
+                }}
+                onClick={handleRemoveClick}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </>
+        )}
       </Box>
     );
   };
@@ -460,21 +607,30 @@ const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
             console.log("Pulsante cliccato"); // Debug
             console.log("Quantities prima del filtro:", quantities);
 
+            // const filteredQnt = Object.entries(quantities)
+
+            //   // .filter(([key, value]) => Number(value) > 0 || forcedAddRows.has(key))
+            //   // .filter(([key, value]) => Number(value) > 0)
+
+            //   .reduce((acc, [key, value]) => {
+            //     acc[key] = Number(value);
+            //     return acc;
+            //   }, {});
             const filteredQnt = Object.entries(quantities)
-              .filter(([key, value]) => Number(value) > 0) // ✅ Filtra gli 0
+              .filter(([key]) => modifiedRows.has(key)) // accetta anche lo 0
               .reduce((acc, [key, value]) => {
                 acc[key] = Number(value);
                 return acc;
               }, {});
 
-            console.log("Quantities filtrate:", filteredQnt);
+            // setForcedAddRows(new Set()); // resetta per prossima volta
 
             if (Object.keys(filteredQnt).length === 0) {
               alert("Inserisci almeno una quantità valida");
               return;
             }
 
-            onAdd(filteredQnt);
+            onAdd(filteredQnt); // chiama handleAddStockItemFromModal
           }}
         >
           <Typography
