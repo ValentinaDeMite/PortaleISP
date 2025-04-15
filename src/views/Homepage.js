@@ -30,6 +30,7 @@ const Homepage = () => {
   const token =
     useSelector((state) => state.token) || sessionStorage.getItem("token");
 
+  const [userId, setUserId] = useState("");
   const [role, setRole] = useState("");
   const [lastAccess, setLastAccess] = useState("");
   const dispatch = useDispatch();
@@ -41,6 +42,7 @@ const Homepage = () => {
       try {
         setLoading(true);
         const data = await api.getInfo(token);
+        setUserId(data.userId);
         setRole(data.ruolo);
         setLastAccess(data.lastaccess);
         dispatch({ type: "set", info: data });
@@ -103,7 +105,7 @@ const Homepage = () => {
                   align="left"
                   lineHeight="1.1"
                 >
-                  {user || "Nome Utente"}
+                  {userId || "Nome Utente"}
                 </Typography>
                 <Typography
                   fontSize={{
