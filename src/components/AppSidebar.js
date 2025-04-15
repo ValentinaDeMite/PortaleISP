@@ -71,7 +71,7 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
           }}
         >
           {/* Logo */}
-          {/* <Box
+          <Box
             display="flex"
             alignItems="center"
             justifyContent={isCollapsed ? "center" : "flex-start"}
@@ -136,8 +136,8 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 }}
               />
             </a>
-          </Box> */}
-          <Box
+          </Box>
+          {/* <Box
             display="flex"
             alignItems="center"
             justifyContent={isCollapsed ? "center" : "flex-start"}
@@ -177,13 +177,13 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
             </a>
 
             <a
-              //href="https://www.intesasanpaolo.com/"
+              href="https://www.intesasanpaolo.com/"
               target="_blank"
               rel="noopener noreferrer"
             >
               <img
-                //src={logo_intesa_san_paolo_2}
-                src={logo}
+                src={logo_intesa_san_paolo_2}
+                // src={logo}
                 alt="Logo ISP"
                 style={{
                   display: isCollapsed ? "none" : "block",
@@ -205,7 +205,7 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 }}
               />
             </a>
-          </Box>
+          </Box> */}
           <Menu iconShape="square">
             <Box sx={{ height: "100%", transition: "width 0.3s ease" }}>
               <MenuItem
@@ -529,7 +529,7 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
               >
                 MVS Italy © 2025
               </Typography>
-              <Typography
+              {/* <Typography
                 sx={{
                   opacity: isCollapsed ? 0 : 1,
                   visibility: isCollapsed ? "hidden" : "visible",
@@ -546,6 +546,24 @@ const AppSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 }}
               >
                 Versione Demo
+              </Typography> */}
+              <Typography
+                sx={{
+                  opacity: isCollapsed ? 0 : 1,
+                  visibility: isCollapsed ? "hidden" : "visible",
+                  height: "15px",
+                  transition: "opacity 0.5s ease, visibility 0.5s ease",
+                  fontWeight: "200",
+                  fontSize: {
+                    xs: "0.5rem",
+                    sm: "0.5rem",
+                    md: "0.6rem",
+                    lg: "0.7rem",
+                    xl: "0.7rem",
+                  },
+                }}
+              >
+                Versione 2.0
               </Typography>
             </MenuItem>
           </Menu>

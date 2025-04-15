@@ -19,6 +19,8 @@ import { DataGridPremium, useGridApiRef } from "@mui/x-data-grid-premium";
 import { alpha, styled } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
+
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
 import NotificationsOffIcon from "@mui/icons-material/NotificationsOff";
 import { useMediaQuery } from "@mui/material";
@@ -101,6 +103,8 @@ const AppTable = ({
   const [isEditDisabled, setIsEditDisabled] = useState(true);
   const [openAlert, setOpenAlert] = useState(false);
   const [isSaveDisabled, setIsSaveDisabled] = useState(false);
+  const [showAllocField, setShowAllocField] = useState(false);
+  const [visibleAllocFieldRowId, setVisibleAllocFieldRowId] = useState(null);
 
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
     setRowSelectionModel(newRowSelectionModel);
@@ -390,7 +394,7 @@ const AppTable = ({
             }}
             aria-label="edit"
             onClick={() => handleEditClick(params)}
-            disabled={isDeleted} // 🔹 Disable button if status is "REQ"
+            disabled={isDeleted} //  Disable button if status is "REQ"
           >
             <EditIcon
               sx={{
@@ -478,6 +482,12 @@ const AppTable = ({
         flex: 1,
         renderCell: (params) => renderStatusChip(params),
       };
+    }
+    if (col.headerName === "UBI") {
+      col.headerName = "STOCK";
+    }
+    if (col.headerName === "VAT") {
+      col.headerName = "V.A.T";
     }
 
     if (col.headerName === "Richieste Pending") {
@@ -744,7 +754,15 @@ const AppTable = ({
               }
               return (
                 <Tooltip
-                  title={`${params.colDef.headerName}: ${params.value}`}
+                  title={`${params.colDef.headerName}: ${
+                    (col.type === "D" ||
+                      col.headerName.includes("Data") ||
+                      col.headerName.includes("Update")) &&
+                    params.value &&
+                    !isNaN(new Date(params.value))
+                      ? format(new Date(params.value), "dd/MM/yy HH:mm")
+                      : params.value
+                  }`}
                   disableInteractive
                   enterTouchDelay={7000}
                   PopperProps={{
@@ -853,7 +871,8 @@ const AppTable = ({
         </DialogTitle>
         <DialogContent>
           {editedRow && (
-            <Box>
+            <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap={2}>
+              {/* Riga 1 */}
               <TextField
                 label="Stato"
                 fullWidth
@@ -878,23 +897,8 @@ const AppTable = ({
                 InputProps={{ readOnly: true }}
                 sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
-              <Tooltip title={tooltipText} arrow placement="top">
-                <TextField
-                  fullWidth
-                  margin="normal"
-                  label="Disponibile"
-                  value={disponibileSumm}
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                  sx={{
-                    backgroundColor: "#D8D8D8",
-                    borderRadius: "8px",
-                    pointerEvents: "auto",
-                  }}
-                />
-              </Tooltip>
 
+              {/* Riga 2 */}
               <TextField
                 label="Spedito"
                 fullWidth
@@ -903,6 +907,20 @@ const AppTable = ({
                 InputProps={{ readOnly: true }}
                 sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
+              <Tooltip title={tooltipText} arrow placement="top">
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Disponibile"
+                  value={disponibileSumm}
+                  InputProps={{ readOnly: true }}
+                  sx={{
+                    backgroundColor: "#D8D8D8",
+                    borderRadius: "8px",
+                    pointerEvents: "auto",
+                  }}
+                />
+              </Tooltip>
               <TextField
                 label="Residuo"
                 fullWidth
@@ -914,14 +932,8 @@ const AppTable = ({
                 InputProps={{ readOnly: true }}
                 sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
-              <TextField
-                label="Allocato Confermato"
-                fullWidth
-                margin="normal"
-                value={selectedRow ? Object.values(selectedRow)[13] : ""}
-                InputProps={{ readOnly: true }}
-                sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
-              />
+
+              {/* Riga 3 */}
               <TextField
                 label="Forecast"
                 type="number"
@@ -933,58 +945,237 @@ const AppTable = ({
                 }
               />
               <TextField
-                label="Nuova allocazione"
-                type="number"
+                label="Allocato Confermato"
                 fullWidth
                 margin="normal"
-                value={editedRow.allocato === 0 ? "" : editedRow.allocato}
-                onChange={(e) => {
-                  let newValue = e.target.value;
-
-                  if (newValue === "") {
-                    handleEditFieldChange("allocato", "");
-                    return;
-                  }
-
-                  newValue = Number(newValue);
-
-                  if (newValue < 0) {
-                    newValue = 0;
-                  }
-
-                  if (newValue > disponibileSumm) {
-                    setOpenAlert(false);
-                    setTimeout(() => {
-                      setOpenAlert(true);
-                    }, 100);
-
-                    setIsSaveDisabled(true);
-                  } else {
-                    setIsSaveDisabled(false);
-                  }
-
-                  handleEditFieldChange("allocato", newValue);
-                }}
-                inputProps={{ min: 0, max: disponibileSumm }}
-                sx={{
-                  backgroundColor: disponibileSumm === 0 ? "#f5f5f5" : "white",
-                }}
+                value={selectedRow ? Object.values(selectedRow)[13] : ""}
+                InputProps={{ readOnly: true }}
+                sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
+              {/* {visibleAllocFieldRowId === selectedRow?.[9] ? (
+                <TextField
+                  label="Nuova allocazione"
+                  type="number"
+                  fullWidth
+                  margin="normal"
+                  value={
+                    editedRow.allocato === null ||
+                    editedRow.allocato === undefined
+                      ? 0
+                      : editedRow.allocato
+                  }
+                  onChange={(e) => {
+                    let newValue = e.target.value;
+                    if (newValue === "") {
+                      handleEditFieldChange("allocato", "");
+                      return;
+                    }
+                    newValue = Number(newValue);
+                    if (newValue < 0) newValue = 0;
+                    if (newValue > disponibileSumm) {
+                      setOpenAlert(false);
+                      setTimeout(() => setOpenAlert(true), 100);
+                      setIsSaveDisabled(true);
+                    } else {
+                      setIsSaveDisabled(false);
+                    }
+                    handleEditFieldChange("allocato", newValue);
+                  }}
+                  inputProps={{ min: 0, max: disponibileSumm }}
+                  sx={{
+                    backgroundColor:
+                      disponibileSumm === 0 ? "#f5f5f5" : "white",
+                  }}
+                />
+              ) : (
+                <Tooltip title="Aggiungi nuova allocazione">
+                  <IconButton
+                    onClick={() => {
+                      handleEditFieldChange("allocato", 0);
+                      setVisibleAllocFieldRowId(selectedRow?.[9]);
+                    }}
+                    sx={{
+                      alignSelf: "center",
+                      justifySelf: "center",
+                      marginTop: "0.7rem",
+                      border: "1px solid #bbb",
+                      borderRadius: "8px",
+                      padding: "5px",
+                    }}
+                  >
+                    <AddIcon
+                      sx={{
+                        fontSize: "20px",
+                        color: "#1976d2",
+                      }}
+                    />
+                  </IconButton>
+                </Tooltip>
+              )}
+                
+            </Box> */}
+              {/* {visibleAllocFieldRowId === selectedRow?.[9] ? (
+                <Box display="flex" alignItems="center" gap={1} width="100%">
+                  <TextField
+                    label="Nuova allocazione"
+                    type="number"
+                    fullWidth
+                    margin="normal"
+                    value={
+                      editedRow.allocato === null ||
+                      editedRow.allocato === undefined
+                        ? ""
+                        : editedRow.allocato
+                    }
+                    onChange={(e) => {
+                      let newValue = e.target.value;
+                      if (newValue === "") {
+                        handleEditFieldChange("allocato", 0); // reset a 0 se svuotato
+                        return;
+                      }
+                      newValue = Number(newValue);
+                      if (newValue < 0) newValue = 0;
+                      if (newValue > disponibileSumm) {
+                        setOpenAlert(false);
+                        setTimeout(() => setOpenAlert(true), 100);
+                        setIsSaveDisabled(true);
+                      } else {
+                        setIsSaveDisabled(false);
+                      }
+                      handleEditFieldChange("allocato", newValue);
+                    }}
+                    inputProps={{ min: 0, max: disponibileSumm }}
+                    sx={{
+                      backgroundColor:
+                        disponibileSumm === 0 ? "#f5f5f5" : "white",
+                    }}
+                  />
+                  <Tooltip title="Resetta a 0">
+                    <IconButton
+                      onClick={() => handleEditFieldChange("allocato", 0)}
+                      sx={{
+                        marginTop: "8px",
+                        border: "1px solid #ccc",
+                        height: "40px",
+                        width: "40px",
+                      }}
+                    >
+                      <CloseIcon sx={{ color: "#ff0000" }} />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              ) : (
+                <Tooltip title="Aggiungi nuova allocazione">
+                  <IconButton
+                    onClick={() => {
+                      handleEditFieldChange("allocato", 0); // assegna sempre 0 all'apertura
+                      setVisibleAllocFieldRowId(selectedRow?.[9]);
+                    }}
+                    sx={{
+                      alignSelf: "center",
+                      justifySelf: "center",
+                      marginTop: "0.7rem",
+                      border: "1px solid #bbb",
+                      borderRadius: "8px",
+                      padding: "5px",
+                    }}
+                  >
+                    <AddIcon
+                      sx={{
+                        fontSize: "20px",
+                        color: "#1976d2",
+                      }}
+                    />
+                  </IconButton>
+                </Tooltip>
+              )} */}
+              {visibleAllocFieldRowId === selectedRow?.[9] ? (
+                <Box display="flex" alignItems="center" gap={1} width="100%">
+                  <TextField
+                    label="Nuova allocazione"
+                    type="number"
+                    fullWidth
+                    margin="normal"
+                    value={editedRow.allocato ?? ""}
+                    onChange={(e) => {
+                      let newValue = e.target.value;
+                      if (newValue === "") {
+                        handleEditFieldChange("allocato", 0);
+                        return;
+                      }
+                      newValue = Number(newValue);
+                      if (newValue < 0) {
+                        newValue = 0;
+                      }
 
-              <Snackbar
-                open={openAlert}
-                autoHideDuration={3000}
-                onClose={() => setOpenAlert(false)}
-                anchorOrigin={{ vertical: "top", horizontal: "center" }}
-              >
-                <Alert
-                  onClose={() => setOpenAlert(false)}
-                  severity="warning"
-                  sx={{ fontSize: "1rem", fontWeight: "bold" }}
-                >
-                  Il valore massimo disponibile è {disponibileSumm}.
-                </Alert>
-              </Snackbar>
+                      if (newValue > disponibileSumm) {
+                        setOpenAlert(false);
+                        setTimeout(() => {
+                          setOpenAlert(true);
+                        }, 100);
+
+                        setIsSaveDisabled(true);
+                      } else {
+                        setIsSaveDisabled(false);
+                      }
+
+                      handleEditFieldChange("allocato", newValue);
+                    }}
+                    inputProps={{ min: 0, max: disponibileSumm }}
+                    sx={{
+                      backgroundColor:
+                        disponibileSumm === 0 ? "#f5f5f5" : "white",
+                    }}
+                  />
+
+                  <Tooltip title="Resetta a 0">
+                    <IconButton
+                      onClick={() => {
+                        const newValue = 0;
+                        handleEditFieldChange("allocato", newValue);
+                      }}
+                      sx={{
+                        marginTop: "8px",
+                        border: "1px solid #ccc",
+                        height: "40px",
+                        width: "40px",
+                      }}
+                    >
+                      <CloseIcon sx={{ color: "#ff0000" }} />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              ) : (
+                <Tooltip title="Aggiungi nuova allocazione">
+                  <IconButton
+                    onClick={() => {
+                      // Se esiste già un valore, NON lo sovrascrivi. Se no, metti 0.
+                      if (
+                        editedRow.allocato === null ||
+                        editedRow.allocato === undefined
+                      ) {
+                        handleEditFieldChange("allocato", 0);
+                      }
+                      setVisibleAllocFieldRowId(selectedRow?.[9]);
+                    }}
+                    sx={{
+                      alignSelf: "center",
+                      justifySelf: "center",
+                      marginTop: "0.7rem",
+                      border: "1px solid #bbb",
+                      borderRadius: "8px",
+                      padding: "5px",
+                    }}
+                  >
+                    <AddIcon
+                      sx={{
+                        fontSize: "20px",
+                        color: "#1976d2",
+                      }}
+                    />
+                  </IconButton>
+                </Tooltip>
+              )}
             </Box>
           )}
         </DialogContent>

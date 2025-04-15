@@ -23,8 +23,13 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const Homepage = () => {
   const [loading, setLoading] = useState(false);
-  const user = useSelector((state) => state.user);
-  const token = useSelector((state) => state.token);
+  // const user = useSelector((state) => state.user);
+  // const token = useSelector((state) => state.token);
+  const user =
+    useSelector((state) => state.user) || sessionStorage.getItem("user");
+  const token =
+    useSelector((state) => state.token) || sessionStorage.getItem("token");
+
   const [role, setRole] = useState("");
   const [lastAccess, setLastAccess] = useState("");
   const dispatch = useDispatch();
@@ -128,7 +133,7 @@ const Homepage = () => {
         alignItems="center"
         justifyContent="center"
       >
-        {/* <Item>
+        <Item>
           <Box
             component="img"
             sx={{
@@ -150,8 +155,8 @@ const Homepage = () => {
             alt="Logo"
             src={logo_intesa}
           />
-        </Item> */}
-        <Item>
+        </Item>
+        {/* <Item>
           <Box
             component="img"
             sx={{
@@ -173,7 +178,7 @@ const Homepage = () => {
             alt="Logo"
             src={logo}
           />
-        </Item>
+        </Item> */}
       </Grid>
     </Grid>
   );

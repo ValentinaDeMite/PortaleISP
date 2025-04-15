@@ -6,6 +6,13 @@ import routes from "./routes";
 
 const Login = React.lazy(() => import("./views/pages/Login"));
 const Page404 = React.lazy(() => import("./views/pages/Page404"));
+function getCookie(name) {
+  console.log("Tutti i cookie disponibili:", document.cookie);
+  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+  const cookieValue = match ? match[2] : null;
+  console.log(`Valore del cookie ${name}:`, cookieValue);
+  return cookieValue;
+}
 
 function App() {
   return (
@@ -26,7 +33,16 @@ function App() {
       >
         <Routes>
           {/* Reindirizza automaticamente alla pagina di login */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route
+            path="/"
+            element={
+              getCookie("LtpaToken") ? (
+                <Navigate to="/homepage" replace />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />{" "}
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Layout />}>
             {routes.map((route, index) => (

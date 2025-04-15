@@ -6,6 +6,13 @@ import { store, persistor } from "../src/store";
 import App from "./App";
 import "./style/index.scss";
 
+import { LicenseInfo } from "@mui/x-license";
+
+// Licenza MUI
+LicenseInfo.setLicenseKey(
+  "3ce739dabd6f64887f2b8669cbdd7ad4Tz0xMTE0MDQsRT0xNzc2Mjk3NTk5MDAwLFM9cHJlbWl1bSxMTT1zdWJzY3JpcHRpb24sUFY9aW5pdGlhbCxLVj0y"
+);
+
 // Render dell'app
 ReactDOM.render(
   <React.StrictMode>

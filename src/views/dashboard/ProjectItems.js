@@ -223,9 +223,9 @@ const ProjectItems = () => {
     console.log("filteredItems", filteredItems);
 
     let originalEditRow = filteredItems.filter(
-      (row) => row[1] == editedRow[1]
+      (row) => row[1] === editedRow[1]
     )[0];
-    filteredItems.filter((row) => row[1] == editedRow[1])[0][2] = "REQ";
+    filteredItems.filter((row) => row[1] === editedRow[1])[0][2] = "REQ";
     console.log("originalEditRow", originalEditRow);
     let newPendingValue = editedRow[14];
     let newValueForecast = editedRow[12];
@@ -243,17 +243,18 @@ const ProjectItems = () => {
 
     // Se nessun valore è cambiato, chiudi la modale e interrompi l'esecuzione
     if (
-      originalPendingValue == newPendingValue &&
-      originalForecastValue == newValueForecast &&
-      originalQty == newQty
+      originalPendingValue === newPendingValue &&
+      originalForecastValue === newValueForecast &&
+      originalQty === newQty
     ) {
       return;
     }
 
-    if (originalQty != newQty && newQty != 0) {
+    if (originalQty !== newQty) {
       isNewPending = true;
     }
-    if (originalForecastValue != newValueForecast) {
+
+    if (originalForecastValue !== newValueForecast) {
       isNewForecast = true;
     }
 
@@ -268,9 +269,9 @@ const ProjectItems = () => {
     console.log("originalQty:", originalQty);
     console.log("newlQty:", newQty);
 
-    let editDescriptionQty = `Modifica articolo [${rowDescId}] Nuova Quantità Allocata: ${originalQty} ${arrowIcon} ${newQty} \n`;
+    let editDescriptionQty = `Modifica articolo [${rowDescId}] Nuova Quantità Allocata: ${originalQty} ${arrowIcon} ${newQty}`;
 
-    let editDescriptionForecast = `Modifica articolo [${rowDescId}] Forecast: ${originalForecastValue} ${arrowIcon} ${newValueForecast} \n`;
+    let editDescriptionForecast = `Modifica articolo [${rowDescId}] Forecast: ${originalForecastValue} ${arrowIcon} ${newValueForecast}`;
 
     const rowEditValue = [
       isNewForecast
@@ -315,7 +316,7 @@ const ProjectItems = () => {
       },
     }));
 
-    originalEditRow[14] = newQty;
+    originalEditRow[14] = newPendingValue;
     originalEditRow[12] = newValueForecast;
     setEditedRows(originalEditRow);
   };
@@ -479,17 +480,31 @@ const ProjectItems = () => {
 
         setProjectItemsData(items.values);
 
-        if (items.details) {
-          setDetails(items.details); // 💥 mantiene i dati NON editabili
+        // if (items.details) {
+        //   setDetails(items.details); // 💥 mantiene i dati NON editabili
 
-          setEditableData({
+        //   setEditableData({
+        //     projectName: items.details[8] || "",
+        //     projectDescription: items.details[9] || "",
+        //     projectNotes: items.details[10] || "",
+        //     projectManager: items.details[17] || "",
+        //     startDate: items.details[18]?.split(" ")[0] || "",
+        //     endDate: items.details[19]?.split(" ")[0] || "",
+        //   });
+        // }
+        if (items.details) {
+          setDetails(items.details);
+          const newEditable = {
             projectName: items.details[8] || "",
             projectDescription: items.details[9] || "",
             projectNotes: items.details[10] || "",
             projectManager: items.details[17] || "",
             startDate: items.details[18]?.split(" ")[0] || "",
             endDate: items.details[19]?.split(" ")[0] || "",
-          });
+          };
+
+          setEditableData(newEditable);
+          setInitialData(newEditable); // ✅ assicurati che sia sincronizzato
         }
 
         const columns = items.fields
@@ -506,18 +521,19 @@ const ProjectItems = () => {
               headerName: fieldData.name,
               flex: 1,
               renderCell: (params) => {
-                if (
+                const value = params.value;
+                const isNegativeNumber =
                   fieldData.type === "N" &&
-                  ((typeof params.value === "number" && params.value < 0) ||
-                    String(params.value).includes("-"))
-                ) {
+                  typeof value === "number" &&
+                  value < 0;
+
+                if (isNegativeNumber) {
                   return (
-                    <Box sx={{ color: "red", fontWeight: "bold" }}>
-                      {params.value}
-                    </Box>
+                    <Box sx={{ color: "red", fontWeight: "bold" }}>{value}</Box>
                   );
                 }
-                return params.value;
+
+                return value;
               },
             };
           });
@@ -635,9 +651,66 @@ const ProjectItems = () => {
 
   // Form
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target || e; // Per supportare Autocomplete
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target || e; // Per supportare Autocomplete
 
+  //   setEditableData((prevData) => ({
+  //     ...prevData,
+  //     [name]: value,
+  //   }));
+
+  //   setPayloadObj((prevPayload) => ({
+  //     ...prevPayload,
+  //     project: {
+  //       ...prevPayload.project,
+  //       [name]: value,
+  //     },
+  //   }));
+
+  //   setPendingRequests((prevRequests) => {
+  //     const updatedRequests = prevRequests.filter(
+  //       (req) => !req.startsWith(`${getFieldLabel(name)} aggiornato:`)
+  //     );
+
+  //     if (value) {
+  //       updatedRequests.push(`${getFieldLabel(name)} aggiornato: ${value}`);
+  //     }
+  //     return updatedRequests;
+  //   });
+
+  //   console.log("✅ Payload aggiornato:", payloadObj);
+  // };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target || e;
+
+    // ✅ Se il valore è identico a quello iniziale, rimuovi la richiesta pendente e non aggiornare payload
+    if (value === initialData[name]) {
+      setEditableData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+
+      setPendingRequests((prev) =>
+        prev.filter(
+          (req) => !req.startsWith(`${getFieldLabel(name)} aggiornato:`)
+        )
+      );
+
+      // Rimuoviamo anche dal payload se era stato settato
+      setPayloadObj((prevPayload) => {
+        const updatedProject = { ...prevPayload.project };
+        delete updatedProject?.[name];
+
+        return {
+          ...prevPayload,
+          project: updatedProject,
+        };
+      });
+
+      return;
+    }
+
+    // 🔄 Se il valore è cambiato, aggiornalo normalmente
     setEditableData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -659,6 +732,7 @@ const ProjectItems = () => {
       if (value) {
         updatedRequests.push(`${getFieldLabel(name)} aggiornato: ${value}`);
       }
+
       return updatedRequests;
     });
 
@@ -774,19 +848,82 @@ const ProjectItems = () => {
 
   // Elimina Richieste
 
+  // const handleDelete = () => {
+  //   if (isSupervisor) {
+  //     details[8] = editableData.projectName;
+  //     details[9] = editableData.projectDescription;
+  //     details[10] = editableData.projectNotes;
+  //     details[17] = editableData.projectManager;
+  //     details[18] = editableData.startDate;
+  //     details[19] = editableData.endDate;
+
+  //     const updatedPayload = {
+  //       new: payloadObj.new || {},
+  //       edits: payloadObj.edits || {},
+  //       project: project,
+  //       cancelRequests: true,
+  //       deleteProject: false,
+  //     };
+
+  //     const api = new ApiRest();
+  //     api
+  //       .iuProject(token, updatedPayload)
+  //       .then((data) => {
+  //         setSnackbarMessage("Tutte le richieste sono state eliminate");
+  //         setSnackbarSeverity("success");
+  //         setOpenSnackbar(true);
+  //         setRefreshKey((prevKey) => prevKey + 1);
+  //       })
+  //       .catch((error) => {
+  //         console.error(
+  //           "Errore durante la cancellazione delle richieste",
+  //           error
+  //         );
+  //         setSnackbarMessage("Errore durante la cancellazione delle richieste");
+  //         setSnackbarSeverity("error");
+  //         setOpenSnackbar(true);
+  //       });
+  //   } else {
+  //     setEditableData(initialData);
+  //     setPendingRequests([]);
+  //     setPayloadObj([]);
+  //     setPendingRequests(initialPendingRequests);
+  //     setInitialPayloadObj(initialPayloadObj);
+  //   }
+  //   setOpenDeleteConfirm(false);
+  // };
   const handleDelete = () => {
-    if (isSupervisor) {
-      details[8] = editableData.projectName;
-      details[9] = editableData.projectDescription;
-      details[10] = editableData.projectNotes;
-      details[17] = editableData.projectManager;
-      details[18] = editableData.startDate;
-      details[19] = editableData.endDate;
+    const hasRichieste =
+      Object.keys(payloadObj?.new || {}).length > 0 ||
+      Object.keys(payloadObj?.edits || {}).length > 0 ||
+      Object.keys(payloadObj?.project || {}).length > 0;
+
+    if (!hasRichieste) {
+      // RESET se sono solo modifiche locali
+      setEditableData(initialData);
+      setPendingRequests([]);
+      setInitialPendingRequests([]);
+      setPayloadObj({});
+      setInitialPayloadObj({});
+
+      setSnackbarMessage("Modifiche annullate");
+      setSnackbarSeverity("info");
+      setOpenSnackbar(true);
+    } else {
+      const updatedDetails = {
+        ...details,
+        8: editableData.projectName,
+        9: editableData.projectDescription,
+        10: editableData.projectNotes,
+        17: editableData.projectManager,
+        18: editableData.startDate,
+        19: editableData.endDate,
+      };
 
       const updatedPayload = {
         new: payloadObj.new || {},
         edits: payloadObj.edits || {},
-        project: project,
+        project: updatedDetails,
         cancelRequests: true,
         deleteProject: false,
       };
@@ -794,30 +931,30 @@ const ProjectItems = () => {
       const api = new ApiRest();
       api
         .iuProject(token, updatedPayload)
-        .then((data) => {
-          setSnackbarMessage("Tutte le richieste sono state eliminate");
+        .then(() => {
+          setSnackbarMessage("Le richieste sono state annullate correttamente");
           setSnackbarSeverity("success");
           setOpenSnackbar(true);
-          setRefreshKey((prevKey) => prevKey + 1);
+
+          // Reset manuale dopo invio
+          setPayloadObj({});
+          setInitialPayloadObj({});
+          setPendingRequests([]);
+          setInitialPendingRequests([]);
+          setEditableData(initialData);
+          setRefreshKey((prev) => prev + 1);
         })
         .catch((error) => {
-          console.error(
-            "Errore durante la cancellazione delle richieste",
-            error
-          );
-          setSnackbarMessage("Errore durante la cancellazione delle richieste");
+          console.error("Errore durante annullamento", error);
+          setSnackbarMessage("Errore durante l'annullamento");
           setSnackbarSeverity("error");
           setOpenSnackbar(true);
         });
-    } else {
-      setEditableData(initialData);
-      setPendingRequests([]);
-      setPayloadObj([]);
-      setPendingRequests(initialPendingRequests);
-      setInitialPayloadObj(initialPayloadObj);
     }
+
     setOpenDeleteConfirm(false);
   };
+
   const handleOpenDeleteProjectDialog = () => setOpenDeleteProjectDialog(true);
   const handleCloseDeleteProjectDialog = () =>
     setOpenDeleteProjectDialog(false);
@@ -1105,6 +1242,41 @@ const ProjectItems = () => {
                     </Select>
                   </FormControl>
                 ) : field === "projectName" ? (
+                  // <Autocomplete
+                  //   freeSolo
+                  //   options={
+                  //     info.projects
+                  //       ? info.projects.split(";").map((p) => p.trim())
+                  //       : []
+                  //   }
+                  //   value={editableData.projectName || ""}
+                  //   onChange={(event, newValue) => {
+                  //     if (newValue !== editableData.projectName) {
+                  //       handleInputChange({
+                  //         name: "projectName",
+                  //         value: newValue,
+                  //       });
+                  //     }
+                  //   }}
+                  //   sx={{
+                  //     minWidth: "400px",
+                  //     maxWidth: "100%",
+                  //   }}
+                  //   renderInput={(params) => (
+                  //     <TextField
+                  //       {...params}
+                  //       label="Nome Progetto"
+                  //       fullWidth
+                  //       size="medium"
+                  //       InputLabelProps={{ shrink: true }}
+                  //       sx={{
+                  //         borderRadius: "8px",
+                  //         minWidth: "350px",
+                  //         fontSize: "1.1rem",
+                  //       }}
+                  //     />
+                  //   )}
+                  // />
                   <Autocomplete
                     freeSolo
                     options={
@@ -1113,21 +1285,12 @@ const ProjectItems = () => {
                         : []
                     }
                     value={editableData.projectName || ""}
-                    onChange={(event, newValue) =>
-                      handleInputChange({
-                        name: "projectName",
-                        value: newValue,
-                      })
-                    }
-                    onInputChange={(event, newValue) =>
-                      handleInputChange({
-                        name: "projectName",
-                        value: newValue,
-                      })
-                    }
-                    sx={{
-                      minWidth: "400px",
-                      maxWidth: "100%",
+                    onChange={(event, newValue) => {
+                      if (newValue !== editableData.projectName) {
+                        handleInputChange({
+                          target: { name: "projectName", value: newValue },
+                        });
+                      }
                     }}
                     renderInput={(params) => (
                       <TextField
@@ -1135,11 +1298,39 @@ const ProjectItems = () => {
                         label="Nome Progetto"
                         fullWidth
                         size="medium"
+                        onBlur={(e) => {
+                          const newValue = e.target.value;
+                          if (newValue !== editableData.projectName) {
+                            handleInputChange({
+                              target: { name: "projectName", value: newValue },
+                            });
+                          }
+                        }}
                         InputLabelProps={{ shrink: true }}
                         sx={{
                           borderRadius: "8px",
                           minWidth: "350px",
                           fontSize: "1.1rem",
+                          "& .MuiInputBase-input": {
+                            fontSize: {
+                              xs: "0.5rem !important",
+                              sm: "0.7rem !important",
+                              md: "0.8rem !important",
+                              lg: "0.9rem !important",
+                              xl: "1rem !important",
+                            },
+                            fontFamily: "Poppins !important",
+                          },
+                          "& .MuiInputLabel-root": {
+                            fontSize: {
+                              xs: "0.5rem !important",
+                              sm: "0.7rem !important",
+                              md: "0.8rem !important",
+                              lg: "0.9rem !important",
+                              xl: "1rem !important",
+                            },
+                            fontFamily: "Poppins !important",
+                          },
                         }}
                       />
                     )}
@@ -1215,7 +1406,7 @@ const ProjectItems = () => {
                 sx={{
                   borderRadius: "8px",
                   width: "80%",
-                  whiteSpace: "pre-line",
+                  whiteSpace: "pre",
                 }}
               />
 

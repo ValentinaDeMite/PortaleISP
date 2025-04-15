@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -13,7 +13,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import PersonIcon from "@mui/icons-material/Person";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import logoIntesa from "../../assets/img/intesa-sanpaolo.png";
+import logoIntesa from "../../assets/img/isp-logo-removebg-preview.png";
 import logoMvs from "../../assets/img/logo-MVS.png";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -22,6 +22,16 @@ import Cookies from "js-cookie";
 import logo from "../../assets/img/il-tuo-logo-qui-150x150-removebg-preview.png";
 
 const Login = () => {
+  useEffect(() => {
+    // sessionStorage.clear();
+    localStorage.clear();
+    // document.cookie.split(";").forEach((c) => {
+    //   document.cookie = c
+    //     .replace(/^ +/, "")
+    //     .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    // });
+    console.log("Pulizia: localStorage.");
+  }, []);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -46,9 +56,15 @@ const Login = () => {
         return;
       }
 
+      // dispatch({ type: "set", user: response.user });
+      // dispatch({ type: "set", token: response.token });
+      // localStorage.setItem("selectedProjectId", "");
+      // navigate("/homepage");
       dispatch({ type: "set", user: response.user });
       dispatch({ type: "set", token: response.token });
-      localStorage.setItem("selectedProjectId", "");
+      sessionStorage.setItem("user", response.user);
+      sessionStorage.setItem("token", response.token);
+      sessionStorage.setItem("selectedProjectId", "");
       navigate("/homepage");
     } catch (error) {
       setErrorMessage("ID utente o password errati");
@@ -77,20 +93,20 @@ const Login = () => {
           backgroundColor: "#4BA83D",
         }}
       >
-        {/* <img
+        <img
           src={logoIntesa}
           alt="logo intesa"
           style={{ flex: 1, maxWidth: "40%", height: "auto" }}
-        /> */}
-        <img
+        />
+        {/* <img
           src={logo}
           alt="logo intesa"
           style={{ flex: 1, maxWidth: "20%", height: "auto" }}
-        />
+        /> */}
         <img
           src={logoMvs}
           alt="mvs logo"
-          style={{ flex: 1, maxWidth: "30%", height: "30%" }}
+          style={{ flex: 1, maxWidth: "20%", height: "30%" }}
         />
       </Box>
 
@@ -196,7 +212,8 @@ const Login = () => {
         </CardContent>
         <Box sx={{ textAlign: "center", marginTop: "1rem" }}>
           <Link
-            to="https://ws.mvsitaly.com/?changepassword&redirectto=https://portale-isp.mvsitaly.com/#/login"
+            // to="https://ws.mvsitaly.com/?changepassword&redirectto=https://hpf.mvsitaly.com/#/dashboard"
+            to="https://rws.mvsitaly.com/?changepassword&redirectto=https://portale-isp.mvsitaly.com/#/homepage"
             style={{
               fontSize: 15,
               color: "#1976d2",

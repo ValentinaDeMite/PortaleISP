@@ -126,74 +126,6 @@ const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
   };
   const [modifiedRows, setModifiedRows] = useState(new Set());
 
-  // const renderAllocateColumn = (params) => {
-  //   const row = params.row;
-  //   const id = row[1]; // ID articolo
-  //   const disponibile = row[8]; // Disponibilità
-  //   const quantity = quantities[id] ?? 0;
-
-  //   const handleAddZeroClick = (id) => {
-  //     setQuantities((prev) => ({
-  //       ...prev,
-  //       [id]: 0,
-  //     }));
-  //     setModifiedRows((prev) => new Set(prev).add(id));
-  //     setForcedAddRows((prev) => new Set(prev).add(id)); // <-- nuovo set
-  //   };
-  // const renderAllocateColumn = (params) => {
-  //   const quantity = quantities[params.row];
-  //   return (
-  //     <Box
-  //       sx={{
-  //         display: "flex",
-  //         alignItems: "center",
-  //         justifyContent: "center",
-  //         height: "100%",
-  //         gap: 1,
-  //       }}
-  //     >
-  //       {/* Campo quantità */}
-  //       <TextField
-  //         size="small"
-  //         type="number"
-  //         // value={quantity}
-  //         // onChange={(e) => handleEditFieldChange(row, e.target.value)}
-  //         value={quantities[params.row[1]] || ""}
-  //         onChange={(e) => handleEditFieldChange(params.row, e.target.value)}
-  //         sx={{
-  //           width: "50%",
-  //           "& input": {
-  //             textAlign: "center",
-  //             fontSize: {
-  //               xs: "0.5rem",
-  //               sm: "0.5rem",
-  //               md: "0.6rem",
-  //               lg: "0.7rem",
-  //               xl: "0.9rem",
-  //             },
-  //             padding: "8px 0",
-  //           },
-  //           "& .MuiOutlinedInput-root": {
-  //             height: "35px",
-  //             borderRadius: "4px",
-  //             display: "flex",
-  //             alignItems: "center",
-  //             justifyContent: "center",
-  //           },
-  //         }}
-  //         InputProps={{
-  //           inputProps: {
-  //             min: 0,
-  //             step: 1,
-  //           },
-  //         }}
-  //       />
-
-  //     </Box>
-
-  //   );
-  // };
-
   const renderAllocateColumn = (params) => {
     const row = params.row;
     const id = row[1]; // ID riga
@@ -323,6 +255,13 @@ const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
   };
 
   const updatedColumns = columns.map((col) => {
+    if (col.headerName === "UBI") {
+      col.headerName = "STOCK";
+    }
+    if (col.headerName === "VAT") {
+      col.headerName = "V.A.T";
+    }
+
     return {
       ...col,
       headerAlign: "center",
