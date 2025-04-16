@@ -85,6 +85,8 @@ const AppTable = ({
   enableSearch = false,
   enableExcelExport = false,
 }) => {
+  const [allocatoError, setAllocatoError] = useState("");
+
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(0);
   const apiRef = useGridApiRef();
@@ -130,6 +132,10 @@ const AppTable = ({
       ? Number(disponibile)
       : selectedRow
       ? Number(Object.values(selectedRow)[17])
+      : 0;
+  const confermato =
+    selectedRow && Object.values(selectedRow)[13]
+      ? Number(Object.values(selectedRow)[13])
       : 0;
 
   const allocatoConfermato = selectedRow
@@ -190,7 +196,12 @@ const AppTable = ({
   const handleEditConfirm = (params) => {
     if (onEditRow) {
       const updatedRow = { ...editedRow };
-      updatedRow[13] = editedRow.allocato;
+      // updatedRow[13] = editedRow.allocato;
+      // SOLO SE modificato davvero:
+      if (editedRow.allocato !== undefined && editedRow.allocato !== "") {
+        updatedRow[13] = editedRow.allocato;
+      }
+
       updatedRow[12] = editedRow.forecast;
       onEditRow(updatedRow);
     }
@@ -346,7 +357,6 @@ const AppTable = ({
 
   const renderActionButtons = (params) => {
     const isPending = params.row[2] === "REQ";
-    console.log(params.row);
     const isDeleted = params.row[20].includes("Elimina");
 
     return (
@@ -871,8 +881,7 @@ const AppTable = ({
         </DialogTitle>
         <DialogContent>
           {editedRow && (
-            <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap={2}>
-              {/* Riga 1 */}
+            <Box display="grid" gridTemplateColumns="repeat(2, 1fr)" gap={2}>
               <TextField
                 label="Stato"
                 fullWidth
@@ -898,7 +907,6 @@ const AppTable = ({
                 sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
 
-              {/* Riga 2 */}
               <TextField
                 label="Spedito"
                 fullWidth
@@ -932,8 +940,6 @@ const AppTable = ({
                 InputProps={{ readOnly: true }}
                 sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
-
-              {/* Riga 3 */}
               <TextField
                 label="Forecast"
                 type="number"
@@ -948,148 +954,11 @@ const AppTable = ({
                 label="Allocato Confermato"
                 fullWidth
                 margin="normal"
-                value={selectedRow ? Object.values(selectedRow)[13] : ""}
+                value={confermato}
                 InputProps={{ readOnly: true }}
                 sx={{ backgroundColor: "#D8D8D8", borderRadius: "8px" }}
               />
               {/* {visibleAllocFieldRowId === selectedRow?.[9] ? (
-                <TextField
-                  label="Nuova allocazione"
-                  type="number"
-                  fullWidth
-                  margin="normal"
-                  value={
-                    editedRow.allocato === null ||
-                    editedRow.allocato === undefined
-                      ? 0
-                      : editedRow.allocato
-                  }
-                  onChange={(e) => {
-                    let newValue = e.target.value;
-                    if (newValue === "") {
-                      handleEditFieldChange("allocato", "");
-                      return;
-                    }
-                    newValue = Number(newValue);
-                    if (newValue < 0) newValue = 0;
-                    if (newValue > disponibileSumm) {
-                      setOpenAlert(false);
-                      setTimeout(() => setOpenAlert(true), 100);
-                      setIsSaveDisabled(true);
-                    } else {
-                      setIsSaveDisabled(false);
-                    }
-                    handleEditFieldChange("allocato", newValue);
-                  }}
-                  inputProps={{ min: 0, max: disponibileSumm }}
-                  sx={{
-                    backgroundColor:
-                      disponibileSumm === 0 ? "#f5f5f5" : "white",
-                  }}
-                />
-              ) : (
-                <Tooltip title="Aggiungi nuova allocazione">
-                  <IconButton
-                    onClick={() => {
-                      handleEditFieldChange("allocato", 0);
-                      setVisibleAllocFieldRowId(selectedRow?.[9]);
-                    }}
-                    sx={{
-                      alignSelf: "center",
-                      justifySelf: "center",
-                      marginTop: "0.7rem",
-                      border: "1px solid #bbb",
-                      borderRadius: "8px",
-                      padding: "5px",
-                    }}
-                  >
-                    <AddIcon
-                      sx={{
-                        fontSize: "20px",
-                        color: "#1976d2",
-                      }}
-                    />
-                  </IconButton>
-                </Tooltip>
-              )}
-                
-            </Box> */}
-              {/* {visibleAllocFieldRowId === selectedRow?.[9] ? (
-                <Box display="flex" alignItems="center" gap={1} width="100%">
-                  <TextField
-                    label="Nuova allocazione"
-                    type="number"
-                    fullWidth
-                    margin="normal"
-                    value={
-                      editedRow.allocato === null ||
-                      editedRow.allocato === undefined
-                        ? ""
-                        : editedRow.allocato
-                    }
-                    onChange={(e) => {
-                      let newValue = e.target.value;
-                      if (newValue === "") {
-                        handleEditFieldChange("allocato", 0); // reset a 0 se svuotato
-                        return;
-                      }
-                      newValue = Number(newValue);
-                      if (newValue < 0) newValue = 0;
-                      if (newValue > disponibileSumm) {
-                        setOpenAlert(false);
-                        setTimeout(() => setOpenAlert(true), 100);
-                        setIsSaveDisabled(true);
-                      } else {
-                        setIsSaveDisabled(false);
-                      }
-                      handleEditFieldChange("allocato", newValue);
-                    }}
-                    inputProps={{ min: 0, max: disponibileSumm }}
-                    sx={{
-                      backgroundColor:
-                        disponibileSumm === 0 ? "#f5f5f5" : "white",
-                    }}
-                  />
-                  <Tooltip title="Resetta a 0">
-                    <IconButton
-                      onClick={() => handleEditFieldChange("allocato", 0)}
-                      sx={{
-                        marginTop: "8px",
-                        border: "1px solid #ccc",
-                        height: "40px",
-                        width: "40px",
-                      }}
-                    >
-                      <CloseIcon sx={{ color: "#ff0000" }} />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              ) : (
-                <Tooltip title="Aggiungi nuova allocazione">
-                  <IconButton
-                    onClick={() => {
-                      handleEditFieldChange("allocato", 0); // assegna sempre 0 all'apertura
-                      setVisibleAllocFieldRowId(selectedRow?.[9]);
-                    }}
-                    sx={{
-                      alignSelf: "center",
-                      justifySelf: "center",
-                      marginTop: "0.7rem",
-                      border: "1px solid #bbb",
-                      borderRadius: "8px",
-                      padding: "5px",
-                    }}
-                  >
-                    <AddIcon
-                      sx={{
-                        fontSize: "20px",
-                        color: "#1976d2",
-                      }}
-                    />
-                  </IconButton>
-                </Tooltip>
-              )} */}
-              {visibleAllocFieldRowId === selectedRow?.[9] ? (
                 <Box display="flex" alignItems="center" gap={1} width="100%">
                   <TextField
                     label="Nuova allocazione"
@@ -1175,7 +1044,50 @@ const AppTable = ({
                     />
                   </IconButton>
                 </Tooltip>
-              )}
+              )} */}
+              <TextField
+                label="Variazione Nuova Allocazione"
+                type="number"
+                fullWidth
+                margin="normal"
+                value={editedRow.allocato === 0 ? "" : editedRow.allocato}
+                onChange={(e) => {
+                  let newValue = e.target.value;
+
+                  if (newValue === "") {
+                    handleEditFieldChange("allocato", "");
+                    setAllocatoError("");
+                    return;
+                  }
+
+                  newValue = Number(newValue);
+
+                  if (newValue < -confermato) {
+                    setAllocatoError(
+                      `Non puoi allocare meno di -${confermato}`
+                    );
+                    newValue = -confermato;
+                  } else if (newValue > disponibile) {
+                    setAllocatoError(`Non puoi allocare più di ${disponibile}`);
+                    newValue = disponibile;
+
+                    setOpenAlert(false);
+                    setTimeout(() => {
+                      setOpenAlert(true);
+                    }, 100);
+                  } else {
+                    setAllocatoError("");
+                  }
+
+                  handleEditFieldChange("allocato", newValue);
+                }}
+                inputProps={{
+                  min: -confermato,
+                  max: disponibile,
+                }}
+                error={!!allocatoError}
+                helperText={allocatoError}
+              />
             </Box>
           )}
         </DialogContent>

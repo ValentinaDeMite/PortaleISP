@@ -302,9 +302,6 @@ const NewProject = () => {
                   "& .MuiOutlinedInput-root": { borderRadius: "8px" },
                 }}
               />
-            </Stack>
-
-            <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
               <FormControl
                 sx={{
                   width: "30%",
@@ -334,6 +331,9 @@ const NewProject = () => {
                   </MenuItem>
                 </Select>
               </FormControl>
+            </Stack>
+
+            <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
               <TextField
                 type="text"
                 variant="outlined"
@@ -345,6 +345,32 @@ const NewProject = () => {
                 sx={{
                   borderColor: "#999",
                   "& .MuiOutlinedInput-root": { borderRadius: "8px" },
+                }}
+              />
+              <TextField
+                type="date"
+                variant="outlined"
+                color="primary"
+                label="Data Inizio"
+                InputLabelProps={{ shrink: true }}
+                onChange={(e) => handleOnChange(e, "18")}
+                value={state["18"]}
+                required
+                sx={{
+                  width: "30%",
+                }}
+              />
+              <TextField
+                type="date"
+                variant="outlined"
+                color="primary"
+                label="Data Fine"
+                InputLabelProps={{ shrink: true }}
+                onChange={(e) => handleOnChange(e, "19")}
+                value={state["19"]}
+                required
+                sx={{
+                  width: "30%",
                 }}
               />
             </Stack>
@@ -367,29 +393,23 @@ const NewProject = () => {
                   ))}
                 </Select>
               </FormControl>
-
-              <TextField
-                type="date"
-                variant="outlined"
-                color="primary"
-                label="Data Inizio"
-                InputLabelProps={{ shrink: true }}
-                onChange={(e) => handleOnChange(e, "18")}
-                value={state["18"]}
-                fullWidth
-                required
-              />
-              <TextField
-                type="date"
-                variant="outlined"
-                color="primary"
-                label="Data Fine"
-                InputLabelProps={{ shrink: true }}
-                onChange={(e) => handleOnChange(e, "19")}
-                value={state["19"]}
-                fullWidth
-                required
-              />
+              <FormControl fullWidth>
+                <InputLabel>PM Backup</InputLabel>
+                <Select
+                  label="Project Manager"
+                  value={state["17"]}
+                  onChange={(e) => handleOnChange(e, "17")}
+                  fullWidth
+                  required
+                >
+                  <MenuItem value="">N/A</MenuItem>
+                  {info.pms.split(";").map((pm, index) => (
+                    <MenuItem key={index} value={pm.trim()}>
+                      {pm.trim()}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Stack>
 
             <Box
@@ -402,6 +422,7 @@ const NewProject = () => {
                 sx={{
                   backgroundColor: "#FF8C00",
                   color: "white",
+                  fontWeight: "600",
                   padding: "10px 20px",
                   borderRadius: "8px",
                   boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",

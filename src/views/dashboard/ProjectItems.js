@@ -217,11 +217,6 @@ const ProjectItems = () => {
   // Editpen
 
   const handleEditRow = (editedRow) => {
-    console.log("edited row:", editedRow);
-    console.log("payload", payloadObj);
-    console.log("edited rows:", editedRows);
-    console.log("filteredItems", filteredItems);
-
     let originalEditRow = filteredItems.filter(
       (row) => row[1] === editedRow[1]
     )[0];
@@ -229,12 +224,12 @@ const ProjectItems = () => {
     console.log("originalEditRow", originalEditRow);
     let newPendingValue = editedRow[14];
     let newValueForecast = editedRow[12];
-    let newQty = editedRow[13];
+    let newQty = parseInt(editedRow[13]);
+    let originalQty = parseInt(originalEditRow[13]);
     const pn = editedRow["9"];
 
     let originalPendingValue = originalEditRow[14];
     let originalForecastValue = originalEditRow[12];
-    let originalQty = originalEditRow[13];
 
     let isNewPending = false;
     let isNewForecast = false;
@@ -242,18 +237,45 @@ const ProjectItems = () => {
     let rowDescId = editedRow[10];
 
     // Se nessun valore è cambiato, chiudi la modale e interrompi l'esecuzione
+    console.log("📌 originalQty:", originalQty, typeof originalQty);
+    console.log("📌 newQty:", newQty, typeof newQty);
+
+    // if (
+    //   originalPendingValue === newPendingValue &&
+    //   originalForecastValue === newValueForecast &&
+    //   originalQty === newQty
+    // ) {
+    //   console.log("🟢 Nessuna modifica rilevata, esco.");
+    //   return;
+    // }
+
+    // // if (originalQty !== newQty) {
+    // //   isNewPending = true;
+    // // }
+    // if (originalQty !== newQty && !(originalQty === 0 && newQty === 0)) {
+    //   isNewPending = true;
+    // }
+
+    // if (originalForecastValue !== newValueForecast) {
+    //   isNewForecast = true;
+    // }
+
+    // Se nessun valore è cambiato, chiudi la modale e interrompi l'esecuzione
     if (
       originalPendingValue === newPendingValue &&
       originalForecastValue === newValueForecast &&
-      originalQty === newQty
+      (originalQty === newQty || (originalQty !== 0 && newQty === 0))
     ) {
+      console.log("Nessuna modifica rilevata");
       return;
     }
 
-    if (originalQty !== newQty) {
+    // Variazione allocato: solo se è diversa e diversa da 0
+    if (originalQty !== newQty && newQty !== 0) {
       isNewPending = true;
     }
 
+    // Variazione forecast: solo se è effettivamente cambiata
     if (originalForecastValue !== newValueForecast) {
       isNewForecast = true;
     }
@@ -338,6 +360,7 @@ const ProjectItems = () => {
       project: project,
       cancelRequests: false,
       deleteProject: true,
+      qtydelta: false,
     };
     console.log(payloadObj);
     const api = new ApiRest();
@@ -736,7 +759,7 @@ const ProjectItems = () => {
       return updatedRequests;
     });
 
-    console.log("✅ Payload aggiornato:", payloadObj);
+    // console.log("✅ Payload aggiornato:", payloadObj);
   };
 
   const handleCancelChange = (field) => {
@@ -810,6 +833,7 @@ const ProjectItems = () => {
       project: updatedProject,
       cancelRequests: false,
       deleteProject: payloadObj.deleteProject || false,
+      qtydelta: true,
     };
 
     const api = new ApiRest();
@@ -834,7 +858,7 @@ const ProjectItems = () => {
   };
 
   useEffect(() => {
-    console.log("PayloadObj after state update:", payloadObj);
+    // console.log("PayloadObj after state update:", payloadObj);
   }, [payloadObj]);
 
   const handleDeleteConfirmOpen = () => setOpenDeleteConfirm(true);
@@ -926,6 +950,7 @@ const ProjectItems = () => {
         project: updatedDetails,
         cancelRequests: true,
         deleteProject: false,
+        qtydelta: false,
       };
 
       const api = new ApiRest();
@@ -1208,17 +1233,39 @@ const ProjectItems = () => {
                 />
               ))}
             </Stack>
-
+            {/* 
             <Stack spacing={2} direction="row">
               {[
                 "projectName",
                 "projectDescription",
-                "projectNotes",
                 "startDate",
                 "endDate",
+                "projectNotes",
                 "projectManager",
               ].map((field, index) =>
                 field === "projectManager" ? (
+                  // <FormControl key={index} fullWidth>
+                  //   <InputLabel>Project Manager</InputLabel>
+                  //   <Select
+                  //     name={field}
+                  //     value={editableData[field] || ""}
+                  //     onChange={(e) => handleInputChange(e, field)}
+                  //   >
+                  //     {editableData[field] && (
+                  //       <MenuItem value={editableData[field]}>
+                  //         {editableData[field]}
+                  //       </MenuItem>
+                  //     )}
+                  //     {(info.pms || "")
+                  //       .split(";")
+                  //       .filter((pm) => pm !== editableData[field])
+                  //       .map((pm, idx) => (
+                  //         <MenuItem key={idx} value={pm.trim()}>
+                  //           {pm.trim()}
+                  //         </MenuItem>
+                  //       ))}
+                  //   </Select>
+                  // </FormControl>
                   <FormControl key={index} fullWidth>
                     <InputLabel>Project Manager</InputLabel>
                     <Select
@@ -1226,57 +1273,18 @@ const ProjectItems = () => {
                       value={editableData[field] || ""}
                       onChange={(e) => handleInputChange(e, field)}
                     >
-                      {editableData[field] && (
-                        <MenuItem value={editableData[field]}>
-                          {editableData[field]}
-                        </MenuItem>
-                      )}
                       {(info.pms || "")
                         .split(";")
-                        .filter((pm) => pm !== editableData[field])
+                        .filter((pm) => pm.trim() && pm !== editableData[field])
                         .map((pm, idx) => (
                           <MenuItem key={idx} value={pm.trim()}>
                             {pm.trim()}
                           </MenuItem>
                         ))}
+                      <MenuItem value="N/A">N/A</MenuItem>
                     </Select>
                   </FormControl>
                 ) : field === "projectName" ? (
-                  // <Autocomplete
-                  //   freeSolo
-                  //   options={
-                  //     info.projects
-                  //       ? info.projects.split(";").map((p) => p.trim())
-                  //       : []
-                  //   }
-                  //   value={editableData.projectName || ""}
-                  //   onChange={(event, newValue) => {
-                  //     if (newValue !== editableData.projectName) {
-                  //       handleInputChange({
-                  //         name: "projectName",
-                  //         value: newValue,
-                  //       });
-                  //     }
-                  //   }}
-                  //   sx={{
-                  //     minWidth: "400px",
-                  //     maxWidth: "100%",
-                  //   }}
-                  //   renderInput={(params) => (
-                  //     <TextField
-                  //       {...params}
-                  //       label="Nome Progetto"
-                  //       fullWidth
-                  //       size="medium"
-                  //       InputLabelProps={{ shrink: true }}
-                  //       sx={{
-                  //         borderRadius: "8px",
-                  //         minWidth: "350px",
-                  //         fontSize: "1.1rem",
-                  //       }}
-                  //     />
-                  //   )}
-                  // />
                   <Autocomplete
                     freeSolo
                     options={
@@ -1388,6 +1396,212 @@ const ProjectItems = () => {
                   />
                 )
               )}
+            </Stack> */}
+            <Stack spacing={2}>
+              <Stack direction="row" spacing={2} sx={{ paddingY: "4px" }}>
+                {/* Nome Progetto */}
+                <Box flex={1}>
+                  <Autocomplete
+                    freeSolo
+                    options={
+                      info.projects
+                        ? info.projects.split(";").map((p) => p.trim())
+                        : []
+                    }
+                    value={editableData.projectName || ""}
+                    onChange={(event, newValue) => {
+                      if (newValue !== editableData.projectName) {
+                        handleInputChange({
+                          target: { name: "projectName", value: newValue },
+                        });
+                      }
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Nome Progetto"
+                        fullWidth
+                        size="medium"
+                        onBlur={(e) => {
+                          const newValue = e.target.value;
+                          if (newValue !== editableData.projectName) {
+                            handleInputChange({
+                              target: { name: "projectName", value: newValue },
+                            });
+                          }
+                        }}
+                        InputLabelProps={{ shrink: true }}
+                        sx={{ borderRadius: "8px" }}
+                      />
+                    )}
+                  />
+                </Box>
+
+                {/* Descrizione */}
+                <TextField
+                  label="Descrizione Progetto"
+                  name="projectDescription"
+                  value={editableData.projectDescription || ""}
+                  onChange={(e) => handleInputChange(e, "projectDescription")}
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          onClick={() =>
+                            handleCancelChange("projectDescription")
+                          }
+                          sx={{
+                            padding: 0,
+                            minWidth: "20px",
+                            color: "gray",
+                            "&:hover": { color: "black" },
+                          }}
+                        >
+                          X
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{ flex: 1, borderRadius: "8px" }}
+                />
+
+                {/* Data Inizio */}
+                <TextField
+                  label="Data Inizio"
+                  name="startDate"
+                  type="date"
+                  value={editableData.startDate || ""}
+                  onChange={(e) => handleInputChange(e, "startDate")}
+                  InputLabelProps={{ shrink: true }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          onClick={() => handleCancelChange("startDate")}
+                          sx={{
+                            padding: 0,
+                            minWidth: "20px",
+                            color: "gray",
+                            "&:hover": { color: "black" },
+                          }}
+                        >
+                          X
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{ width: "160px", borderRadius: "8px" }}
+                />
+
+                {/* Data Fine */}
+                <TextField
+                  label="Data Fine"
+                  name="endDate"
+                  type="date"
+                  value={editableData.endDate || ""}
+                  onChange={(e) => handleInputChange(e, "endDate")}
+                  InputLabelProps={{ shrink: true }}
+                  error={dateError}
+                  helperText={
+                    dateError
+                      ? "La data di fine deve essere successiva a quella di inizio"
+                      : ""
+                  }
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          onClick={() => handleCancelChange("endDate")}
+                          sx={{
+                            padding: 0,
+                            minWidth: "20px",
+                            color: "gray",
+                            "&:hover": { color: "black" },
+                          }}
+                        >
+                          X
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{ width: "160px", borderRadius: "8px" }}
+                />
+              </Stack>
+
+              <Stack direction="row" spacing={2}>
+                {/* Note Progetto */}
+                <TextField
+                  label="Note Progetto"
+                  name="projectNotes"
+                  value={editableData.projectNotes || ""}
+                  onChange={(e) => handleInputChange(e, "projectNotes")}
+                  fullWidth
+                  InputLabelProps={{ shrink: true }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          onClick={() => handleCancelChange("projectNotes")}
+                          sx={{
+                            padding: 0,
+                            minWidth: "20px",
+                            color: "gray",
+                            "&:hover": { color: "black" },
+                          }}
+                        >
+                          X
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{ flex: 1, borderRadius: "8px", minWidth: "300px" }}
+                />
+
+                {/* Project Manager */}
+                <FormControl sx={{ minWidth: 350 }}>
+                  <InputLabel>Project Manager</InputLabel>
+                  <Select
+                    name="projectManager"
+                    value={editableData.projectManager || ""}
+                    onChange={(e) => handleInputChange(e, "projectManager")}
+                  >
+                    {(info.pms || "")
+                      .split(";")
+                      .filter(
+                        (pm) => pm.trim() && pm !== editableData.projectManager
+                      )
+                      .map((pm, idx) => (
+                        <MenuItem key={idx} value={pm.trim()}>
+                          {pm.trim()}
+                        </MenuItem>
+                      ))}
+                    <MenuItem value="N/A">N/A</MenuItem>
+                  </Select>
+                </FormControl>
+                {/* Project Manager Backup*/}
+                <FormControl sx={{ minWidth: 350 }}>
+                  <InputLabel>PM Backup</InputLabel>
+                  <Select
+                    name="projectManager"
+                    value={editableData.projectManager || ""}
+                    onChange={(e) => handleInputChange(e, "projectManager")}
+                  >
+                    {(info.pms || "")
+                      .split(";")
+                      .filter(
+                        (pm) => pm.trim() && pm !== editableData.projectManager
+                      )
+                      .map((pm, idx) => (
+                        <MenuItem key={idx} value={pm.trim()}>
+                          {pm.trim()}
+                        </MenuItem>
+                      ))}
+                    <MenuItem value="N/A">N/A</MenuItem>
+                  </Select>
+                </FormControl>
+              </Stack>
             </Stack>
 
             <Stack
