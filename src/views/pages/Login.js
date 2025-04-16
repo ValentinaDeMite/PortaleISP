@@ -133,14 +133,14 @@ const Login = () => {
       >
         <CardContent>
           <Typography variant="h6" gutterBottom sx={{ fontFamily: "Poppins" }}>
-            Inserisci la tua Email e Password
+            Inserisci la tua User e Password
           </Typography>
 
           <TextField
             fullWidth
             variant="outlined"
             margin="normal"
-            label="Email"
+            label="User"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">

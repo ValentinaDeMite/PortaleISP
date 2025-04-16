@@ -477,7 +477,6 @@ const ProjectItems = () => {
     const fetchProjectItems = async () => {
       try {
         const items = await api.getItems(token, project[0]);
-
         setProjectItemsData(items.values);
 
         // if (items.details) {
@@ -752,6 +751,9 @@ const ProjectItems = () => {
     });
   };
 
+  // export methods
+  const [exportFields, setExportFields] = useState([]);
+
   const filteredItems = Array.isArray(projectItemsData)
     ? projectItemsData.filter((item) =>
         Object.values(item).some((value) =>
@@ -760,18 +762,37 @@ const ProjectItems = () => {
       )
     : [];
   const exportToExcel = () => {
-    const filteredForExport = filteredItems.map((item) => {
-      const entries = Object.entries(item).filter(
-        ([key, value], index) => index !== 21 && index !== 22
+    if (!filteredItems || filteredItems.length === 0) return;
+
+    const columnNames = exportFields
+      .map((field) => {
+        const key = Object.keys(field)[0];
+        const data = field[key];
+        return {
+          index: parseInt(key),
+          label: data.name,
+          show: data.show,
+        };
+      })
+      .filter(
+        (col) => col.show === true && col.index !== 21 && col.index !== 22
       );
 
-      return Object.fromEntries(entries);
+    const filteredForExport = filteredItems.map((item) => {
+      const row = {};
+      columnNames.forEach(({ index, label }) => {
+        row[label] = item[index];
+      });
+      return row;
     });
 
     const worksheet = XLSX.utils.json_to_sheet(filteredForExport);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Articoli");
-    XLSX.writeFile(workbook, "lista_articoli_progetto.xlsx");
+    XLSX.writeFile(
+      workbook,
+      `Articoli_Progetto_${details[8] || "senza_nome"}.xlsx`
+    );
   };
 
   const getFieldLabel = (field) => {

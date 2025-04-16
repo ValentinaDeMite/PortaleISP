@@ -47,6 +47,8 @@ const Dashboard = (props) => {
     navigate(`/dashboard/${projectId}`);
   };
 
+  // export
+
   const filteredProjects = Array.isArray(projects)
     ? projects.filter((item) =>
         Object.values(item).some((value) =>
@@ -55,17 +57,26 @@ const Dashboard = (props) => {
       )
     : [];
   const exportToExcel = () => {
-    const filteredForExport = filteredProjects.map((item) => {
-      const entries = Object.entries(item).filter(
-        ([key, value], index) => index !== 21 && index !== 22
-      );
+    if (!filteredProjects || filteredProjects.length === 0 || !columnDefs)
+      return;
 
-      return Object.fromEntries(entries);
+    const fieldsToExport = columnDefs.map((col) => col.field);
+    const headers = columnDefs.reduce((acc, col) => {
+      acc[col.field] = col.headerName;
+      return acc;
+    }, {});
+
+    const filteredForExport = filteredProjects.map((item) => {
+      const newItem = {};
+      for (const key of fieldsToExport) {
+        newItem[headers[key]] = item[key];
+      }
+      return newItem;
     });
 
     const worksheet = XLSX.utils.json_to_sheet(filteredForExport);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Articoli");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Progetti");
     XLSX.writeFile(workbook, "lista_progetti.xlsx");
   };
 

@@ -72,6 +72,7 @@ const Stock = (props) => {
     getItemAllocation();
   }, [pnCliente, token]);
 
+  // export
   const filteredStock = Array.isArray(stock)
     ? stock.filter((item) =>
         Object.values(item).some((value) =>
@@ -81,11 +82,20 @@ const Stock = (props) => {
     : [];
 
   const exportToExcel = () => {
+    if (!filteredStock || filteredStock.length === 0 || !columnDefs) return;
+
+    const fieldsToExport = columnDefs.map((col) => col.field);
+    const headers = columnDefs.reduce((acc, col) => {
+      acc[col.field] = col.headerName;
+      return acc;
+    }, {});
+
     const filteredForExport = filteredStock.map((item) => {
-      const entries = Object.entries(item).filter(
-        ([key, value], index) => index !== 21 && index !== 22
-      );
-      return Object.fromEntries(entries);
+      const newItem = {};
+      for (const key of fieldsToExport) {
+        newItem[headers[key]] = item[key];
+      }
+      return newItem;
     });
 
     const worksheet = XLSX.utils.json_to_sheet(filteredForExport);

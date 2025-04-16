@@ -30,6 +30,8 @@ const RequestList = (props) => {
   const ref = useRef();
   const navigate = useNavigate();
 
+  //export
+
   const filteredRequests = Array.isArray(requests)
     ? requests.filter((item) =>
         Object.values(item).some((value) =>
@@ -38,12 +40,21 @@ const RequestList = (props) => {
       )
     : [];
   const exportToExcel = () => {
-    const filteredForExport = filteredRequests.map((item) => {
-      const entries = Object.entries(item).filter(
-        ([key, value], index) => index !== 21 && index !== 22
-      );
+    if (!filteredRequests || filteredRequests.length === 0 || !columnDefs)
+      return;
 
-      return Object.fromEntries(entries);
+    const fieldsToExport = columnDefs.map((col) => col.field);
+    const headers = columnDefs.reduce((acc, col) => {
+      acc[col.field] = col.headerName;
+      return acc;
+    }, {});
+
+    const filteredForExport = filteredRequests.map((item) => {
+      const newItem = {};
+      for (const key of fieldsToExport) {
+        newItem[headers[key]] = item[key]; // etichette corrette
+      }
+      return newItem;
     });
 
     const worksheet = XLSX.utils.json_to_sheet(filteredForExport);

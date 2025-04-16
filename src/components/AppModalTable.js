@@ -85,10 +85,27 @@ const AppModalTable = ({ columns, rows = [], onAdd, onRowDoubleClick }) => {
 
   // Esporta i dati filtrati in Excel
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(filteredRows);
+    if (!filteredRows || filteredRows.length === 0 || !columns) return;
+
+    const visibleColumns = columns.filter((col) => col.field !== "allocate");
+    const fieldsToExport = visibleColumns.map((col) => col.field);
+    const headers = visibleColumns.reduce((acc, col) => {
+      acc[col.field] = col.headerName;
+      return acc;
+    }, {});
+
+    const filteredForExport = filteredRows.map((row) => {
+      const newItem = {};
+      for (const key of fieldsToExport) {
+        newItem[headers[key]] = row[key];
+      }
+      return newItem;
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(filteredForExport);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Dati");
-    XLSX.writeFile(workbook, "ExportedData.xlsx");
+    XLSX.writeFile(workbook, "lista_articoli_stock.xlsx");
   };
 
   const handleEditFieldChange = (row, newQuantity) => {
